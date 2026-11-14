@@ -1,0 +1,45 @@
+{
+  "pilot": {
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "models": [
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017"
+    ],
+    "all_models": true,
+    "seats": 6,
+    "hands": 60,
+    "timeout_ms": 30000,
+    "max_tokens": 256,
+    "max_requests": 4000,
+    "spend_limit_usd": 2.0,
+    "response_format": "json_schema",
+    "reasoning_enabled": false,
+    "reset_stacks": true,
+    "execution": "subprocess",
+    "normalize_call_amount": true
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "model_seats": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "conditions": [
+    "none"
+  ],
+  "max_requests": 40000,
+  "spend_limit_usd": 6.0,
+  "parallel": 6
+}

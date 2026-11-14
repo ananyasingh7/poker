@@ -1,0 +1,25 @@
+{
+  "model": "qwen/qwen3.6-35b-a3b",
+  "seats": 6,
+  "all_models": true,
+  "hands": 3,
+  "seed": 42,
+  "timeout_ms": 30000,
+  "max_requests": 150,
+  "max_tokens": 256,
+  "spend_limit_usd": 0.25,
+  "response_format": "json_schema",
+  "reasoning_enabled": false,
+  "memory": "notes",
+  "notebook_chars": 4000,
+  "execution": "subprocess",
+  "provider": {
+    "order": [
+      "PrimeIntellect"
+    ],
+    "quantizations": [
+      "fp8"
+    ],
+    "allow_fallbacks": true
+  }
+}

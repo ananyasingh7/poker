@@ -1,0 +1,31 @@
+{
+  "pilot": {
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "seats": 6,
+    "hands": 12,
+    "timeout_ms": 30000,
+    "max_requests": 600,
+    "max_tokens": 256,
+    "spend_limit_usd": 0.5,
+    "response_format": "json_schema",
+    "reasoning_enabled": false,
+    "opponents": "mixed"
+  },
+  "seeds": [
+    42,
+    314
+  ],
+  "model_seats": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "conditions": [
+    "none"
+  ],
+  "max_requests": 600,
+  "spend_limit_usd": 0.5
+}

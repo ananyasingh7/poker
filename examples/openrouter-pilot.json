@@ -1,0 +1,14 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "seats": 6,
+  "model_seat": 0,
+  "hands": 10,
+  "seed": 42,
+  "timeout_ms": 30000,
+  "max_requests": 100,
+  "max_tokens": 256,
+  "max_request_bytes": 65536,
+  "spend_limit_usd": 1.0,
+  "response_format": "json_schema",
+  "reasoning_enabled": false
+}

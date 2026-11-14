@@ -53,11 +53,10 @@
     5
   ],
   "conditions": [
-    "none",
     "notes"
   ],
   "max_requests": 200000,
-  "spend_limit_usd": 5.5,
+  "spend_limit_usd": 2.75,
   "parallel": 12,
   "unknown_cost_allowance": 5
 }

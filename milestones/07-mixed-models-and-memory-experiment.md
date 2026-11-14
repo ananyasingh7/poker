@@ -71,9 +71,21 @@ Context: the field's exploitation ceiling is about +288 bb/100. The model captur
 - **Three sessions ended early** on a reply without a reported cost (2 `notes`, 1 `oracle`; 254 hands). The batch absorbed them under its allowance and kept going.
 - **Cost by arm:** `notes` $3.34 (68% of the spend), `none` $0.91, `oracle` $0.63.
 
-## Notebook fix: structured profiles (2026-11-14, implemented, not yet run live)
+## Notebook fix: structured profiles (2026-11-14)
 
-`notebook_style: "structured_profiles"` (prompt version 5). The model no longer rewrites a free-text notebook. It returns `operation` plus a list of `{seat, profile}` edits; the host merges them into per-opponent profiles and renders the notebook. Each profile has its own limit (`notebook_chars` divided by the number of opponents; 400 characters at the 2,000 default with five opponents). An overlong or out-of-range edit is ignored for that seat only (the old profile stays, and the audit log records `ignored_profiles`); an empty profile deletes the seat. The notebook can therefore never exceed the cap and a single overrun never discards the other seats' updates. Versions 2 to 4 are unchanged, so earlier runs stay comparable. `examples/experiment-memory-structured.json` runs `none` against structured `notes` on 8 seeds (about $2.50 estimated, not yet run).
+`notebook_style: "structured_profiles"` (prompt version 5). The model no longer rewrites a free-text notebook. It returns `operation` plus a list of `{seat, profile}` edits; the host merges them into per-opponent profiles and renders the notebook. Each profile has its own limit (`notebook_chars` divided by the number of opponents; 400 characters at the 2,000 default with five opponents). An overlong or out-of-range edit is ignored for that seat only (the old profile stays, and the audit log records `ignored_profiles`); an empty profile deletes the seat. The notebook can therefore never exceed the cap and a single overrun never discards the other seats' updates. Versions 2 to 4 are unchanged, so earlier runs stay comparable. Live check, `runs/memory-structured-v1`: the structured `notes` arm only, on the same 8 seeds. It is compared with the `none` arm of `runs/memory-budget-v1`, which is identical because the notebook style does not affect it. 48 sessions, 5,760 hands, **$1.61**.
+
+| | Free-text notes (v4) | Structured notes (v5) |
+| --- | --- | --- |
+| Failed notebook updates | 701 of 5,592 (12.5%) | **1 of 5,761** |
+| Updates where at least one seat's edit was ignored | — | 665 (11.5%); only that seat kept its old profile |
+| Largest notebook | over the cap, rejected | 1,631 of 2,000 characters |
+| Model bb/100 | +92 [+59, +125] | +81 [+56, +107] |
+| Paired difference vs `none` | +24 [-5, +52] | +13 [-22, +49] |
+| Structured minus free-text | | -10 [-30, +10] |
+| Structured minus `oracle` | | -20 [-56, +16] |
+
+The fix works as a mechanism: the notebook is now reliably maintained. It does not make the notes measurably more useful. Neither notes style resolves above zero at 8 seeds, and the two styles are within noise of each other. The structured style should be the default for any future memory work because it removes a failure mode, not because it wins more.
 
 ## Claude feedback (memory results, 2026-11-14)
 

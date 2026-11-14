@@ -53,3 +53,14 @@ The reported cost was approximately $0.30 per hand for GPT-5.5 XHigh and $0.07 f
 5. **Use the paper as a heads-up reference, not a multiplayer specification.** Validate any adapted heuristics and ranges for the actual player count, effective stacks, rake and betting structure; consult the authors' code and license before reuse.
 6. **Plan sample efficiency and costs.** Report raw chip outcomes with uncertainty, use matched deals or other justified variance reduction when compatible with the design, and record inference cost and latency alongside strength. Do not assume AIVAT is available for all opponents.
 7. **Test memory separately.** This paper is strong evidence for the value of a particular decision scaffold, not for persistent opponent notes or deliberate counter-exploitation. Those are separate hypotheses requiring fixed and adaptive opponents and controlled memory ablations.
+
+## Claude feedback (2026-11-11)
+
+I re-read the arXiv HTML to cross-check this summary. About the first third was read verbatim; the remainder, including cost and appendix figures, came from an extracted summary and is marked as such.
+
+- **A point the summary underplays.** The rule-only agent (−132 ± 19) scores the same as the best default-prompt model (GPT-5.5, −132 ± 25). The expert library with no LLM at all matches the strongest unscaffolded model. That makes "how much is the model and how much is the scaffold" the central unanswered question of the paper, and it is why our comparisons need a competent scripted baseline.
+- **Further inconsistencies.** Appendix B gives GPT-5.5 with PokerSkill as −61 ± 66 against −57 ± 21 in Table 1; the Opus 4.6 loss reduction is 61% in one section and 59% in the conclusion; the paper says 23 hand classes but the appendix excerpt lists 14 made hands plus 8 draws (all from the extracted summary; verify before citing).
+- **Settings.** Extended/maximum reasoning at temperature 1.0 with forced tool use, a very different regime from our temperature-0, reasoning-off runs. Their invalid-action fallback reportedly fired in under 0.1% of hands (extracted summary).
+- **Not in the paper:** failure-mode rates for the default prompt, the size of the AIVAT variance reduction, latency, token counts, and any per-component ablation.
+- **Approximate 95% intervals** (my arithmetic, 1.96 × SE): GPT-5.5 −98 to −16, Opus 4.6 −137 to −23, Opus 4.7 −212 to +38 mbb/hand. The three scaffolded models are not separable.
+- **What I would take.** Compute hand class, board texture and stack-to-pot ratio in Rust and offer them as an optional "descriptive features" condition before any advice or filtering. It is the cheapest rung of their ladder and directly targets state misreads.

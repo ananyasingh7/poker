@@ -51,3 +51,13 @@ There are reporting inconsistencies worth resolving before replicating: the abst
 7. **Use the paper’s prompts as references, not proof of a perfect design.** Its notes and prior reasoning can consume tokens and carry stale assumptions; test shorter memory limits and whether retained information actually improves decisions.
 
 These are our design recommendations and interpretations, not claims the paper experimentally verified. A larger sample is valuable, but careful controls and valid measurements are necessary as well.
+
+## Claude feedback (2026-11-11)
+
+I re-read the arXiv HTML to cross-check this summary. The fetch covered Sections 1–4.4 verbatim; appendix details below came from an extracted summary of the rest and are marked as such.
+
+- **Details worth adding.** The notebook update is a two-step gate: the agent first answers update yes/no, and only "yes" triggers a full rewrite. The notebook is instructed to hold opponent profiles, exploits and table image, and to exclude hand logs, chip counts and exact bet sizes (appendix). Updates have a 90 s timeout with up to two retries and a $20 per-session spend cap (appendix). Confidence intervals are bootstrap (10,000 resamples). Action calls time out at 120 s with an automatic fold.
+- **More inconsistencies than noted above.** Kimi's total is −12,558 in the text and table but −11,558 in the Figure 1 caption; Grok's margin is +3,705 in the text and $4,705 in the caption. The ablation is described as 600 hands, which does not match 10 paired sessions per cell under any session length the paper states. Treat the ablation's size and its A/B labels as unresolved.
+- **Not in the paper:** per-hand or per-session cost, latency, seat rotation, duplicate deals, multiple-comparison correction, and the notebook-update failure rate.
+- **What this means for us.** Our live notebooks are hand transcripts, which is exactly what this paper's prompt forbids; adopt the profile-only instruction and the cheap yes/no gate. Our fallback rate in the one six-seat subprocess run (1 of 54, 1.9%) is in line with their "below 2%". Our design is stronger on seat rotation, matched seeds and replay, and much weaker on sample size and diagnostics.
+- **Caution on the nine axes.** Several are weighted sums of unrelated quantities with hand-picked weights. I would not port them. Pick two or three measurements that can be validated against scripted opponents with known policies.

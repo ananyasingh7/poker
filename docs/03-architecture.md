@@ -1,6 +1,6 @@
 # Proposed architecture
 
-This is a proposed design, not a description of an existing implementation.
+This describes the broader proposed design. The rules engine, scripted arena, player views, and replay logs now have a Rust implementation; see the [implemented rules and protocol](06-rules-and-protocol.md). Model, memory, and evaluation components below remain proposals.
 
 ## Decision loop
 
@@ -12,7 +12,7 @@ This is a proposed design, not a description of an existing implementation.
 6. After the hand, each agent receives only a summary it is entitled to see and may update its own capped notes. The engine updates permitted stats.
 7. The evaluation harness records the state, model-visible input, configuration, outputs, validation, memory updates, and outcomes, including information withheld from agents for later analysis.
 
-Candidates include PokerKit or an equivalent engine, context labels such as stack-to-pot ratio, a layered skill library, structured tool calls, and cached stable prompt sections. An optional exploitation gate could be used to limit strategic deviations when evidence is weak. These are candidates to test, not proven requirements.
+The rules engine will be custom-built. Potential later additions include context labels such as stack-to-pot ratio, a layered skill library, structured tool calls, and cached stable prompt sections. An optional exploitation gate could be used to limit strategic deviations when evidence is weak. These are candidates to test, not proven requirements.
 
 ## Design boundaries
 
@@ -25,4 +25,14 @@ Candidates include PokerKit or an equivalent engine, context labels such as stac
 
 ## Scope and next decisions
 
-Start with a small, correct, observable table and simple scripted agents before scaling model calls. Choose cash game or tournament, number of seats, blind/stack structure, rake, session length, and rebuy policy explicitly. Build the interface so memory, stats, skills, and opponents can be swapped independently. The components still need schemas, full prompts, and a working engine.
+Start with a two-player, correct, observable table and simple scripted agents, then complete six-player rules before scaling model calls. Choose cash game or tournament, number of seats, blind/stack structure, rake, session length, and rebuy policy explicitly. Build the interface so memory, stats, skills, and opponents can be swapped independently. The components still need schemas, full prompts, and a working engine.
+
+## Claude feedback (2026-11-11)
+
+- **Status.** Steps 1, 3 (coarse statistics and notebook), 5, 6 and 7 of the decision loop are implemented; step 4 (skills) is not. Participants can now run as supervised worker processes; see [native subprocess supervision](10-native-subprocess-supervision.md).
+- **The observation is missing things a player would be told.** `PlayerView` has no blind sizes and no position names; the model has to infer both from the blind events. Add explicit `small_blind`/`big_blind` and a derived position label (button, small blind, …) before any strength claims. That requires a view-schema version bump.
+- **No belief channel yet.** The model returns only an action, so there is nothing to analyse for the "reads" questions in the vision. Add an optional reasoning/prediction field as a separate, labelled condition, since asking for reasoning also changes how the model decides.
+- **Naming.** `PlayerView.protocol` (1), the engine replay `Record.version` (1) and the participant protocol (2) are three different version numbers. Rename the first to something like `view_schema` to avoid confusion.
+- **Per-seat model selection is the main structural gap.** `Config` has a single `model`, so heterogeneous tables are impossible. The subprocess `init` message already takes model settings per seat, so the remaining work is configuration and manifest, not transport.
+- **Budget enforcement is post-hoc and self-reported.** The host grants one request at a time and trusts the worker's usage report. A small host-owned inference proxy would hold the key, enforce the cap before the request, and remove the credential from workers entirely. I would build that before any container work.
+- **Parallelism.** Decisions within a hand must stay sequential, but independent sessions do not share state. A session scheduler with a shared ledger is now the highest-value architecture change.

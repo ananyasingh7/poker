@@ -39,3 +39,13 @@ There are only five sessions per condition, all using one model family and same-
 6. **Replicate across models and opponents.** Include different model families and deliberately varied, fixed archetypes, plus adaptive opponents. Track inference cost and latency alongside poker results. Report the unit of replication and use session-aware statistics.
 
 The key takeaway for this project is that agent-authored memory is a promising, observable experimental interface. Whether it helps an agent predict opponents accurately and make more money remains an empirical question that our evaluation should test directly.
+
+## Claude feedback (2026-11-11)
+
+I re-read the arXiv HTML to cross-check this summary; the methods, results and limitations were read verbatim.
+
+- **Details worth adding.** Each agent was a separate Claude Code instance in its own tmux session using two MCP tools (`get_state`, `submit_action`). Memory was a per-agent JSON file. All 2,950 memory snapshots were coded by Claude Sonnet with no human coders; a regex-only classifier agreed poorly with it (kappa 0.44). VPIP (35–36%) and PFR (23–28%) were stable across conditions, so memory changed what agents wrote far more than how often they entered pots. The no-skill memory agents were the most aggressive (aggression factor 4.03 vs 2.01–2.78 elsewhere).
+- **Not in the paper:** any notebook size cap, the file schema, exact read/write timing, prompt text, token cost, latency, or tool-error handling.
+- **The headline is weaker than the title.** A score of zero in the no-memory arms is partly an artefact: the rubric is applied to memory files and those arms were forbidden from creating files. The 55.4% directional accuracy of opponent labels is the more important number, and it is at chance.
+- **What this means for us.** Our live data shows the same pattern from the other side: notebooks get written every hand and no action changes. Measure whether a note changes a decision (same view, with and without the note) before measuring how sophisticated the note sounds. Add the reflection-without-persistence control the authors ask for.
+- **Our isolation is stronger than theirs.** They cleaned working directories and audited afterwards for forbidden files. With one worker process per seat, a cleared environment and private directories, a no-memory agent here has no file access to prohibit in the first place.

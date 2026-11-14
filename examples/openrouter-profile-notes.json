@@ -1,0 +1,26 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "seats": 6,
+  "timeout_ms": 30000,
+  "max_tokens": 256,
+  "response_format": "json_schema",
+  "reasoning_enabled": false,
+  "opponents": "mixed",
+  "opponent_field": [
+    "station",
+    "overfolder",
+    "solid",
+    "adaptive",
+    "tight"
+  ],
+  "reset_stacks": true,
+  "model_seat": 0,
+  "hands": 18,
+  "seed": 7,
+  "max_requests": 150,
+  "spend_limit_usd": 0.25,
+  "memory": "notes",
+  "notebook_style": "profiles",
+  "notebook_chars": 2000,
+  "execution": "subprocess"
+}

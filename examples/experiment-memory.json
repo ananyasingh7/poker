@@ -1,0 +1,49 @@
+{
+  "pilot": {
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "seats": 6,
+    "timeout_ms": 30000,
+    "max_tokens": 256,
+    "response_format": "json_schema",
+    "reasoning_enabled": false,
+    "opponents": "mixed",
+    "opponent_field": [
+      "station",
+      "overfolder",
+      "solid",
+      "adaptive",
+      "tight"
+    ],
+    "reset_stacks": true,
+    "hands": 120,
+    "max_requests": 4000,
+    "spend_limit_usd": 2.0,
+    "notebook_style": "profiles",
+    "notebook_chars": 2000,
+    "normalize_call_amount": true
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "model_seats": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "conditions": [
+    "none",
+    "stats",
+    "notes",
+    "both",
+    "oracle"
+  ],
+  "max_requests": 80000,
+  "spend_limit_usd": 12.0,
+  "parallel": 12
+}

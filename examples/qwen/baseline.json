@@ -1,0 +1,79 @@
+{
+  "pilot": {
+    "model": "qwen/qwen3.6-35b-a3b",
+    "seats": 6,
+    "timeout_ms": 30000,
+    "max_tokens": 256,
+    "response_format": "json_schema",
+    "reasoning_enabled": false,
+    "opponents": "mixed",
+    "opponent_field": [
+      "station",
+      "overfolder",
+      "solid",
+      "adaptive",
+      "tight"
+    ],
+    "reset_stacks": true,
+    "hands": 60,
+    "max_requests": 2000,
+    "spend_limit_usd": 1.0,
+    "normalize_call_amount": true,
+    "provider": {
+      "order": [
+        "PrimeIntellect"
+      ],
+      "quantizations": [
+        "fp8"
+      ],
+      "allow_fallbacks": true
+    },
+    "max_consecutive_failures": 0
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "model_seats": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "conditions": [
+    "none"
+  ],
+  "max_requests": 40000,
+  "spend_limit_usd": 4.0,
+  "parallel": 12,
+  "unknown_cost_allowance": 5,
+  "unknown_cost_charge_usd": 0.01
+}

@@ -1,0 +1,16 @@
+{
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "seats": 6,
+  "model_seat": 0,
+  "hands": 10,
+  "seed": 42,
+  "timeout_ms": 30000,
+  "max_requests": 100,
+  "max_tokens": 256,
+  "spend_limit_usd": 0.25,
+  "response_format": "json_schema",
+  "reasoning_enabled": false,
+  "opponents": "mixed",
+  "memory": "none",
+  "execution": "subprocess"
+}

@@ -1,0 +1,63 @@
+{
+  "pilot": {
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "seats": 6,
+    "timeout_ms": 30000,
+    "max_tokens": 256,
+    "response_format": "json_schema",
+    "reasoning_enabled": false,
+    "opponents": "mixed",
+    "opponent_field": [
+      "station",
+      "overfolder",
+      "solid",
+      "adaptive",
+      "tight"
+    ],
+    "reset_stacks": true,
+    "hands": 120,
+    "max_requests": 8000,
+    "spend_limit_usd": 3.0,
+    "notebook_style": "structured_profiles",
+    "notebook_chars": 2000,
+    "normalize_call_amount": true,
+    "scaffold": "features",
+    "provider": {
+      "order": [
+        "DeepInfra",
+        "InferenceNet",
+        "Baidu"
+      ],
+      "quantizations": [
+        "fp8"
+      ],
+      "allow_fallbacks": true
+    }
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "model_seats": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "conditions": [
+    "none",
+    "notes"
+  ],
+  "max_requests": 200000,
+  "spend_limit_usd": 5.5,
+  "parallel": 12,
+  "unknown_cost_allowance": 5
+}

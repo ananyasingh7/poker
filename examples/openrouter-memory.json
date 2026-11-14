@@ -1,0 +1,26 @@
+{
+  "pilot": {
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "seats": 6,
+    "hands": 12,
+    "max_requests": 400,
+    "spend_limit_usd": 0.25,
+    "reasoning_enabled": false,
+    "opponents": "mixed",
+    "notebook_chars": 4000
+  },
+  "seeds": [
+    42
+  ],
+  "model_seats": [
+    0
+  ],
+  "conditions": [
+    "none",
+    "notes",
+    "stats",
+    "both"
+  ],
+  "max_requests": 400,
+  "spend_limit_usd": 0.25
+}

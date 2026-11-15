@@ -33,7 +33,7 @@ Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-
 | Cheat sheet | `memory: oracle` |
 | Own notes | `memory: notes`, `notebook_style: structured_profiles` |
 | Baseline | none of the above |
-| Show thinking | `reasoning_enabled: true`, `max_tokens: 12288`, 240 s timeout (raised from 4,096 / 90 s after the first live run truncated long river decisions) |
+| Show thinking | `reasoning_enabled: true`, `reasoning_effort: low`, `max_tokens: 12288`, 240 s timeout (limit raised from 4,096 / 90 s and effort added on 2026-11-15, after long reasoning truncated; see below) |
 | Reset each | `reset_stacks: true` (the experiments' setting); default is carry-over |
 | Cap | `spend_limit_usd` for the whole table session (default $0.25) |
 
@@ -91,7 +91,7 @@ Same as the first live run (seed 42, carry-over stacks, no scaffold, thinking on
 | Cost | $0.00040 per completed decision; $0.0011 per hand including truncations |
 | Truncated responses | 101-112 s each; median response 4.5 s |
 
-**The truncations are not loops** (sentences 99-100% unique). With the cheat sheet in the prompt the model counts opponent hand combinations one by one ("A7s(3), K7s(3), Q7s(3)...") and never reaches an answer. A higher limit makes each such failure dearer without ending it, so the remedy is a bound on deliberation (a reasoning budget or effort level, a prompt line asking for a short estimate, or a re-ask with thinking off after a truncation), not a still higher limit. Not yet chosen; see next-steps item 19.
+**The truncations are not loops** (sentences 99-100% unique). With the cheat sheet in the prompt the model counts opponent hand combinations one by one ("A7s(3), K7s(3), Q7s(3)...") and never reaches an answer. A higher limit makes each such failure dearer without ending it, so the remedy is a bound on deliberation (a reasoning budget or effort level, a prompt line asking for a short estimate, or a re-ask with thinking off after a truncation), not a still higher limit. **Fix chosen: `reasoning_effort: low`** (2026-11-15). The three hand-79 prompts that had each run past 12,288 tokens were re-sent unchanged with `"reasoning": {"effort": "low"}` ($0.0011 in total): all three answered, in 433, 562 and 1,804 reasoning tokens (5, 6 and 19 s), served by DeepInfra. The table now asks for low effort whenever thinking is on, keeping 12,288 tokens as a backstop. The lab has the same opt-in `reasoning_effort` (`low`, `medium`, `high`; requires `reasoning_enabled: true`). Caveat: low effort may change how well the model plays, so table sessions from now on are not comparable with the two runs above.
 
 Hands 1-79, same deals (from `analyze --decisions`):
 

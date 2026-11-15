@@ -1,0 +1,14 @@
+[package]
+name = "poker-table"
+version = "0.1.0"
+edition = "2024"
+description = "Retro spectator table for poker-lab: watch a model play, read its thinking, replay and analyse hands."
+
+[dependencies]
+poker-lab = { path = ".." }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+winit = "0.30"
+softbuffer = "0.4"
+embedded-graphics = "0.8"
+png = "0.17"

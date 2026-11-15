@@ -556,6 +556,8 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         retry_backoff_max_ms: 1,
         provider: Default::default(),
         max_consecutive_failures: 3,
+        repair_illegal: false,
+        label_positions: false,
         oracle_notes: None,
         notebook_chars: 400,
         max_requests: 1000,
@@ -1395,6 +1397,35 @@ fn a_model_that_keeps_faulting_ends_its_sessions_but_not_the_batch() {
                     reason.is_null() || reason == "three_consecutive_failures"
                 })
         );
+    }
+}
+
+#[test]
+fn illegal_checks_are_repaired_through_both_backends() {
+    for execution in [Execution::InProcess, Execution::Subprocess] {
+        // First answer is always "check"; the repair request (4 messages) gets a legal action.
+        let (url, seen) = provider(Arc::new(|request| {
+            let repair = request["messages"].as_array().unwrap().len() == 4;
+            let answer = if repair {
+                passive_action(request)
+            } else {
+                json!({"action":"check","amount":null}).to_string()
+            };
+            (200, completion(&answer))
+        }));
+        let mut config = small_config(execution);
+        config.repair_illegal = true;
+        let dir = temp_dir("repair").join("run");
+        let result = runner::session(config, &dir, &env(&url)).unwrap();
+        let stats = &result["stats"];
+        assert_eq!(stats["fallbacks"], 0, "{execution:?} {result}");
+        let repaired = stats["repaired_actions"].as_u64().unwrap();
+        assert!(repaired > 0);
+        assert_eq!(
+            stats["requests"].as_u64().unwrap(),
+            seen.lock().unwrap().len() as u64
+        );
+        assert_eq!(result["clean"], true);
     }
 }
 

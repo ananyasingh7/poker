@@ -706,6 +706,7 @@ impl Shared {
             stats.unknown_cost_requests += u64::from(usage.unknown_cost_attempts);
             stats.memory_errors += u64::from(failed_note);
             stats.normalized_actions += u64::from(usage.normalized);
+            stats.repaired_actions += u64::from(usage.repaired);
             if notebook {
                 stats.memory_requests += attempts;
             }

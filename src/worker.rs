@@ -79,6 +79,8 @@ fn model(settings: ModelSettings) -> Result<OpenRouterAgent, String> {
         retry_backoff_max_ms: settings.retry_backoff_max_ms,
         provider: settings.provider,
         max_consecutive_failures: settings.max_consecutive_failures,
+        repair_illegal: settings.repair_illegal,
+        label_positions: settings.label_positions,
         // The host validated the table; this only satisfies Config's oracle-needs-a-scripted-
         // field check. The worker is never told who its opponents are.
         opponents: crate::openrouter::Opponents::Mixed,
@@ -142,6 +144,7 @@ fn usage(before: &Stats, after: &Stats, note: NoteResult) -> Usage {
         infra_failures: (after.infra_failures - before.infra_failures) as u32,
         assumed_cost_usd: after.assumed_cost_usd - before.assumed_cost_usd,
         normalized: (after.normalized_actions - before.normalized_actions) as u32,
+        repaired: (after.repaired_actions - before.repaired_actions) as u32,
         note,
         halt: after.halt_reason.clone(),
     }
@@ -532,6 +535,8 @@ mod tests {
             retry_backoff_max_ms: 1,
             provider: Default::default(),
             max_consecutive_failures: 3,
+            repair_illegal: false,
+            label_positions: false,
             oracle_notes: None,
             notebook_chars: 100,
             max_requests: 1,

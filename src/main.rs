@@ -32,11 +32,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     if args.first().is_some_and(|a| a == "analyze") {
         let json_output = args.iter().any(|a| a == "--json");
-        let paths: Vec<_> = args[1..].iter().filter(|a| *a != "--json").collect();
+        let no_grades = args.iter().any(|a| a == "--no-grades");
+        let paths: Vec<_> = args[1..]
+            .iter()
+            .filter(|a| *a != "--json" && *a != "--no-grades")
+            .collect();
         let [path] = paths.as_slice() else {
-            return Err("usage: poker-lab analyze RUN_OR_BATCH_DIRECTORY [--json]".into());
+            return Err(
+                "usage: poker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]".into(),
+            );
         };
-        let analysis = poker_lab::analyze::directory(Path::new(path))?;
+        let analysis = poker_lab::analyze::directory_with(Path::new(path), !no_grades)?;
         if json_output {
             println!("{}", serde_json::to_string_pretty(&analysis)?);
         } else {
@@ -81,7 +87,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     if args.iter().any(|a| a == "--help") {
         println!(
-            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json]   playing style, cost per hand, win rates with seed-block intervals\npoker-lab ceiling [FIELD=default|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]   exploitation ceiling against a scripted field\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
+            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]   playing style, cost per hand, win rates with seed-block intervals, all-in adjusted results and pot-odds decision grades\npoker-lab ceiling [FIELD=default|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]   exploitation ceiling against a scripted field\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
         );
         return Ok(());
     }

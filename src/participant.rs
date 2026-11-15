@@ -146,6 +146,10 @@ pub struct ModelSettings {
     pub provider: crate::openrouter::ProviderPrefs,
     #[serde(default = "default_failure_limit")]
     pub max_consecutive_failures: u32,
+    #[serde(default)]
+    pub repair_illegal: bool,
+    #[serde(default)]
+    pub label_positions: bool,
     /// Experimenter-supplied notebook for the oracle condition.
     pub oracle_notes: Option<String>,
     pub notebook_chars: usize,
@@ -232,6 +236,9 @@ pub struct Usage {
     pub assumed_cost_usd: f64,
     /// Calls accepted with a redundant amount (opt-in normalization).
     pub normalized: u32,
+    /// Illegal actions corrected by the opt-in re-ask.
+    #[serde(default)]
+    pub repaired: u32,
     pub note: NoteResult,
     /// Set when the worker's own adapter decided no further provider calls are safe.
     pub halt: Option<String>,

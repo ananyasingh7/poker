@@ -55,6 +55,61 @@ pub fn equity_against(hole: [Card; 2], board: &[Card], opponents: usize, samples
     score / f64::from(samples)
 }
 
+/// Exact or sampled showdown share of `hole` against the opponents' actual `holes`, with the
+/// rest of the board drawn from the unseen cards. Exact when at most one card is missing;
+/// otherwise `samples` deterministic run-outs. Evaluator-only: it uses hidden cards.
+pub fn equity_vs(hole: [Card; 2], board: &[Card], holes: &[[Card; 2]], samples: u32) -> f64 {
+    let known: Vec<u8> = hole
+        .iter()
+        .chain(board)
+        .chain(holes.iter().flatten())
+        .map(|c| u8::from(*c))
+        .collect();
+    let unseen: Vec<Card> = (0..52u8)
+        .filter(|c| !known.contains(c))
+        .map(|c| Card::try_from(c).expect("valid card"))
+        .collect();
+    let missing = 5 - board.len();
+    let share = |extra: &[Card]| {
+        let mut full = board.to_vec();
+        full.extend_from_slice(extra);
+        let rank = |pair: [Card; 2]| {
+            let mut cards = full.clone();
+            cards.extend(pair);
+            evaluate(&cards).expect("valid cards")
+        };
+        let mine = rank(hole);
+        let best = holes.iter().map(|h| rank(*h)).max().expect("an opponent");
+        match mine.cmp(&best) {
+            std::cmp::Ordering::Greater => 1.0,
+            std::cmp::Ordering::Less => 0.0,
+            std::cmp::Ordering::Equal => {
+                1.0 / (1 + holes.iter().filter(|h| rank(**h) == mine).count()) as f64
+            }
+        }
+    };
+    match missing {
+        0 => share(&[]),
+        1 => unseen.iter().map(|c| share(&[*c])).sum::<f64>() / unseen.len() as f64,
+        _ => {
+            let seed = known.iter().fold(0x0e7a_11c5u64, |h, c| {
+                h.wrapping_mul(131).wrapping_add(u64::from(*c))
+            });
+            let mut rng = Rng(seed);
+            let mut pool = unseen;
+            let mut total = 0.0;
+            for _ in 0..samples {
+                for i in 0..missing {
+                    let j = i + rng.below((pool.len() - i) as u64) as usize;
+                    pool.swap(i, j);
+                }
+                total += share(&pool[..missing]);
+            }
+            total / f64::from(samples)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -3,6 +3,7 @@
 use crate::{
     arena::Record,
     engine::{Action, Event, Hand, Street},
+    evaluation,
     openrouter::Config,
     scaffold,
 };
@@ -39,6 +40,15 @@ pub fn interval(values: &[f64]) -> Value {
     json!({"blocks":n,"mean":mean,"se":se,"ci95":[mean - t * se, mean + t * se]})
 }
 
+/// One seed block of one (condition, label): the independent unit of every interval.
+#[derive(Default)]
+struct Block {
+    net: i64,
+    hands: u64,
+    adjusted: f64,
+    loss: f64,
+}
+
 #[derive(Default, Clone)]
 struct Tally {
     hands: u64,
@@ -56,6 +66,14 @@ struct Tally {
     compared: u64,
     agreed: u64,
     net_chips: i64,
+    /// Net chips with all-in luck removed (expected results over the unseen board).
+    adjusted_net: f64,
+    /// Call-or-fold decisions graded against pot odds, how many were mistakes, and the chips
+    /// those mistakes gave up (see `evaluation::grade_seat`).
+    graded: u64,
+    bad_calls: u64,
+    bad_folds: u64,
+    grade_loss: f64,
 }
 impl Tally {
     fn add(&mut self, t: &Tally) {
@@ -73,10 +91,15 @@ impl Tally {
             (&mut self.fallbacks, t.fallbacks),
             (&mut self.compared, t.compared),
             (&mut self.agreed, t.agreed),
+            (&mut self.graded, t.graded),
+            (&mut self.bad_calls, t.bad_calls),
+            (&mut self.bad_folds, t.bad_folds),
         ] {
             *sum += add;
         }
         self.net_chips += t.net_chips;
+        self.adjusted_net += t.adjusted_net;
+        self.grade_loss += t.grade_loss;
     }
     fn style(&self, label: &str, is_model: bool, big_blind: u64) -> Value {
         json!({"label":label,"is_model":is_model,"seat_hands":self.hands,
@@ -86,6 +109,9 @@ impl Tally {
             "showdown":ratio(self.showdowns, self.hands),
             "fallback_rate":ratio(self.fallbacks, self.decisions),"fallbacks":self.fallbacks,
             "reference_agreement":ratio(self.agreed, self.compared),
+            "adjusted_bb_per_100":(self.hands > 0).then(|| self.adjusted_net / big_blind as f64 / self.hands as f64 * 100.0),
+            "graded_decisions":self.graded,"bad_calls":self.bad_calls,"bad_folds":self.bad_folds,
+            "mistake_cost_bb_per_100":(self.hands > 0).then(|| self.grade_loss / big_blind as f64 / self.hands as f64 * 100.0),
             "net_chips":self.net_chips,"bb_per_100":bb_per_100(self.net_chips, big_blind, self.hands)})
     }
 }
@@ -164,9 +190,11 @@ fn tally(
     record: &Record,
     labels: &[String],
     models: &BTreeSet<String>,
+    grade: bool,
     out: &mut BTreeMap<String, Tally>,
 ) -> Result<(), String> {
     let seats = record.initial_stacks.len();
+    let adjusted = evaluation::allin_adjusted(record)?;
     let mut hand = Hand::new(
         record.rules.clone(),
         record.initial_stacks.clone(),
@@ -215,6 +243,20 @@ fn tally(
                 .any(|e| matches!(e, Event::Reveal { seat: s, .. } if *s == seat)),
         );
         t.net_chips += record.final_stacks[seat] as i64 - record.initial_stacks[seat] as i64;
+        t.adjusted_net += adjusted
+            .as_ref()
+            .map_or(record.final_stacks[seat] as f64, |a| a[seat])
+            - record.initial_stacks[seat] as f64;
+        if grade {
+            for g in evaluation::grade_seat(record, seat)? {
+                t.graded += 1;
+                t.grade_loss += g.loss;
+                if g.loss > 0.0 {
+                    t.bad_calls += u64::from(g.called);
+                    t.bad_folds += u64::from(!g.called);
+                }
+            }
+        }
     }
     Ok(())
 }
@@ -228,6 +270,12 @@ fn bb_per_100(net_chips: i64, big_blind: u64, hands: u64) -> Option<f64> {
 
 /// Analyses a single run directory or a batch directory of `session-NNN` runs.
 pub fn directory(dir: &Path) -> Result<Value, String> {
+    directory_with(dir, true)
+}
+
+/// As `directory`; `grade` turns the per-decision pot-odds grading on or off (it is the slow
+/// part: one equity estimate per graded decision).
+pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
     let mut session_dirs: Vec<_> = std::fs::read_dir(dir)
         .map_err(|e| format!("{}: {e}", dir.display()))?
         .filter_map(|e| e.ok().map(|e| e.path()))
@@ -246,7 +294,7 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
     let mut by_condition: BTreeMap<(String, String), Tally> = BTreeMap::new();
     // (condition, label) -> seed -> (net chips, seat-hands). One seed is one independent block:
     // every seat rotation of a seed shares its deals, so rotations are averaged, not counted.
-    let mut blocks: BTreeMap<(String, String), BTreeMap<u64, (i64, u64)>> = BTreeMap::new();
+    let mut blocks: BTreeMap<(String, String), BTreeMap<u64, Block>> = BTreeMap::new();
     let mut models = BTreeSet::new();
     let mut conditions = vec![];
     let (mut hands, mut requests, mut cost, mut clean) = (0u64, 0u64, 0.0, 0usize);
@@ -254,7 +302,7 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
     for session in &sessions {
         let mut local: BTreeMap<String, Tally> = BTreeMap::new();
         for record in &session.records {
-            tally(record, &session.labels, &session.models, &mut local)?;
+            tally(record, &session.labels, &session.models, grade, &mut local)?;
             big_blind = record.rules.big_blind;
         }
         hands += session.records.len() as u64;
@@ -271,8 +319,10 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
                 .or_default()
                 .entry(session.seed)
                 .or_default();
-            block.0 += t.net_chips;
-            block.1 += t.hands;
+            block.net += t.net_chips;
+            block.adjusted += t.adjusted_net;
+            block.loss += t.grade_loss;
+            block.hands += t.hands;
             if session.models.contains(&label) {
                 by_condition
                     .entry((session.condition.clone(), label.clone()))
@@ -294,31 +344,44 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
             row
         })
         .collect();
-    let block_values = |key: &(String, String)| -> BTreeMap<u64, f64> {
+    // Per seed block: bb/100 of one block field (net chips, all-in adjusted, or mistake cost).
+    let per_block = |key: &(String, String), field: fn(&Block) -> f64| -> BTreeMap<u64, f64> {
         blocks[key]
             .iter()
-            .filter_map(|(seed, (net, hands))| Some((*seed, bb_per_100(*net, big_blind, *hands)?)))
+            .filter(|(_, b)| b.hands > 0)
+            .map(|(seed, b)| (*seed, field(b) / big_blind as f64 / b.hands as f64 * 100.0))
             .collect()
+    };
+    let block_values = |key: &(String, String)| per_block(key, |b| b.net as f64);
+    let adjusted_values = |key: &(String, String)| per_block(key, |b| b.adjusted);
+    let loss_values = |key: &(String, String)| per_block(key, |b| b.loss);
+    let paired_rows = |values: &BTreeMap<u64, f64>, base: &BTreeMap<u64, f64>| {
+        let differences: Vec<f64> = values
+            .iter()
+            .filter_map(|(seed, v)| Some(v - base.get(seed)?))
+            .collect();
+        interval(&differences)
     };
     let mut win_rates = vec![];
     let mut paired = vec![];
     for key in blocks.keys() {
         let values = block_values(key);
-        let seat_hands: u64 = blocks[key].values().map(|b| b.1).sum();
+        let seat_hands: u64 = blocks[key].values().map(|b| b.hands).sum();
         let mut row = interval(&values.values().copied().collect::<Vec<_>>());
         row["condition"] = json!(key.0);
         row["label"] = json!(key.1);
         row["seat_hands"] = json!(seat_hands);
+        let adjusted = adjusted_values(key);
+        row["adjusted"] = interval(&adjusted.values().copied().collect::<Vec<_>>());
+        let losses = loss_values(key);
+        row["mistake_cost"] = interval(&losses.values().copied().collect::<Vec<_>>());
         win_rates.push(row);
         // Paired comparison against the first condition on the seeds both conditions played.
         let reference = (conditions[0].clone(), key.1.clone());
         if key.0 != conditions[0] && models.contains(&key.1) && blocks.contains_key(&reference) {
-            let base = block_values(&reference);
-            let differences: Vec<f64> = values
-                .iter()
-                .filter_map(|(seed, v)| Some(v - base.get(seed)?))
-                .collect();
-            let mut row = interval(&differences);
+            let mut row = paired_rows(&values, &block_values(&reference));
+            row["adjusted"] = paired_rows(&adjusted, &adjusted_values(&reference));
+            row["mistake_cost"] = paired_rows(&losses, &loss_values(&reference));
             row["label"] = json!(key.1);
             row["condition"] = json!(key.0);
             row["versus"] = json!(conditions[0]);
@@ -329,7 +392,7 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
         json!({"directory":dir.display().to_string(),"sessions":sessions.len(),"clean_sessions":clean,
         "hands":hands,"requests":requests,"reported_cost_usd":cost,
         "cost_per_hand_usd":(hands > 0).then(|| cost / hands as f64),
-        "unit":"bb/100; intervals are 95% t-intervals over seed blocks (seat rotations of a seed are averaged)",
+        "unit":"bb/100; intervals are 95% t-intervals over seed blocks (seat rotations of a seed are averaged); `adjusted` removes all-in luck",
         "style":style,"model_style_by_condition":model_style,"win_rates":win_rates,"paired_differences":paired}),
     )
 }
@@ -438,6 +501,15 @@ pub fn render(a: &Value) -> String {
             row["label"].as_str().unwrap_or(""),
             interval_text(row)
         );
+        if row["adjusted"]["blocks"].as_u64().unwrap_or(0) > 0 {
+            let _ = writeln!(
+                out,
+                "  {:<16} {:<36} {}",
+                "",
+                "  all-in adjusted:",
+                interval_text(&row["adjusted"])
+            );
+        }
     }
     let paired = a["paired_differences"]
         .as_array()
@@ -457,7 +529,70 @@ pub fn render(a: &Value) -> String {
                 row["label"].as_str().unwrap_or(""),
                 interval_text(row)
             );
+            if row["adjusted"]["blocks"].as_u64().unwrap_or(0) > 0 {
+                let _ = writeln!(
+                    out,
+                    "    all-in adjusted: {}",
+                    interval_text(&row["adjusted"])
+                );
+            }
+            if row["mistake_cost"]["blocks"].as_u64().unwrap_or(0) > 0
+                && row["mistake_cost"]["mean"].as_f64().unwrap_or(0.0) != 0.0
+            {
+                let _ = writeln!(
+                    out,
+                    "    call/fold mistake cost: {}",
+                    interval_text(&row["mistake_cost"])
+                );
+            }
         }
+    }
+    let graded: Vec<&Value> = a["style"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .chain(
+            a["model_style_by_condition"]
+                .as_array()
+                .into_iter()
+                .flatten(),
+        )
+        .filter(|s| s["graded_decisions"].as_u64().unwrap_or(0) > 0)
+        .collect();
+    if !graded.is_empty() {
+        let _ = writeln!(
+            out,
+            "\nCall-or-fold decisions graded against pot odds\n{:<52} {:>7} {:>9} {:>9} {:>11}",
+            "label (condition)", "graded", "bad call", "bad fold", "cost bb/100"
+        );
+        for s in graded {
+            let n = s["graded_decisions"].as_u64().unwrap_or(0);
+            let share = |k: &str| {
+                format!(
+                    "{:.0}%",
+                    s[k].as_u64().unwrap_or(0) as f64 / n.max(1) as f64 * 100.0
+                )
+            };
+            let name = match s["condition"].as_str() {
+                Some(condition) => format!("{} ({condition})", s["label"].as_str().unwrap_or("")),
+                None => s["label"].as_str().unwrap_or("").to_owned(),
+            };
+            let _ = writeln!(
+                out,
+                "{:<52} {:>7} {:>9} {:>9} {:>11}",
+                name,
+                n,
+                share("bad_calls"),
+                share("bad_folds"),
+                s["mistake_cost_bb_per_100"]
+                    .as_f64()
+                    .map_or("-".into(), |x| format!("{x:.1}"))
+            );
+        }
+        let _ = writeln!(
+            out,
+            "(Equity against the opponents' actual cards, board unknown; immediate pot odds only, later betting ignored.)"
+        );
     }
     out
 }

@@ -5,6 +5,7 @@ pub mod cards;
 pub mod ceiling;
 pub mod engine;
 pub mod equity;
+pub mod evaluation;
 pub mod experiment;
 pub mod memory;
 pub mod openrouter;

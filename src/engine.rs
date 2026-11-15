@@ -143,6 +143,19 @@ pub struct Hand {
 }
 impl Hand {
     pub fn new(rules: Rules, stacks: Vec<Chips>, button: usize, seed: u64) -> Result<Self, String> {
+        Self::with_deck(rules, stacks, button, deck(seed))
+    }
+    /// Evaluator-only: a hand dealt from an explicit deck (cards are popped from the end). Used
+    /// to replay a hand's actions over alternative run-outs; never reachable by agents.
+    pub(crate) fn with_deck(
+        rules: Rules,
+        stacks: Vec<Chips>,
+        button: usize,
+        deck: Vec<Card>,
+    ) -> Result<Self, String> {
+        if deck.len() != 52 {
+            return Err("a deck has 52 cards".into());
+        }
         if !(2..=6).contains(&stacks.len()) || button >= stacks.len() || stacks.contains(&0) {
             return Err("require 2..6 funded seats and a valid button".into());
         }
@@ -160,7 +173,7 @@ impl Hand {
         if total > u64::MAX / 2 {
             return Err("table chips exceed supported maximum".into());
         }
-        let mut deck = deck(seed);
+        let mut deck = deck;
         let n = stacks.len();
         let dummy = Card::try_from(0).unwrap();
         let mut holes = vec![[dummy; 2]; n];

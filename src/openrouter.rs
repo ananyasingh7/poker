@@ -65,6 +65,11 @@ pub struct Config {
     /// A session stops after this many model faults in a row (0 never stops it): the faulty
     /// decisions are played as fallbacks, which is what the fault costs the model.
     pub max_consecutive_failures: u32,
+    /// Opt-in: after an illegal action, ask once more with the reason and the legal options.
+    pub repair_illegal: bool,
+    /// Opt-in: add the seat's position name and the big blind to the raw observation. Off by
+    /// default because it changes what the `none` scaffold shows.
+    pub label_positions: bool,
     /// Which OpenRouter providers may serve the model. Empty means OpenRouter's own routing,
     /// which can mix providers (and quantizations) within one run.
     pub provider: ProviderPrefs,
@@ -301,6 +306,8 @@ impl Default for Config {
             retry_backoff_ms: 500,
             retry_backoff_max_ms: 30_000,
             max_consecutive_failures: 3,
+            repair_illegal: false,
+            label_positions: false,
             provider: ProviderPrefs::default(),
         }
     }
@@ -384,6 +391,8 @@ impl Config {
             retry_backoff_ms: self.retry_backoff_ms,
             retry_backoff_max_ms: self.retry_backoff_max_ms,
             max_consecutive_failures: self.max_consecutive_failures,
+            repair_illegal: self.repair_illegal,
+            label_positions: self.label_positions,
             provider: self.provider.clone(),
             oracle_notes: (self.memory == Mode::Oracle).then(|| self.oracle_notes()),
             model: self.model_for(seat).to_owned(),
@@ -452,6 +461,8 @@ pub struct Stats {
     pub unknown_cost_requests: u64,
     /// Calls accepted with a redundant amount under `normalize_call_amount`.
     pub normalized_actions: u64,
+    /// Illegal actions corrected by the opt-in re-ask (`repair_illegal`).
+    pub repaired_actions: u64,
     /// Attempts lost to infrastructure (network, timeout, 408/429/5xx) and retried or abandoned.
     pub infra_failures: u64,
     /// Decisions whose retries were exhausted by infrastructure alone (the hand is abandoned).
@@ -529,6 +540,37 @@ fn parse_response(
     }
     Ok(action)
 }
+/// The follow-up message for an illegal action: what was wrong and what is allowed now.
+fn illegal_reason(view: &PlayerView, reply: &str) -> String {
+    let Some(legal) = view.legal.as_ref() else {
+        return "That action is not legal. Choose again.".into();
+    };
+    let mut allowed = vec![];
+    if legal.fold {
+        allowed.push("fold".to_owned());
+    }
+    if legal.check {
+        allowed.push("check".to_owned());
+    }
+    if let Some(call) = legal.call {
+        allowed.push(format!("call (pays {call})"));
+    }
+    if let (Some(min), Some(max)) = (legal.min_raise_to, legal.max_raise_to) {
+        allowed.push(format!("raise_to an amount from {min} to {max}"));
+    }
+    if let Some(all_in) = legal.short_all_in_to {
+        allowed.push(format!("raise_to {all_in} (all-in)"));
+    }
+    let hint = if reply.contains("\"check\"") && !legal.check {
+        " You cannot check: there is a bet to call."
+    } else {
+        ""
+    };
+    format!(
+        "That action is not legal here.{hint} Legal actions now: {}. Return ONLY the JSON object again.",
+        allowed.join(", ")
+    )
+}
 fn card(c: Card) -> String {
     format!(
         "{}{}",
@@ -540,6 +582,22 @@ pub fn request(config: &Config, view: &PlayerView) -> Value {
     let mut observation = serde_json::to_value(view).expect("serializable view");
     observation["hole"] = json!(view.hole.iter().copied().map(card).collect::<Vec<_>>());
     observation["board"] = json!(view.board.iter().copied().map(card).collect::<Vec<_>>());
+    if config.label_positions {
+        observation["position"] = json!(crate::scaffold::position(
+            view.players.len(),
+            view.seat,
+            view.button
+        ));
+        observation["big_blind"] = json!(
+            view.history
+                .iter()
+                .filter_map(|e| match e {
+                    crate::engine::Event::Blind { amount, .. } => Some(*amount),
+                    _ => None,
+                })
+                .max()
+        );
+    }
     for event in observation["history"].as_array_mut().unwrap() {
         if let Some(cards) = event.get_mut("cards") {
             for c in cards.as_array_mut().unwrap() {
@@ -740,9 +798,29 @@ impl OpenRouterAgent {
         }
         let lenient = self.config.normalize_call_amount;
         let normalized = std::cell::Cell::new(false);
-        let result = self.complete(view, body, "action", |parsed| {
+        let reply = std::cell::RefCell::new(String::new());
+        let first = body.clone();
+        let mut result = self.complete(view, body, "action", |parsed| {
+            *reply.borrow_mut() = parsed["choices"][0]["message"]["content"]
+                .as_str()
+                .unwrap_or_default()
+                .to_owned();
             parse_response(parsed, view, lenient, &normalized)
         });
+        // Opt-in: one re-ask after a well-formed but illegal action, showing the model its own
+        // answer and why it is not allowed. Off by default so earlier results stay comparable.
+        if self.config.repair_illegal && result == Err(Failure::IllegalAction) {
+            let mut retry = first;
+            let messages = retry["messages"].as_array_mut().expect("messages");
+            messages.push(json!({"role":"assistant","content":reply.borrow().clone()}));
+            messages.push(json!({"role":"user","content":illegal_reason(view, &reply.borrow())}));
+            result = self.complete(view, retry, "action_repair", |parsed| {
+                parse_response(parsed, view, lenient, &normalized)
+            });
+            if result.is_ok() {
+                self.stats.borrow_mut().repaired_actions += 1;
+            }
+        }
         if result.is_ok() && normalized.get() {
             self.stats.borrow_mut().normalized_actions += 1;
         }
@@ -1670,6 +1748,50 @@ mod tests {
         assert!(text.contains("\"prompt_version\":5"));
         assert!(text.contains("\"ignored_profiles\":2")); // own seat and seat 9
         assert!(text.contains("\"ignored_profiles\":1")); // the overlong one
+    }
+    #[test]
+    fn an_illegal_action_gets_one_repair_request_only_when_enabled() {
+        let check = response(r#"{"action":"check","amount":null}"#).to_string();
+        let call = response(r#"{"action":"call","amount":null}"#).to_string();
+        for repair in [false, true] {
+            let (url, seen) = scripted_server(vec![
+                (200, check.clone(), Duration::ZERO),
+                (200, call.clone(), Duration::ZERO),
+            ]);
+            let mut cfg = config();
+            cfg.repair_illegal = repair;
+            let (mut agent, _) = agent_for(cfg, url);
+            // Preflop heads-up, the small blind faces a call: checking is illegal.
+            let result = agent.decide(&view());
+            let requests = seen.lock().unwrap().clone();
+            if repair {
+                assert_eq!(result.unwrap(), Action::Call);
+                assert_eq!(requests.len(), 2);
+                let follow_up = requests[1]["messages"].as_array().unwrap();
+                assert_eq!(follow_up.len(), 4);
+                let text = follow_up[3]["content"].as_str().unwrap();
+                assert!(text.contains("You cannot check") && text.contains("call (pays 1)"));
+                assert_eq!(agent.stats.borrow().repaired_actions, 1);
+                assert_eq!(agent.stats.borrow().fallbacks, 0);
+            } else {
+                assert!(result.is_err());
+                assert_eq!(requests.len(), 1);
+                assert_eq!(agent.stats.borrow().repaired_actions, 0);
+            }
+        }
+    }
+    #[test]
+    fn position_labels_are_opt_in() {
+        let plain = request(&config(), &view());
+        let observation = |body: &Value| -> Value {
+            serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap()
+        };
+        assert!(observation(&plain).get("position").is_none());
+        let mut cfg = config();
+        cfg.label_positions = true;
+        let labelled = observation(&request(&cfg, &view()));
+        assert_eq!(labelled["position"], "button_small_blind");
+        assert_eq!(labelled["big_blind"], 2);
     }
     #[test]
     fn provider_preferences_are_sent_and_default_to_openrouter_routing() {

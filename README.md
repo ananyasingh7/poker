@@ -21,6 +21,8 @@ Poker is a useful test of decision-making with incomplete information, but perfo
 - [Deferred container notes](docs/09-container-preparation.md)
 - [Native subprocess supervision (milestone 5)](docs/10-native-subprocess-supervision.md)
 - [Analysis, parallel experiments, mixed models and opponents (milestones 6–8)](docs/11-analysis-experiments-and-opponents.md)
+- [Removing luck: all-in adjustment and decision grades](docs/12-luck-removal-and-decision-grades.md)
+- [Spectator table](docs/13-spectator-table.md)
 - [Paper: arXiv 2606.13815](docs/paper-2606.13815.md)
 - [Paper: arXiv 2605.30094](docs/paper-2605.30094.md)
 - [Paper: arXiv 2604.04157](docs/paper-2604.04157.md)
@@ -39,7 +41,7 @@ cargo test --release -- --ignored
 cargo clippy --all-targets -- -D warnings
 ```
 
-The optional log directory must not already exist. It contains separate public, per-seat private, and evaluator-only JSONL files. The evaluator record contains seeds and must never be shared with agents. Implementation, CLI, and tests are Rust only. OpenRouter experiments and supervised worker processes are available below; container deployment remains later work.
+The optional log directory must not already exist. It contains separate public, per-seat private, and evaluator-only JSONL files. The evaluator record contains seeds and must never be shared with agents. Implementation, CLI, and tests are Rust only. OpenRouter experiments, supervised worker processes and a [spectator table](#spectator-table) are available below; container deployment remains later work.
 
 ## OpenRouter pilot
 
@@ -91,6 +93,20 @@ cargo run --release -- bench 100 10 runs/bench.json
 ```
 
 `bench` plays identical scripted tables on both backends, checks every hand record matches, and reports startup and round-trip latency. See [native subprocess supervision](docs/10-native-subprocess-supervision.md) for the protocol, failure policy, artifacts, live acceptance results, and measured overhead.
+
+## Spectator table
+
+![The spectator table: DeepSeek playing six-handed with the session statistics panel open](docs/images/spectator-table.png)
+
+`poker-table` is a retro pixel-art table for watching the model play six-handed against the lab's scripted field. It shows what the model was sent, its reasoning and its move for every decision, replays earlier hands, and reports the lab's statistics per hand and for the session. The player and the help it may use (facts sheet, cheat sheet, own notes, or baseline) can be changed before the game and during a pause.
+
+```sh
+cargo run --release -p poker-table            # live model; the spend cap is in the settings sheet
+cargo run --release -p poker-table -- --mock  # free offline demo with a local mock model
+cargo run --release -p poker-table -- --open runs/memory-structured-v1/session-001   # replay a saved lab session
+```
+
+Sessions are saved under `runs/table-*` in the lab's format, so `analyze` and `report` read them. See [docs/13](docs/13-spectator-table.md) for the screens, settings, keys, design and the first live run.
 
 ## Claude feedback (2026-11-11)
 

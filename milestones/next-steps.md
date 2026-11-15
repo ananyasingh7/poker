@@ -25,6 +25,11 @@ Everything intended but not yet done, including items from earlier plans. Update
 14. **Provider mix in analysis**: report which provider served each session (the audit trace has it; `analyze` does not).
 15. **Scale checks not yet done**: more than 6 concurrent live subprocess sessions, Linux.
 
+## Spectator table (built 2026-11-14, [docs/13](../docs/13-spectator-table.md))
+18. ~~First live run of `poker-table`~~ **done 2026-11-14** (`runs/table-1794705445`): 27 of 27 decisions returned reasoning, all served by DeepInfra, 0 fallbacks; thinking on costs about $0.00017 per decision (about 12x thinking off).
+19. **Table follow-ups**: streamed reasoning, a mixed-model table, grading bets and raises (shared with item 9), loading a whole batch directory.
+20. **Does thinking change play?** Every lab result ran with reasoning off. A paired arm (thinking on vs off, same seeds, `features` scaffold) would say whether the table's default is a different player. About 12x the per-decision cost of a normal arm.
+
 ## Reliability
 16. **Hand-level checkpointing** (only if sessions get long or models expensive); sessions are re-run whole today.
 17. **Retry loop in a host-owned inference proxy** (milestone 10).

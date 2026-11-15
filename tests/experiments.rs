@@ -1,5 +1,5 @@
 use poker_lab::{
-    arena::{Agent, Scripted, play, replay},
+    arena::{Agent, Record, Scripted, play, replay},
     cards::Rng,
     engine::{Action, Event, Hand, Rules},
     experiment::Batch,
@@ -364,4 +364,106 @@ fn analysis_intervals_and_style_counts() {
     assert!((se - (1.0f64 / 3.0).sqrt()).abs() < 1e-12);
     // df = 2 -> t = 4.303
     assert!((three["ci95"][1].as_f64().unwrap() - (2.0 + 4.303 * se)).abs() < 1e-9);
+}
+
+fn decisions_dir(
+    name: &str,
+    manifest: Option<serde_json::Value>,
+) -> (std::path::PathBuf, Vec<Record>) {
+    let dir = std::env::temp_dir().join(format!(
+        "poker-lab-decisions-{name}-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    poker_lab::private_fs::create_dir(&dir).unwrap();
+    let mut session = poker_lab::arena::Session::new(6, 7).unwrap();
+    let mut agents: Vec<Box<dyn Agent>> = (0..6)
+        .map(|i| {
+            Box::new(Opponent(
+                [Style::Station, Style::Solid, Style::Tight][i % 3],
+            )) as Box<dyn Agent>
+        })
+        .collect();
+    let records: Vec<Record> = (0..40)
+        .map(|_| session.next_hand(&mut agents).unwrap().record)
+        .collect();
+    let lines: Vec<String> = records
+        .iter()
+        .map(|r| serde_json::to_string(r).unwrap())
+        .collect();
+    std::fs::write(dir.join("evaluator.jsonl"), lines.join("\n") + "\n").unwrap();
+    if let Some(m) = manifest {
+        std::fs::write(dir.join("manifest.json"), m.to_string()).unwrap();
+    }
+    (dir, records)
+}
+
+#[test]
+fn decisions_list_every_decision_with_pot_odds_and_match_the_grades() {
+    let (dir, records) = decisions_dir("all", None);
+    let rows = poker_lab::analyze::decisions(&dir).unwrap();
+    // Without a manifest every seat is listed.
+    let total: usize = records.iter().map(|r| r.decisions.len()).sum();
+    assert_eq!(rows.len(), total);
+    for row in &rows {
+        let (pot, call) = (row["pot"].as_f64().unwrap(), row["call"].as_f64().unwrap());
+        let equity = row["equity"].as_f64().unwrap();
+        assert!((0.0..=1.0).contains(&equity));
+        if call > 0.0 {
+            let required = row["required"].as_f64().unwrap();
+            assert!((required - call / (pot + call)).abs() < 1e-9);
+            let ev = row["ev_call"].as_f64().unwrap();
+            assert!((ev - (equity * (pot + call) - call)).abs() < 1e-9);
+        } else {
+            assert!(row["required"].is_null() && row["ev_call"].is_null());
+            assert!(row["bettor"].is_null());
+        }
+        assert_eq!(row["hole"].as_str().unwrap().len(), 4, "{row}");
+    }
+    // Every call or fold facing a bet carries the same equity as the lab's decision grade.
+    for seat in 0..6 {
+        let graded: Vec<f64> = records
+            .iter()
+            .flat_map(|r| poker_lab::evaluation::grade_seat(r, seat).unwrap())
+            .map(|g| g.equity)
+            .collect();
+        let listed: Vec<f64> = rows
+            .iter()
+            .filter(|r| r["seat"] == seat && r["call"].as_u64().unwrap() > 0)
+            .filter(|r| r["action"]["type"] == "fold" || r["action"]["type"] == "call")
+            .map(|r| r["equity"].as_f64().unwrap())
+            .collect();
+        assert_eq!(graded, listed, "seat {seat}");
+    }
+    // Postflop bets faced name who made them.
+    assert!(
+        rows.iter()
+            .any(|r| r["street"] != "Preflop" && r["bettor"].is_string())
+    );
+}
+
+#[test]
+fn decisions_list_only_model_seats_when_a_manifest_names_them() {
+    let config = Config {
+        model: "test/model".into(),
+        opponents: Opponents::Mixed,
+        ..Config::default()
+    };
+    let (dir, records) = decisions_dir(
+        "model",
+        Some(serde_json::json!({ "config": serde_json::to_value(&config).unwrap() })),
+    );
+    let rows = poker_lab::analyze::decisions(&dir).unwrap();
+    let seat0: usize = records
+        .iter()
+        .map(|r| r.decisions.iter().filter(|d| d.seat == 0).count())
+        .sum();
+    assert_eq!(rows.len(), seat0);
+    assert!(
+        rows.iter()
+            .all(|r| r["seat"] == 0 && r["label"] == "test/model")
+    );
 }

@@ -13,7 +13,7 @@ use std::{
     fmt::Write,
     fs::File,
     io::{BufRead, BufReader},
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 /// Two-sided 95% Student t critical values for 1..=30 degrees of freedom.
@@ -271,6 +271,92 @@ fn bb_per_100(net_chips: i64, big_blind: u64, hands: u64) -> Option<f64> {
 }
 
 /// Analyses a single run directory or a batch directory of `session-NNN` runs.
+/// The session directories of a run or batch: its children holding `evaluator.jsonl`, sorted,
+/// or the directory itself when it is a single session.
+fn session_dirs(dir: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut dirs: Vec<_> = std::fs::read_dir(dir)
+        .map_err(|e| format!("{}: {e}", dir.display()))?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.join("evaluator.jsonl").exists())
+        .collect();
+    dirs.sort();
+    if dirs.is_empty() {
+        dirs.push(dir.to_path_buf());
+    }
+    Ok(dirs)
+}
+
+/// One row per decision by a model seat (every seat when a run has no manifest), for reading
+/// a run decision by decision: the spot, the action taken, and the seat's equity against the
+/// cards its live opponents actually held (the board still to come unknown, as in the
+/// decision grade). When facing a bet: the pot-odds share required, EV(call) and who bet.
+/// Evaluator-only: rows reveal hidden cards.
+pub fn decisions(dir: &Path) -> Result<Vec<Value>, String> {
+    let mut rows = vec![];
+    for session_dir in session_dirs(dir)? {
+        let session = load(&session_dir)?;
+        let name = session_dir
+            .file_name()
+            .map(|n| n.to_string_lossy().into_owned())
+            .unwrap_or_default();
+        for (index, record) in session.records.iter().enumerate() {
+            let holes = evaluation::holes(record);
+            let mut hand = Hand::new(
+                record.rules.clone(),
+                record.initial_stacks.clone(),
+                record.button,
+                record.seed,
+            )?;
+            // Last seat to bet or raise on the current street.
+            let mut bettor: Option<usize> = None;
+            let mut street = Street::Preflop;
+            for (number, d) in record.decisions.iter().enumerate() {
+                let view = hand.view(d.seat)?;
+                if view.street != street {
+                    street = view.street;
+                    bettor = None;
+                }
+                let label = &session.labels[d.seat];
+                if session.models.is_empty() || session.models.contains(label) {
+                    let call = view.legal.as_ref().and_then(|l| l.call).unwrap_or(0);
+                    let opponents: Vec<_> = view
+                        .players
+                        .iter()
+                        .filter(|p| !p.folded && p.seat != d.seat)
+                        .map(|p| holes[p.seat])
+                        .collect();
+                    let equity = evaluation::equity_against(holes[d.seat], &view.board, &opponents);
+                    let facing = call > 0;
+                    let pot = view.pot as f64;
+                    let to_text = |cards: &[crate::cards::Card], sep: &str| {
+                        cards
+                            .iter()
+                            .map(ToString::to_string)
+                            .collect::<Vec<_>>()
+                            .join(sep)
+                    };
+                    rows.push(json!({
+                        "session": name, "seed": record.seed, "condition": session.condition,
+                        "hand": index + 1, "decision": number, "seat": d.seat, "label": label,
+                        "street": view.street, "hole": to_text(&holes[d.seat], ""),
+                        "board": to_text(&view.board, " "), "pot": view.pot, "call": call,
+                        "stack": view.players[d.seat].stack, "opponents": opponents.len(),
+                        "action": d.applied, "error": d.error, "equity": equity,
+                        "required": facing.then_some(call as f64 / (pot + call as f64)),
+                        "ev_call": facing.then_some(equity * (pot + call as f64) - call as f64),
+                        "bettor": if facing { bettor.map(|s| session.labels[s].clone()) } else { None },
+                    }));
+                }
+                if matches!(d.applied, Action::RaiseTo { .. }) {
+                    bettor = Some(d.seat);
+                }
+                hand.act(d.seat, d.applied)?;
+            }
+        }
+    }
+    Ok(rows)
+}
+
 pub fn directory(dir: &Path) -> Result<Value, String> {
     directory_with(dir, true)
 }
@@ -278,15 +364,7 @@ pub fn directory(dir: &Path) -> Result<Value, String> {
 /// As `directory`; `grade` turns the per-decision pot-odds grading on or off (it is the slow
 /// part: one equity estimate per graded decision).
 pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
-    let mut session_dirs: Vec<_> = std::fs::read_dir(dir)
-        .map_err(|e| format!("{}: {e}", dir.display()))?
-        .filter_map(|e| e.ok().map(|e| e.path()))
-        .filter(|p| p.join("evaluator.jsonl").exists())
-        .collect();
-    session_dirs.sort();
-    if session_dirs.is_empty() {
-        session_dirs.push(dir.to_path_buf());
-    }
+    let session_dirs = session_dirs(dir)?;
     let sessions = session_dirs
         .iter()
         .map(|d| load(d))

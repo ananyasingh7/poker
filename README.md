@@ -76,6 +76,7 @@ Use a fresh output directory for each run. This mode needs no Docker and loads n
 ```sh
 cargo run --release -- batch examples/experiment-smoke.json runs/smoke   # parallel sessions, one shared budget
 cargo run --release -- analyze runs/smoke                               # style, cost, win rates with intervals
+cargo run --release -- analyze runs/smoke --decisions                   # one JSON line per model decision
 cargo run --release -- batch examples/experiment-scaffold.json runs/scaffold   # milestone 9: decision-aid treatments
 cargo run --release -- batch CONFIG.json EXISTING_DIR --resume          # continue an interrupted batch
 cargo run --release -- ceiling station,overfolder,solid,adaptive,tight  # what a tuned bot wins from a field

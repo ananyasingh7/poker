@@ -31,7 +31,10 @@ Every decision where a seat faced a bet and called or folded is graded against t
 ```sh
 poker-lab analyze RUN_OR_BATCH_DIRECTORY              # includes adjustment and grades
 poker-lab analyze RUN_OR_BATCH_DIRECTORY --no-grades  # skip the (slow) per-decision grading
+poker-lab analyze RUN_OR_BATCH_DIRECTORY --decisions  # one JSON line per model decision
 ```
+
+`--decisions` (added 2026-11-15) lists every decision by a model seat (every seat when the run has no manifest) with the spot (street, hole cards, board, pot, call, stack, live opponents), the action applied and any fallback error, and the seat's equity against the live opponents' actual cards. When facing a bet it adds the pot-odds share required, EV(call) and the label of the seat that bet. Calls and folds carry exactly the equity their grade uses. Rows reveal hidden cards, so they are evaluator-only output. Example: `poker-lab analyze runs/X --decisions | jq 'select(.call > 0 and .street != "Preflop")'`.
 
 Grading every seat of a 17,000-hand batch takes about two minutes.
 

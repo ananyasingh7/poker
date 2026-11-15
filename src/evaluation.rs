@@ -125,6 +125,12 @@ fn hand_board(hand: &Hand) -> usize {
         .unwrap_or(0)
 }
 
+/// A seat's showdown share against its live opponents' actual cards, with the rest of the
+/// board unknown: exact for one missing card, `GRADE_SAMPLES` run-outs otherwise.
+pub fn equity_against(hole: [Card; 2], board: &[Card], opponents: &[[Card; 2]]) -> f64 {
+    equity_vs(hole, board, opponents, GRADE_SAMPLES)
+}
+
 /// One graded call-or-fold decision. Chip values are immediate pot-odds expectations, ignoring
 /// later betting: EV(call) = equity × (pot + call) − call, EV(fold) = 0.
 #[derive(Clone, Debug, PartialEq)]
@@ -162,7 +168,7 @@ pub fn grade_seat(record: &Record, seat: usize) -> Result<Vec<Grade>, String> {
                     .filter(|p| !p.folded && p.seat != seat)
                     .map(|p| holes[p.seat])
                     .collect();
-                let equity = equity_vs(holes[seat], &view.board, &opponents, GRADE_SAMPLES);
+                let equity = equity_against(holes[seat], &view.board, &opponents);
                 let pot: Chips = view.pot;
                 let ev_call = equity * (pot + call) as f64 - call as f64;
                 let called = chosen == Action::Call;

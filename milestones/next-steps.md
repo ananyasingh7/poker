@@ -17,10 +17,10 @@ Everything intended but not yet done, including items from earlier plans. Update
 2d. **Qwen with more seeds / DeepSeek pinned**: re-run DeepSeek pinned to one fp8-class provider so both models are compared with provider held fixed.
 
 ## Tooling and measurement
-9. **Variance reduction**: all-in equity adjustment against the scripted field; AIVAT-style estimators from the GTO Wizard paper.
+9. ~~Variance reduction~~ **all-in adjustment done 2026-11-14** (narrows baseline interval about 25%), plus a call/fold decision grade; see [docs/12](../docs/12-luck-removal-and-decision-grades.md). Remaining: AIVAT-style control variates for non-all-in showdowns, and grading bets/raises.
 10. **Per-seat request settings** for mixed tables (reasoning switch, response format, provider preferences per model).
-11. **Position labels and blinds in `PlayerView`** itself (the `features` scaffold supplies them as an aid, but the raw observation still lacks them).
-12. **Raise-size clamp / repair re-ask** as opt-in, labelled treatments for illegal-size replies.
+11. ~~Position labels~~ **done as opt-in `label_positions`** (2026-11-14); not yet used in a live run.
+12. ~~Repair re-ask~~ **done as opt-in `repair_illegal`** (2026-11-14); not yet used in a live run (would mostly help Qwen).
 13. **Notebook length**: models overrun the 2,000-char cap; tell the model the length or raise the cap.
 14. **Provider mix in analysis**: report which provider served each session (the audit trace has it; `analyze` does not).
 15. **Scale checks not yet done**: more than 6 concurrent live subprocess sessions, Linux.

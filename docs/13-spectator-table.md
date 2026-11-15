@@ -77,6 +77,34 @@ Not paired (one seed against 28; carry-over stacks against reset), so these are 
 - **Missed thin value against a calling station.** 14 of 21 rivers where it held the winning hand and was checked to (or first to act), it checked; 9 of those had `station` in the pot, which never folds a pair or ace-high. (Checks against `overfolder` alone can be right: it folds the river with less than two pair, so a medium winner gets no call.) Its reasoning assumes a competent opponent ("they called the turn, so betting for value is thin"); with no memory or labels it cannot know who calls everything. Roughly 600 chips of pots were checked down against `station` (an upper bound: it includes hand 190, a fair check with a straight on a four-flush board, and the truncated hands 85 and 302).
 - **Bluffs into the station.** 18 postflop bets had under 30% equity (turn bluff share 39%); 12 of them were in hands `station` stayed in. Same cause: no cross-hand information. The `oracle` memory or `notes` condition is the natural test of whether thinking plus opponent knowledge fixes both station leaks.
 
+## Cheat sheet + thinking run (2026-11-15, `runs/table-oracle-thinking-v1`)
+
+Same as the first live run (seed 42, carry-over stacks, no scaffold, thinking on) except `memory: oracle` and the raised 12,288-token / 240 s limit; run with `poker-lab openrouter examples/table-oracle-thinking.json`. The lab's session deals the same cards as the table on the same seed (checked: every per-hand seed of hands 1-79 matches), so hands 1-79 pair with the first run.
+
+**It stopped at hand 79 ($0.085 of the $0.15 cap) on `three_consecutive_failures`:** three truncations in a row in hand 79.
+
+| Measure | Value |
+| --- | --- |
+| Requests | 147, all DeepInfra, 0 infra failures |
+| Truncations at 12,288 tokens | 8 (5.4%), costing $0.030, **35% of the spend** |
+| Decisions that finished between 4,096 and 12,288 reasoning tokens | 9 (rescued by the raise; at 4,096 this run would have truncated 17 of 147) |
+| Cost | $0.00040 per completed decision; $0.0011 per hand including truncations |
+| Truncated responses | 101-112 s each; median response 4.5 s |
+
+**The truncations are not loops** (sentences 99-100% unique). With the cheat sheet in the prompt the model counts opponent hand combinations one by one ("A7s(3), K7s(3), Q7s(3)...") and never reaches an answer. A higher limit makes each such failure dearer without ending it, so the remedy is a bound on deliberation (a reasoning budget or effort level, a prompt line asking for a short estimate, or a re-ask with thinking off after a truncation), not a still higher limit. Not yet chosen; see next-steps item 19.
+
+Hands 1-79, same deals (from `analyze --decisions`):
+
+| | No help | Cheat sheet |
+| --- | --- | --- |
+| Net | -7 chips (-4 bb/100) | +99 chips (+63 bb/100) |
+| Postflop bet when checked to | 25% (15 of 61) | 15% (10 of 65) |
+| Low-equity bets with `station` staying in | 5 | 1 |
+| River winners bet when `station` was in | 1 of 2 | 1 of 2 |
+| Truncations | 1 | 8 |
+
+Seventy-nine hands cannot separate +63 from -4. The one suggestive change is fewer bluffs into the station, which is what the cheat sheet tells the model; river value against the station did not change in this sample.
+
 ## Design
 
 - `dealer.rs` plays a hand step by step with `engine::Hand`. A test checks its records equal `arena::Session`'s on the same seed, and every hand passes `arena::replay`.

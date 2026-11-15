@@ -28,6 +28,7 @@ Everything intended but not yet done, including items from earlier plans. Update
 
 ## Spectator table (built 2026-11-14, [docs/13](../docs/13-spectator-table.md))
 18. ~~First live run of `poker-table`~~ **done 2026-11-14** (`runs/table-1794705445`, 309 hands, $0.15): all 572 requests served by DeepInfra; 13 truncations at 4,096 tokens (14% of river decisions), so the thinking limit was raised to 12,288 tokens / 240 s; about $0.00026 per decision (about 19x thinking off). Analysis in [docs/13](../docs/13-spectator-table.md#first-live-run-2026-11-14-runstable-1794705445).
+19a. **Bound thinking-on deliberation** (2026-11-15): with the cheat sheet, 5.4% of decisions still truncated at 12,288 tokens (exhaustive combo counting, not loops), costing 35% of the spend and halting the session on three in a row ([docs/13](../docs/13-spectator-table.md#cheat-sheet--thinking-run-2026-11-15-runstable-oracle-thinking-v1)). Options: OpenRouter `reasoning.effort` or `reasoning.max_tokens` (DeepInfra lists `reasoning_effort`; untested whether DeepSeek honours it), a prompt line asking for a short estimate, or a re-ask with thinking off after a truncation (opt-in, labelled, like `repair_illegal`). Decide before the 8b arm, whose cost estimate assumes few truncations.
 19. **Table follow-ups**: streamed reasoning, a mixed-model table, grading bets and raises (shared with item 9), loading a whole batch directory.
 
 ## Reliability

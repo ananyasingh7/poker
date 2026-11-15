@@ -10,16 +10,7 @@ use std::{
     path::Path,
 };
 fn cards(cs: &[Card]) -> String {
-    cs.iter()
-        .map(|c| {
-            format!(
-                "{}{}",
-                b"23456789TJQKA"[(c.rank() - 2) as usize] as char,
-                b"cdhs"[c.suit() as usize] as char
-            )
-        })
-        .collect::<Vec<_>>()
-        .join(" ")
+    cs.iter().map(Card::to_string).collect::<Vec<_>>().join(" ")
 }
 pub fn hand(r: &Record, number: usize, seat: Option<usize>) -> Result<String, String> {
     replay(r)?;

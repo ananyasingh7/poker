@@ -572,11 +572,7 @@ fn illegal_reason(view: &PlayerView, reply: &str) -> String {
     )
 }
 fn card(c: Card) -> String {
-    format!(
-        "{}{}",
-        b"23456789TJQKA"[(c.rank() - 2) as usize] as char,
-        b"cdhs"[c.suit() as usize] as char
-    )
+    c.to_string()
 }
 pub fn request(config: &Config, view: &PlayerView) -> Value {
     let mut observation = serde_json::to_value(view).expect("serializable view");

@@ -19,6 +19,17 @@ impl From<Card> for u8 {
         c.0
     }
 }
+/// Rank then suit, for example `Ah` or `Tc`.
+impl std::fmt::Display for Card {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}{}",
+            b"23456789TJQKA"[(self.rank() - 2) as usize] as char,
+            b"cdhs"[self.suit() as usize] as char
+        )
+    }
+}
 impl Card {
     pub fn rank(self) -> u8 {
         self.0 % 13 + 2

@@ -49,8 +49,9 @@ struct Block {
     loss: f64,
 }
 
+/// Behaviour and results of one seat label, accumulated hand by hand with `tally`.
 #[derive(Default, Clone)]
-struct Tally {
+pub struct Tally {
     hands: u64,
     preflop_hands: u64,
     vpip: u64,
@@ -76,7 +77,7 @@ struct Tally {
     grade_loss: f64,
 }
 impl Tally {
-    fn add(&mut self, t: &Tally) {
+    pub fn add(&mut self, t: &Tally) {
         for (sum, add) in [
             (&mut self.hands, t.hands),
             (&mut self.preflop_hands, t.preflop_hands),
@@ -101,7 +102,8 @@ impl Tally {
         self.adjusted_net += t.adjusted_net;
         self.grade_loss += t.grade_loss;
     }
-    fn style(&self, label: &str, is_model: bool, big_blind: u64) -> Value {
+    /// The label's style and result row, as reported by `analyze`.
+    pub fn style(&self, label: &str, is_model: bool, big_blind: u64) -> Value {
         json!({"label":label,"is_model":is_model,"seat_hands":self.hands,
             "vpip":ratio(self.vpip, self.preflop_hands),"pfr":ratio(self.pfr, self.preflop_hands),
             "aggression_factor":ratio(self.aggressive, self.calls),
@@ -186,7 +188,7 @@ fn load(dir: &Path) -> Result<SessionData, String> {
 
 /// Replays one hand and adds each seat's behaviour to its label's tally. Decisions by `models`
 /// labels are also compared with the scaffold reference rule (the milestone 9 advice).
-fn tally(
+pub fn tally(
     record: &Record,
     labels: &[String],
     models: &BTreeSet<String>,

@@ -16,7 +16,7 @@ Qwen3.6-35B-A3B comparison: [milestone 9](09-scaffold-treatments.md#qwen-compari
 
 Backlog: 10. isolation (host-owned inference proxy, then containers).
 
-The implementation language is Rust only. See the [implemented rules and protocol](../docs/06-rules-and-protocol.md), [experiments](../docs/08-experiments-and-observability.md), and [deferred container notes](../docs/09-container-preparation.md) for supported behavior and remaining work. See [native subprocess supervision](../docs/10-native-subprocess-supervision.md) for milestone 5 results. Milestones 6–8 are described in [docs/11](../docs/11-analysis-experiments-and-opponents.md); milestone 9 and the baseline results are in its own milestone file. Real mixed-model tables and container deployment remain outstanding; see [next-steps](next-steps.md).
+The implementation language is Rust only. See the [implemented rules and protocol](../docs/06-rules-and-protocol.md), [experiments](../docs/08-experiments-and-observability.md), and [deferred container notes](../docs/09-container-preparation.md) for supported behavior and remaining work. See [native subprocess supervision](../docs/10-native-subprocess-supervision.md) for milestone 5 results. Milestones 6–8 are described in [docs/11](../docs/11-analysis-experiments-and-opponents.md); milestone 9 and the baseline results are in its own milestone file. A [spectator table](../docs/13-spectator-table.md) (workspace crate `table/`) shows live play, the model's reasoning, replays and the lab's statistics; it is a viewer, not a milestone experiment. Real mixed-model tables and container deployment remain outstanding; see [next-steps](next-steps.md).
 
 ## Claude feedback (2026-11-11)
 

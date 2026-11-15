@@ -661,6 +661,15 @@ impl OpenRouterAgent {
     pub fn set_notebook(&mut self, text: String) {
         self.memory.notebook = text;
     }
+    /// Removes the seat's cross-hand memory, so a host that rebuilds the agent between hands
+    /// (a settings change in the spectator table) can carry the notebook over.
+    pub fn take_memory(&mut self) -> Memory {
+        std::mem::take(&mut self.memory)
+    }
+    /// Installs a memory taken from an earlier agent for the same seat.
+    pub fn restore_memory(&mut self, memory: Memory) {
+        self.memory = memory;
+    }
     pub(crate) fn connect(
         config: Config,
         key: String,

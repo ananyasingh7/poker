@@ -279,3 +279,21 @@ fn thinking_leaves_room_for_long_river_reasoning_and_waits_for_it() {
     .lab_config();
     assert_eq!((quick.max_tokens, quick.timeout_ms), (256, 30_000));
 }
+
+#[test]
+fn thinking_asks_for_low_reasoning_effort() {
+    // With the cheat sheet, unbounded reasoning truncated 5.4% of decisions even at 12,288
+    // tokens; effort "low" finished the same prompts in 433-1,804 tokens.
+    let thinking = Settings::default().lab_config();
+    assert_eq!(
+        thinking.reasoning_effort,
+        Some(poker_lab::openrouter::Effort::Low)
+    );
+    assert!(thinking.validate().is_ok());
+    let quick = Settings {
+        thinking: false,
+        ..Settings::default()
+    }
+    .lab_config();
+    assert_eq!(quick.reasoning_effort, None);
+}

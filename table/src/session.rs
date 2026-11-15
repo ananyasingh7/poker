@@ -11,7 +11,9 @@ use poker_lab::{
     cards::Card,
     engine::{Action, PlayerView},
     memory::{Memory, Mode},
-    openrouter::{Config, Format, NotebookStyle, OpenRouterAgent, Opponents, ProviderPrefs, Stats},
+    openrouter::{
+        Config, Effort, Format, NotebookStyle, OpenRouterAgent, Opponents, ProviderPrefs, Stats,
+    },
     opponents::Style,
     private_fs,
     scaffold::Scaffold,
@@ -46,6 +48,10 @@ const STAND_IN_MODEL: &str = "stand-in/solid";
 /// the fallback check or fold, including a folded winner. Billing is per token used, so a high
 /// limit costs only on the long spots that need it.
 pub const THINKING_MAX_TOKENS: u32 = 12_288;
+/// With an opponent cheat sheet, unbounded reasoning still truncated 5.4% of decisions at
+/// 12,288 tokens (counting hand combinations one by one). Effort "low" finished the same
+/// prompts in 433-1,804 tokens; the token limit stays as a backstop.
+pub const THINKING_EFFORT: Effort = Effort::Low;
 /// Long enough for a full-length answer at the slowest decode speed seen (~69 tokens/s).
 pub const THINKING_TIMEOUT_MS: u64 = 240_000;
 
@@ -144,6 +150,7 @@ impl Settings {
             spend_limit_usd: self.spend_cap_usd,
             response_format: Format::JsonSchema,
             reasoning_enabled: Some(self.thinking),
+            reasoning_effort: self.thinking.then_some(THINKING_EFFORT),
             memory: match self.notes {
                 Notes::Off => Mode::None,
                 Notes::Own => Mode::Notes,

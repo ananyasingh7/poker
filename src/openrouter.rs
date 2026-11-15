@@ -38,6 +38,9 @@ pub struct Config {
     pub spend_limit_usd: f64,
     pub response_format: Format,
     pub reasoning_enabled: Option<bool>,
+    /// Opt-in reasoning effort level; requires `reasoning_enabled: true`. Without it, DeepSeek
+    /// with an opponent cheat sheet deliberated past 12,288 tokens on 5.4% of decisions.
+    pub reasoning_effort: Option<Effort>,
     pub memory: Mode,
     pub notebook_chars: usize,
     pub opponents: Opponents,
@@ -268,6 +271,14 @@ pub enum Opponents {
     Random,
     Mixed,
 }
+/// OpenRouter's reasoning effort level. Bounds how long a reasoning model deliberates.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Effort {
+    Low,
+    Medium,
+    High,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Format {
@@ -290,6 +301,7 @@ impl Default for Config {
             spend_limit_usd: 1.0,
             response_format: Format::JsonSchema,
             reasoning_enabled: None,
+            reasoning_effort: None,
             memory: Mode::None,
             notebook_chars: 4000,
             opponents: Opponents::Random,
@@ -401,6 +413,7 @@ impl Config {
             max_request_bytes: self.max_request_bytes,
             response_format: self.response_format,
             reasoning_enabled: self.reasoning_enabled,
+            reasoning_effort: self.reasoning_effort,
             memory: self.memory,
             notebook_chars: self.notebook_chars,
             max_requests: self.max_requests,
@@ -422,6 +435,9 @@ impl Config {
             return Err(
                 "max_attempts must be 1..=20 and backoffs positive with max >= initial".into(),
             );
+        }
+        if self.reasoning_effort.is_some() && self.reasoning_enabled != Some(true) {
+            return Err("reasoning_effort requires reasoning_enabled: true".into());
         }
         if self.timeout_ms == 0
             || self.notebook_chars == 0
@@ -613,8 +629,11 @@ pub fn request(config: &Config, view: &PlayerView) -> Value {
         "stream":false,"max_tokens":config.max_tokens,"temperature":0,"response_format":format,
         "provider":{"require_parameters":true},"usage":{"include":true}});
     config.provider.apply(&mut body["provider"]);
-    if let Some(enabled) = config.reasoning_enabled {
-        body["reasoning"] = json!({"enabled":enabled});
+    match (config.reasoning_enabled, config.reasoning_effort) {
+        // The effort level alone, as checked live: it implies reasoning on.
+        (_, Some(effort)) => body["reasoning"] = json!({"effort":effort}),
+        (Some(enabled), None) => body["reasoning"] = json!({"enabled":enabled}),
+        (None, None) => {}
     }
     body
 }
@@ -1819,6 +1838,27 @@ mod tests {
         // It travels to subprocess workers and is rejected if misspelled.
         assert_eq!(cfg.model_settings(0).provider, cfg.provider);
         assert!(serde_json::from_value::<ProviderPrefs>(json!({"ordr":[]})).is_err());
+    }
+    #[test]
+    fn reasoning_effort_is_sent_only_when_set_and_needs_reasoning_on() {
+        let mut cfg = config();
+        cfg.reasoning_enabled = Some(true);
+        assert_eq!(request(&cfg, &view())["reasoning"], json!({"enabled":true}));
+        cfg.reasoning_effort = Some(Effort::Low);
+        assert_eq!(
+            request(&cfg, &view())["reasoning"],
+            json!({"effort":"low"}),
+            "the form checked live on 2026-11-15; an effort level implies reasoning on"
+        );
+        assert!(cfg.validate().is_ok());
+        // It travels to subprocess workers.
+        assert_eq!(cfg.model_settings(0).reasoning_effort, Some(Effort::Low));
+        // An effort level with reasoning off or unset is a configuration mistake.
+        for enabled in [Some(false), None] {
+            cfg.reasoning_enabled = enabled;
+            assert!(cfg.validate().is_err(), "{enabled:?}");
+        }
+        assert!(serde_json::from_value::<Effort>(json!("lowest")).is_err());
     }
     #[test]
     fn five_hundred_without_usage_costs_nothing_and_does_not_halt() {

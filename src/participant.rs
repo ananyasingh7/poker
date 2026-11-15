@@ -129,6 +129,9 @@ pub struct ModelSettings {
     pub max_request_bytes: usize,
     pub response_format: Format,
     pub reasoning_enabled: Option<bool>,
+    /// See `Config::reasoning_effort`.
+    #[serde(default)]
+    pub reasoning_effort: Option<crate::openrouter::Effort>,
     pub memory: Mode,
     pub notebook_style: NotebookStyle,
     pub normalize_call_amount: bool,

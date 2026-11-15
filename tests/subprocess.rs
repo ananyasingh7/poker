@@ -547,6 +547,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         max_request_bytes: 65_536,
         response_format: Format::JsonSchema,
         reasoning_enabled: Some(false),
+        reasoning_effort: None,
         memory,
         notebook_style: poker_lab::openrouter::NotebookStyle::Journal,
         normalize_call_amount: false,

@@ -58,7 +58,9 @@ pub fn completion(request: &Value) -> Value {
     let schema = request["response_format"]["json_schema"]["name"]
         .as_str()
         .unwrap_or_default();
-    let reasons = request["reasoning"]["enabled"] == true;
+    // As on OpenRouter, an effort level alone turns reasoning on.
+    let reasons =
+        request["reasoning"]["enabled"] == true || request["reasoning"]["effort"].is_string();
     let (content, reasoning) = if schema.starts_with("notebook_profiles") {
         let seat = observation["button"].as_u64().unwrap_or(1).max(1);
         (

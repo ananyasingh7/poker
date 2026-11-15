@@ -263,3 +263,19 @@ fn the_spend_cap_and_a_missing_key_stop_the_table_with_a_message() {
     wait_for(&shared, "a hand from the stand-in", |s| !s.hands.is_empty());
     shared.control(|s| s.quit = true);
 }
+
+#[test]
+fn thinking_leaves_room_for_long_river_reasoning_and_waits_for_it() {
+    // The first live run truncated 11 of 79 river decisions at a 4,096-token limit.
+    let thinking = Settings::default().lab_config();
+    assert_eq!(thinking.max_tokens, session::THINKING_MAX_TOKENS);
+    assert!(thinking.max_tokens >= 12_288);
+    // The timeout must cover a full-length answer at the slowest decode speed seen (~69 tokens/s).
+    assert!(thinking.timeout_ms >= u64::from(thinking.max_tokens) * 1000 / 60);
+    let quick = Settings {
+        thinking: false,
+        ..Settings::default()
+    }
+    .lab_config();
+    assert_eq!((quick.max_tokens, quick.timeout_ms), (256, 30_000));
+}

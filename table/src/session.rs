@@ -41,6 +41,13 @@ pub const FIELD: [Style; 5] = [
 ];
 pub const DEFAULT_MODEL: &str = "deepseek/deepseek-v4.1-flash-1017";
 const STAND_IN_MODEL: &str = "stand-in/solid";
+/// Completion limit with thinking on; reasoning tokens count against it. The first live run
+/// (2026-11-15, 4,096 tokens) truncated 11 of 79 river decisions mid-reasoning, and each became
+/// the fallback check or fold, including a folded winner. Billing is per token used, so a high
+/// limit costs only on the long spots that need it.
+pub const THINKING_MAX_TOKENS: u32 = 12_288;
+/// Long enough for a full-length answer at the slowest decode speed seen (~69 tokens/s).
+pub const THINKING_TIMEOUT_MS: u64 = 240_000;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Brain {
@@ -122,10 +129,18 @@ impl Settings {
             model_seat: HERO,
             hands: 1_000_000,
             seed: self.seed,
-            timeout_ms: if self.thinking { 90_000 } else { 30_000 },
+            timeout_ms: if self.thinking {
+                THINKING_TIMEOUT_MS
+            } else {
+                30_000
+            },
             max_requests: 1_000_000,
             // Reasoning tokens count against the completion limit.
-            max_tokens: if self.thinking { 4096 } else { 256 },
+            max_tokens: if self.thinking {
+                THINKING_MAX_TOKENS
+            } else {
+                256
+            },
             spend_limit_usd: self.spend_cap_usd,
             response_format: Format::JsonSchema,
             reasoning_enabled: Some(self.thinking),

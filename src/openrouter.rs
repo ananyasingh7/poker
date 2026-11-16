@@ -20,6 +20,8 @@ use std::{
 
 const ENDPOINT: &str = "https://openrouter.ai/api/v1/chat/completions";
 const RESPONSE_LIMIT: u64 = 1_048_576;
+/// Completion limit of the thinking-off re-ask after a truncation: the lab's thinking-off limit.
+pub const REASK_MAX_TOKENS: u32 = 256;
 const PROMPT: &str = "You play no-limit Texas hold'em cash poker. Choose one legal action from the supplied observation. Chips are integers. raise_to is TOTAL commitment on THIS street, including any blind, not additional chips. call pays the supplied call amount, possibly all-in. A short_all_in_to is legal even below min_raise_to. Return ONLY a JSON object with action (fold, check, call, raise_to) and amount (integer for raise_to, null otherwise). No explanation or markdown. You receive only your own cards and public information; do not assume hidden cards are known. No cross-hand memory, statistics, or external tools are provided.";
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -70,6 +72,10 @@ pub struct Config {
     pub max_consecutive_failures: u32,
     /// Opt-in: after an illegal action, ask once more with the reason and the legal options.
     pub repair_illegal: bool,
+    /// Opt-in: after a truncated answer (reasoning ran out of tokens), ask the same question once
+    /// more with thinking off and a short limit, instead of playing the fallback. Counted in
+    /// `reasked_actions`. Off by default so earlier results stay comparable.
+    pub reask_truncated: bool,
     /// Opt-in: add the seat's position name and the big blind to the raw observation. Off by
     /// default because it changes what the `none` scaffold shows.
     pub label_positions: bool,
@@ -319,6 +325,7 @@ impl Default for Config {
             retry_backoff_max_ms: 30_000,
             max_consecutive_failures: 3,
             repair_illegal: false,
+            reask_truncated: false,
             label_positions: false,
             provider: ProviderPrefs::default(),
         }
@@ -404,6 +411,7 @@ impl Config {
             retry_backoff_max_ms: self.retry_backoff_max_ms,
             max_consecutive_failures: self.max_consecutive_failures,
             repair_illegal: self.repair_illegal,
+            reask_truncated: self.reask_truncated,
             label_positions: self.label_positions,
             provider: self.provider.clone(),
             oracle_notes: (self.memory == Mode::Oracle).then(|| self.oracle_notes()),
@@ -479,6 +487,8 @@ pub struct Stats {
     pub normalized_actions: u64,
     /// Illegal actions corrected by the opt-in re-ask (`repair_illegal`).
     pub repaired_actions: u64,
+    /// Truncated answers replaced by the opt-in quick re-ask (`reask_truncated`).
+    pub reasked_actions: u64,
     /// Attempts lost to infrastructure (network, timeout, 408/429/5xx) and retried or abandoned.
     pub infra_failures: u64,
     /// Decisions whose retries were exhausted by infrastructure alone (the hand is abandoned).
@@ -845,7 +855,7 @@ impl OpenRouterAgent {
         // Opt-in: one re-ask after a well-formed but illegal action, showing the model its own
         // answer and why it is not allowed. Off by default so earlier results stay comparable.
         if self.config.repair_illegal && result == Err(Failure::IllegalAction) {
-            let mut retry = first;
+            let mut retry = first.clone();
             let messages = retry["messages"].as_array_mut().expect("messages");
             messages.push(json!({"role":"assistant","content":reply.borrow().clone()}));
             messages.push(json!({"role":"user","content":illegal_reason(view, &reply.borrow())}));
@@ -854,6 +864,18 @@ impl OpenRouterAgent {
             });
             if result.is_ok() {
                 self.stats.borrow_mut().repaired_actions += 1;
+            }
+        }
+        // Opt-in: one quick re-ask with thinking off after reasoning ran out of tokens.
+        if self.config.reask_truncated && result == Err(Failure::Truncated) {
+            let mut retry = first;
+            retry["reasoning"] = json!({"enabled":false});
+            retry["max_tokens"] = json!(REASK_MAX_TOKENS);
+            result = self.complete(view, retry, "action_reask", |parsed| {
+                parse_response(parsed, view, lenient, &normalized)
+            });
+            if result.is_ok() {
+                self.stats.borrow_mut().reasked_actions += 1;
             }
         }
         if result.is_ok() && normalized.get() {
@@ -1850,6 +1872,41 @@ mod tests {
                 assert!(result.is_err());
                 assert_eq!(requests.len(), 1);
                 assert_eq!(agent.stats.borrow().repaired_actions, 0);
+            }
+        }
+    }
+    #[test]
+    fn a_truncated_answer_gets_one_quick_reask_without_thinking_only_when_enabled() {
+        let mut cut = response("");
+        cut["choices"][0]["finish_reason"] = json!("length");
+        let call = response(r#"{"action":"call","amount":null}"#).to_string();
+        for reask in [false, true] {
+            let (url, seen) = scripted_server(vec![
+                (200, cut.to_string(), Duration::ZERO),
+                (200, call.clone(), Duration::ZERO),
+            ]);
+            let mut cfg = config();
+            cfg.reasoning_enabled = Some(true);
+            cfg.reasoning_effort = Some(Effort::Low);
+            cfg.max_tokens = 4096;
+            cfg.reask_truncated = reask;
+            assert_eq!(cfg.model_settings(0).reask_truncated, reask);
+            let (mut agent, _) = agent_for(cfg, url);
+            let result = agent.decide(&view());
+            let requests = seen.lock().unwrap().clone();
+            if reask {
+                assert_eq!(result.unwrap(), Action::Call);
+                assert_eq!(requests.len(), 2);
+                // Same question, thinking off and the thinking-off limit.
+                assert_eq!(requests[1]["messages"], requests[0]["messages"]);
+                assert_eq!(requests[1]["reasoning"], json!({"enabled":false}));
+                assert_eq!(requests[1]["max_tokens"], REASK_MAX_TOKENS);
+                let stats = agent.stats.borrow();
+                assert_eq!((stats.reasked_actions, stats.fallbacks), (1, 0));
+            } else {
+                assert!(result.is_err());
+                assert_eq!(requests.len(), 1);
+                assert_eq!(agent.stats.borrow().reasked_actions, 0);
             }
         }
     }

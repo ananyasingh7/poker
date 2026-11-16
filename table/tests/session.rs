@@ -290,10 +290,12 @@ fn thinking_asks_for_low_reasoning_effort() {
         Some(poker_lab::openrouter::Effort::Low)
     );
     assert!(thinking.validate().is_ok());
+    assert!(thinking.reask_truncated);
     let quick = Settings {
         thinking: false,
         ..Settings::default()
     }
     .lab_config();
     assert_eq!(quick.reasoning_effort, None);
+    assert!(!quick.reask_truncated);
 }

@@ -558,6 +558,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         provider: Default::default(),
         max_consecutive_failures: 3,
         repair_illegal: false,
+        reask_truncated: false,
         label_positions: false,
         oracle_notes: None,
         notebook_chars: 400,

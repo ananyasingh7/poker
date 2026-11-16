@@ -152,6 +152,8 @@ pub struct ModelSettings {
     #[serde(default)]
     pub repair_illegal: bool,
     #[serde(default)]
+    pub reask_truncated: bool,
+    #[serde(default)]
     pub label_positions: bool,
     /// Experimenter-supplied notebook for the oracle condition.
     pub oracle_notes: Option<String>,

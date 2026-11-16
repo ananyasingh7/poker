@@ -151,6 +151,9 @@ impl Settings {
             response_format: Format::JsonSchema,
             reasoning_enabled: Some(self.thinking),
             reasoning_effort: self.thinking.then_some(THINKING_EFFORT),
+            // A rare runaway answer is re-asked quickly with thinking off instead of folding
+            // or checking by default (see docs/14).
+            reask_truncated: self.thinking,
             memory: match self.notes {
                 Notes::Off => Mode::None,
                 Notes::Own => Mode::Notes,
@@ -222,7 +225,7 @@ pub struct Thought {
     pub hand: usize,
     /// The agent's own request counter; pairs a response with its request.
     pub key: u64,
-    /// "action", "action_repair", "notebook" or "notebook_compress".
+    /// "action", "action_repair", "action_reask", "notebook" or "notebook_compress".
     pub purpose: String,
     /// For action requests: which of the seat's decisions in this hand it answers (0-based).
     pub decision: Option<usize>,
@@ -385,7 +388,8 @@ impl State {
                         self.action_requests.1 += 1;
                         Some(self.action_requests.1 - 1)
                     }
-                    "action_repair" => self.action_requests.1.checked_sub(1),
+                    // Follow-ups answer the same decision as the request before them.
+                    "action_repair" | "action_reask" => self.action_requests.1.checked_sub(1),
                     _ => None,
                 };
                 let observation = line["body"]["messages"][1]["content"]

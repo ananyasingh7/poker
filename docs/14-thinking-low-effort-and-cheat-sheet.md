@@ -1,4 +1,4 @@
-# Thinking with low effort, with and without the cheat sheet (2026-11-15)
+# Thinking with low effort: no help, own notes and the cheat sheet (2026-11-15)
 
 Two paired batches of `deepseek/deepseek-v4.1-flash-1017` with thinking on and `reasoning_effort: low`, run to answer two questions: does the cheat sheet (`memory: oracle`) fix the leaks seen at the spectator table, and does thinking help at all? Total spend $1.08.
 
@@ -59,3 +59,25 @@ Leaning positive but not resolved at 10 seeds. Thinking changes style far more t
 
 - The table keeps `reasoning_effort: low` with `max_tokens: 12288`. In the no-help arm the longest completed answer was 3,974 tokens, and 12 decisions truncated at 4,096; with the cheat sheet, 40 completed above 3,000 and 130 truncated. A 4,096 cap is too tight for thinking-on runs with opponent information.
 - A runaway loop at 12,288 costs about $0.0036; a re-ask with thinking off after a truncation (next-steps 19b) would save the decision for about $0.00002 instead of auto-checking a value hand.
+
+## Own notes (seeds 1-5, seat 0)
+
+A third arm with `memory: notes` (`notebook_style: structured_profiles`, 2,000 characters) and otherwise the same settings: `examples/experiment-thinking-low-notes.json`, `runs/thinking-low-notes-v1`. The $0.40 cap ($0.404 spent, about $0.0012 per hand) ran out with 5 parallel sessions in flight, so seeds 1-5 completed their 60 hands and seeds 6-10 stopped after 5-19 hands; only seeds 1-5 are compared, against the seat-0 sessions of the same seeds in the other two arms (300 hands per arm).
+
+**A bug found first:** notebook updates were capped at 1,024 completion tokens, which reasoning tokens count against, so with thinking on most updates would have truncated (the smoke test's six updates used 891-2,819 reasoning tokens). Fixed: with thinking on, notebook requests get the action limit plus 1,024 (5,120 here); thinking-off requests are unchanged. Even so, 34 of 300 updates (11%) truncated at 5,120; a failed update keeps the previous notes.
+
+| Seeds 1-5, seat 0 | No help | Own notes | Cheat sheet |
+| --- | --- | --- | --- |
+| bb/100 raw | +92 | +94 | +278 |
+| bb/100 all-in adjusted | +218 | +223 | +310 |
+| Call/fold mistake cost | 34 | 54 | 47 |
+| Bluffs in hands the station stayed in | 6 of 10 (60%) | 7 of 20 (35%) | 3 of 19 (16%) |
+| River, ahead, checked to, station in: value-bet rate (answered) | 19% of 21 | 56% of 18 | 55% of 11 |
+
+Paired, 95% intervals over 5 seeds: notes minus none +2 [-148, +152] raw, +5 [-140, +151] adjusted; oracle minus notes +184 [-42, +410] raw. Nothing is resolved at 5 seeds.
+
+**The notes are accurate and change behaviour in the right direction, but no chip gain shows in 300 hands.** In every session the model had profiled seat 1 as a loose-passive station within 1-4 hands, ending with advice such as "value-bet thin and size up; never bluff". It bluffed into the station less and value-bet it about as often as with the cheat sheet. Why that did not show up in chips (small samples, more bluffs elsewhere, or a higher call/fold mistake cost) needs more seeds.
+
+## Re-ask after a truncation (built 2026-11-15)
+
+Opt-in `reask_truncated`: after a truncated answer the same question is sent once more with thinking off and a 256-token limit, instead of playing the fallback; counted in `reasked_actions`. The table turns it on whenever thinking is on. None of the batches above used it, so they stay comparable with each other.

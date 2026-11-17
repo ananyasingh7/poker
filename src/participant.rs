@@ -110,6 +110,9 @@ impl Policy {
 fn default_attempts() -> u32 {
     crate::openrouter::Config::default().max_attempts
 }
+fn default_notebook_every() -> u32 {
+    1
+}
 fn default_backoff() -> u64 {
     crate::openrouter::Config::default().retry_backoff_ms
 }
@@ -153,6 +156,8 @@ pub struct ModelSettings {
     pub repair_illegal: bool,
     #[serde(default)]
     pub reask_truncated: bool,
+    #[serde(default = "default_notebook_every")]
+    pub notebook_every: u32,
     #[serde(default)]
     pub label_positions: bool,
     /// Experimenter-supplied notebook for the oracle condition.

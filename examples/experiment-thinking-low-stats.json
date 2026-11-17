@@ -1,0 +1,77 @@
+{
+  "pilot": {
+    "all_models": false,
+    "execution": "in_process",
+    "hands": 60,
+    "label_positions": false,
+    "max_attempts": 6,
+    "max_consecutive_failures": 3,
+    "max_request_bytes": 65536,
+    "max_requests": 2000,
+    "max_tokens": 4096,
+    "memory": "none",
+    "model": "deepseek/deepseek-v4.1-flash-1017",
+    "model_offset": 0,
+    "model_seat": 0,
+    "models": [],
+    "normalize_call_amount": true,
+    "notebook_chars": 2000,
+    "notebook_style": "structured_profiles",
+    "opponent_field": [
+      "station",
+      "overfolder",
+      "solid",
+      "adaptive",
+      "tight"
+    ],
+    "opponent_offset": 0,
+    "opponents": "mixed",
+    "provider": {
+      "allow_fallbacks": true,
+      "only": [],
+      "order": [
+        "DeepInfra",
+        "InferenceNet",
+        "Baidu"
+      ],
+      "quantizations": [
+        "fp8"
+      ],
+      "sort": null
+    },
+    "reasoning_enabled": true,
+    "repair_illegal": false,
+    "reset_stacks": true,
+    "response_format": "json_schema",
+    "retry_backoff_max_ms": 30000,
+    "retry_backoff_ms": 500,
+    "scaffold": "none",
+    "seats": 6,
+    "seed": 42,
+    "spend_limit_usd": 0.25,
+    "timeout_ms": 120000,
+    "reasoning_effort": "low"
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "model_seats": [
+    0
+  ],
+  "conditions": [
+    "stats"
+  ],
+  "max_requests": 20000,
+  "spend_limit_usd": 0.35,
+  "parallel": 5,
+  "unknown_cost_allowance": 5
+}

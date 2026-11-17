@@ -82,6 +82,7 @@ fn model(settings: ModelSettings) -> Result<OpenRouterAgent, String> {
         max_consecutive_failures: settings.max_consecutive_failures,
         repair_illegal: settings.repair_illegal,
         reask_truncated: settings.reask_truncated,
+        notebook_every: settings.notebook_every,
         label_positions: settings.label_positions,
         // The host validated the table; this only satisfies Config's oracle-needs-a-scripted-
         // field check. The worker is never told who its opponents are.
@@ -540,6 +541,7 @@ mod tests {
             max_consecutive_failures: 3,
             repair_illegal: false,
             reask_truncated: false,
+            notebook_every: 1,
             label_positions: false,
             oracle_notes: None,
             notebook_chars: 100,

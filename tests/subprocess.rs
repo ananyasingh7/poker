@@ -559,6 +559,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         max_consecutive_failures: 3,
         repair_illegal: false,
         reask_truncated: false,
+        notebook_every: 1,
         label_positions: false,
         oracle_notes: None,
         notebook_chars: 400,

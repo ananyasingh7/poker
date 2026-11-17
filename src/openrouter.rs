@@ -76,6 +76,10 @@ pub struct Config {
     /// more with thinking off and a short limit, instead of playing the fallback. Counted in
     /// `reasked_actions`. Off by default so earlier results stay comparable.
     pub reask_truncated: bool,
+    /// Rewrite the notebook after every Nth completed hand instead of every hand, sending the
+    /// hands since the last update together (`earlier_hands`). 1, the default, is the original
+    /// per-hand update; larger values cut the cost of the notes condition about N-fold.
+    pub notebook_every: u32,
     /// Opt-in: add the seat's position name and the big blind to the raw observation. Off by
     /// default because it changes what the `none` scaffold shows.
     pub label_positions: bool,
@@ -326,6 +330,7 @@ impl Default for Config {
             max_consecutive_failures: 3,
             repair_illegal: false,
             reask_truncated: false,
+            notebook_every: 1,
             label_positions: false,
             provider: ProviderPrefs::default(),
         }
@@ -412,6 +417,7 @@ impl Config {
             max_consecutive_failures: self.max_consecutive_failures,
             repair_illegal: self.repair_illegal,
             reask_truncated: self.reask_truncated,
+            notebook_every: self.notebook_every,
             label_positions: self.label_positions,
             provider: self.provider.clone(),
             oracle_notes: (self.memory == Mode::Oracle).then(|| self.oracle_notes()),
@@ -443,6 +449,9 @@ impl Config {
             return Err(
                 "max_attempts must be 1..=20 and backoffs positive with max >= initial".into(),
             );
+        }
+        if self.notebook_every == 0 {
+            return Err("notebook_every must be at least 1".into());
         }
         if self.reasoning_effort.is_some() && self.reasoning_enabled != Some(true) {
             return Err("reasoning_effort requires reasoning_enabled: true".into());
@@ -674,6 +683,8 @@ pub struct OpenRouterAgent {
     hand: usize,
     decision: u64,
     memory: Memory,
+    /// Completed hands not yet sent in a notebook update (`notebook_every` above 1).
+    pending: Vec<PlayerView>,
 }
 impl OpenRouterAgent {
     pub fn new(config: Config, key: String, audit: Box<dyn Write>) -> Result<Self, String> {
@@ -734,9 +745,38 @@ impl OpenRouterAgent {
             hand: 0,
             decision: 0,
             memory: Memory::default(),
+            pending: vec![],
         })
     }
     /// The structured notebook update: per-opponent profile edits merged by the host.
+    /// Adds the held-back hands to a notebook update (`notebook_every` above 1) and empties
+    /// the queue. With the default of 1 the request is unchanged.
+    fn add_earlier_hands(&mut self, body: &mut Value) {
+        if self.pending.is_empty() {
+            return;
+        }
+        let earlier: Vec<Value> = self
+            .pending
+            .drain(..)
+            .map(|v| {
+                serde_json::from_str(
+                    request(&self.config, &v)["messages"][1]["content"]
+                        .as_str()
+                        .expect("observation text"),
+                )
+                .expect("observation JSON")
+            })
+            .collect();
+        let mut context: Value =
+            serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
+        context["earlier_hands"] = json!(earlier);
+        body["messages"][1]["content"] = json!(context.to_string());
+        let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
+        body["messages"][0]["content"] = json!(format!(
+            "{system} This update covers {} hands: earlier_hands holds the earlier ones in order, and the main observation is the latest.",
+            earlier.len() + 1
+        ));
+    }
     fn finish_structured(&mut self, view: &PlayerView) -> Result<(), String> {
         let opponents: Vec<usize> = (0..view.players.len())
             .filter(|s| *s != view.seat)
@@ -753,6 +793,7 @@ impl OpenRouterAgent {
             serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
         context["prior_notebook"] = json!(self.memory.notebook);
         body["messages"][1]["content"] = json!(context.to_string());
+        self.add_earlier_hands(&mut body);
         if matches!(self.config.response_format, Format::JsonSchema) {
             body["response_format"] = json!({"type":"json_schema","json_schema":{"name":"notebook_profiles_v1","strict":true,"schema":{"type":"object","properties":{"operation":{"type":"string","enum":["keep","replace"]},"profiles":{"type":"array","items":{"type":"object","properties":{"seat":{"type":"integer"},"profile":{"type":"string"}},"required":["seat","profile"],"additionalProperties":false}}},"required":["operation","profiles"],"additionalProperties":false}}});
         }
@@ -1129,6 +1170,14 @@ impl Agent for OpenRouterAgent {
         {
             return Ok(());
         }
+        // With `notebook_every` above 1, hands wait and are sent together with the Nth.
+        if self.config.notebook_every > 1 {
+            self.pending.push(view.clone());
+            if self.pending.len() < self.config.notebook_every as usize {
+                return Ok(());
+            }
+            self.pending.pop();
+        }
         if self.config.notebook_style == NotebookStyle::StructuredProfiles {
             return self.finish_structured(view);
         }
@@ -1155,6 +1204,7 @@ impl Agent for OpenRouterAgent {
             serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
         context["prior_notebook"] = json!(self.memory.notebook);
         body["messages"][1]["content"] = json!(context.to_string());
+        self.add_earlier_hands(&mut body);
         if matches!(self.config.response_format, Format::JsonSchema) {
             body["response_format"] = json!({"type":"json_schema","json_schema":{"name":"notebook_v1","strict":true,"schema":{"type":"object","properties":{"operation":{"type":"string","enum":["keep","replace"]},"notebook":{"type":"string"}},"required":["operation","notebook"],"additionalProperties":false}}});
         }
@@ -1711,6 +1761,72 @@ mod tests {
                 assert_eq!(requests[0]["max_tokens"], expected, "{style:?} {enabled:?}");
             }
         }
+    }
+    #[test]
+    fn notebook_every_batches_hands_into_one_update() {
+        for style in [NotebookStyle::StructuredProfiles, NotebookStyle::Journal] {
+            for every in [1u32, 3] {
+                let reply = if style == NotebookStyle::StructuredProfiles {
+                    json!({"operation":"keep","profiles":[]})
+                } else {
+                    json!({"operation":"keep","notebook":""})
+                };
+                let (url, seen) = scripted_server(vec![(
+                    200,
+                    response(&reply.to_string()).to_string(),
+                    Duration::ZERO,
+                )]);
+                let mut cfg = config();
+                cfg.memory = Mode::Notes;
+                cfg.notebook_style = style;
+                cfg.notebook_every = every;
+                assert_eq!(cfg.model_settings(0).notebook_every, every);
+                let (mut agent, _) = agent_for(cfg, url);
+                for seed in 0..3u64 {
+                    let played = play(
+                        Rules::default(),
+                        vec![200; 2],
+                        0,
+                        seed,
+                        &mut [Box::new(Scripted::Folder), Box::new(Scripted::Caller)],
+                    )
+                    .unwrap();
+                    agent
+                        .finish_hand(played.private_views[0].last().unwrap())
+                        .unwrap();
+                    let sent = seen.lock().unwrap().len();
+                    // Every hand with the default; only after the third hand with every = 3.
+                    let expected = if every == 1 {
+                        seed as usize + 1
+                    } else {
+                        usize::from(seed == 2)
+                    };
+                    assert_eq!(sent, expected, "{style:?} every {every} hand {seed}");
+                }
+                let requests = seen.lock().unwrap().clone();
+                let context: Value = serde_json::from_str(
+                    requests.last().unwrap()["messages"][1]["content"]
+                        .as_str()
+                        .unwrap(),
+                )
+                .unwrap();
+                let system = requests.last().unwrap()["messages"][0]["content"]
+                    .as_str()
+                    .unwrap()
+                    .to_owned();
+                if every == 1 {
+                    // Unchanged from earlier experiments.
+                    assert!(context.get("earlier_hands").is_none());
+                    assert!(!system.contains("earlier_hands"));
+                } else {
+                    assert_eq!(context["earlier_hands"].as_array().unwrap().len(), 2);
+                    assert!(system.contains("earlier_hands"));
+                }
+            }
+        }
+        let mut cfg = config();
+        cfg.notebook_every = 0;
+        assert!(cfg.validate().is_err());
     }
     #[test]
     fn an_oversized_compact_notebook_gets_one_compression_request() {

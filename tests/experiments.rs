@@ -526,3 +526,47 @@ fn analyze_grades_model_rivers_against_the_scripted_field() {
             .all(|r| r["river"].is_null())
     );
 }
+
+#[test]
+fn every_example_config_parses_and_validates() {
+    // Batch configs have a "pilot" block; the rest are single-run configs.
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples");
+    let mut files = vec![];
+    for entry in std::fs::read_dir(&root).unwrap() {
+        let path = entry.unwrap().path();
+        if path.is_dir() {
+            for inner in std::fs::read_dir(&path).unwrap() {
+                files.push(inner.unwrap().path());
+            }
+        } else {
+            files.push(path);
+        }
+    }
+    let mut checked = 0;
+    for path in files
+        .iter()
+        .filter(|p| p.extension().is_some_and(|e| e == "json"))
+    {
+        let text = std::fs::read_to_string(path).unwrap();
+        let value: serde_json::Value = serde_json::from_str(&text).unwrap();
+        if value.get("pilot").is_some() {
+            let batch: Batch =
+                serde_json::from_value(value).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            batch
+                .schedule()
+                .unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+        } else {
+            let mut config: Config =
+                serde_json::from_value(value).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            // Placeholder model IDs in templates are allowed; everything else must validate.
+            if config.model == "provider/model" {
+                config.model = "test/model".into();
+            }
+            config
+                .validate()
+                .unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+        }
+        checked += 1;
+    }
+    assert!(checked > 20, "only {checked} example configs");
+}

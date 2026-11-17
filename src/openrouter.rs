@@ -610,12 +610,15 @@ fn card(c: Card) -> String {
     c.to_string()
 }
 /// Completion limit for a notebook update. Reasoning tokens count against it, so with thinking
-/// on it gets the action limit on top of the 1,024 the notebook text needs; with thinking off
-/// it is 1,024 as in every earlier experiment.
+/// on it gets the action limit plus 1,024 for every hand the update covers (`notebook_every`;
+/// a five-hand update truncated at the one-hand limit live); with thinking off it is 1,024 as
+/// in every earlier experiment.
 fn notebook_max_tokens(config: &Config) -> u32 {
     const NOTEBOOK_TOKENS: u32 = 1024;
     if config.reasoning_enabled == Some(true) {
-        config.max_tokens.saturating_add(NOTEBOOK_TOKENS)
+        config
+            .max_tokens
+            .saturating_add(NOTEBOOK_TOKENS.saturating_mul(config.notebook_every.max(1)))
     } else {
         NOTEBOOK_TOKENS
     }
@@ -1824,6 +1827,15 @@ mod tests {
                 }
             }
         }
+        // With thinking on, a batched update gets reasoning room for every hand it covers.
+        let mut cfg = config();
+        cfg.reasoning_enabled = Some(true);
+        cfg.max_tokens = 4096;
+        assert_eq!(notebook_max_tokens(&cfg), 4096 + 1024);
+        cfg.notebook_every = 5;
+        assert_eq!(notebook_max_tokens(&cfg), 4096 + 5 * 1024);
+        cfg.reasoning_enabled = Some(false);
+        assert_eq!(notebook_max_tokens(&cfg), 1024);
         let mut cfg = config();
         cfg.notebook_every = 0;
         assert!(cfg.validate().is_err());

@@ -13,6 +13,7 @@ pub mod opponents;
 pub mod participant;
 pub mod private_fs;
 pub mod report;
+pub mod river;
 pub mod runner;
 pub mod scaffold;
 pub mod supervisor;

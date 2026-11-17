@@ -15,7 +15,7 @@ cargo run --release -p poker-table -- --open runs/memory-structured-v1/session-0
 cargo run --release -p poker-table -- --snapshot /tmp/shots   # write a picture of every screen, no window
 ```
 
-Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-`4` panel tabs, `left`/`right` step through hands, `up`/`down` previous/next hand, `l` or `esc` back to live, `+`/`-` speed.
+Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-`5` panel tabs, `left`/`right` step through hands, `up`/`down` previous/next hand, `l` or `esc` back to live, `+`/`-` speed.
 
 ## What is on screen
 
@@ -24,6 +24,8 @@ Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-
 - **HAND**: result, all-in-adjusted result, each decision with equity against the cards actually held, pot-odds grade, EV of calling, and the reference rule's choice. Click a decision to jump to it.
 - **SESSION**: the lab's `analyze` row for every seat (win rate, luck-adjusted, VPIP, PFR, AF, mistake cost, rule agreement), spend, totals per help setting, and the lab's measured reference numbers.
 - **HANDS**: every finished hand; click to replay.
+- **NOTES**: what the model knows about each opponent. With the cheat sheet, the fixed descriptions; with own notes, each opponent's current profile (in a replay, as it stood during that hand), when it last changed, and every change in order; with the tracker, the statistics table it is shown.
+- **River grades** (HAND and SESSION): every river decision of the model is graded against the bots (see [docs/15](15-river-grading-and-leaks.md)); HAND shows the better choice and its cost per decision, SESSION the river cost and a LEAKS block (missed river bets, wrong sizes, bets that lost, bluffs called down, answers cut off).
 
 ## Settings (before the game and during a pause)
 
@@ -32,12 +34,13 @@ Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-
 | Facts sheet | `scaffold: features` |
 | Cheat sheet | `memory: oracle` |
 | Own notes | `memory: notes`, `notebook_style: structured_profiles` |
+| Tracker | `memory: stats`: per-opponent VPIP, PFR, postflop aggression and folds to bets (flop to river and river alone), like a HUD |
 | Baseline | none of the above |
 | Show thinking | `reasoning_enabled: true`, `reasoning_effort: low`, `max_tokens: 12288`, 240 s timeout (limit raised from 4,096 / 90 s and effort added on 2026-11-15, after long reasoning truncated; see below) |
 | Reset each | `reset_stacks: true` (the experiments' setting); default is carry-over |
 | Cap | `spend_limit_usd` for the whole table session (default $0.25) |
 
-Cheat sheet and own notes exclude each other, as in the lab's memory conditions. Changes apply from the next hand; the model's own notes are carried across a change. Field, request settings and provider pinning match `examples/experiment-memory-structured.json`.
+Cheat sheet, own notes and tracker exclude each other, as in the lab's memory conditions. Changes apply from the next hand; the model's own notes are carried across a change. Field, request settings and provider pinning match `examples/experiment-memory-structured.json`.
 
 **Thinking is not the measured setup.** Every lab result was run with reasoning off. With it on, the model may play differently and each decision costs about 19 times more (see the first live run). With it off, MIND shows what the model saw and its move, but no reasoning, because none exists.
 

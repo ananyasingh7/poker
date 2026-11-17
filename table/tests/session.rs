@@ -347,3 +347,41 @@ fn tracker_help_shows_stats_and_river_decisions_are_graded_as_hands_finish() {
         .expect("tracker stats were sent");
     assert!(shown[1].get("faced_river_bets").is_some());
 }
+
+#[test]
+fn bet_sizing_and_quick_notes_map_to_the_lab_flags() {
+    let base = Settings::default();
+    let config = base.lab_config();
+    assert!(!config.sizing_hint && !config.size_menu && !config.notes_thinking_off);
+    let sizing = Settings {
+        facts_sheet: false,
+        bet_sizing: true,
+        ..Settings::default()
+    };
+    let config = sizing.lab_config();
+    assert!(config.sizing_hint && config.size_menu);
+    assert!(!sizing.is_baseline());
+    assert_eq!(sizing.help_label(), "BET SIZING");
+    let quick = Settings {
+        facts_sheet: false,
+        notes: Notes::Own,
+        quick_notes: true,
+        ..Settings::default()
+    };
+    assert_eq!(quick.help_label(), "QUICK NOTES");
+    let config = quick.lab_config();
+    assert!(config.notes_thinking_off);
+    assert!(config.validate().is_ok());
+    // Without thinking there is nothing to switch off, and other help ignores the flag.
+    let off = Settings {
+        thinking: false,
+        ..quick.clone()
+    };
+    assert!(!off.lab_config().notes_thinking_off);
+    let tracker = Settings {
+        notes: Notes::Tracker,
+        ..quick
+    };
+    assert!(!tracker.lab_config().notes_thinking_off);
+    assert!(tracker.lab_config().validate().is_ok());
+}

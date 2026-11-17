@@ -87,6 +87,12 @@ pub struct Settings {
     /// Host-computed facts with every decision (`scaffold: features`).
     pub facts_sheet: bool,
     pub notes: Notes,
+    /// The bet-sizing principle and a menu of bet sizes with every decision (`sizing_hint` and
+    /// `size_menu`; docs/16).
+    pub bet_sizing: bool,
+    /// With own notes and thinking on, write the notes with thinking off (`notes_thinking_off`):
+    /// much cheaper.
+    pub quick_notes: bool,
     pub seed: u64,
     pub reset_stacks: bool,
     pub spend_cap_usd: f64,
@@ -99,6 +105,8 @@ impl Default for Settings {
             thinking: true,
             facts_sheet: true,
             notes: Notes::Off,
+            bet_sizing: false,
+            quick_notes: false,
             seed: 42,
             reset_stacks: false,
             spend_cap_usd: 0.25,
@@ -107,7 +115,7 @@ impl Default for Settings {
 }
 impl Settings {
     pub fn is_baseline(&self) -> bool {
-        !self.facts_sheet && self.notes == Notes::Off
+        !self.facts_sheet && self.notes == Notes::Off && !self.bet_sizing
     }
     /// The help in force, in the spectator's words.
     pub fn help_label(&self) -> String {
@@ -116,10 +124,14 @@ impl Settings {
             parts.push("FACTS SHEET");
         }
         match self.notes {
+            Notes::Own if self.quick_notes && self.thinking => parts.push("QUICK NOTES"),
             Notes::Own => parts.push("OWN NOTES"),
             Notes::CheatSheet => parts.push("CHEAT SHEET"),
             Notes::Tracker => parts.push("TRACKER"),
             Notes::Off => {}
+        }
+        if self.bet_sizing {
+            parts.push("BET SIZING");
         }
         if parts.is_empty() {
             "BASELINE".into()
@@ -158,6 +170,9 @@ impl Settings {
             // A rare runaway answer is re-asked quickly with thinking off instead of folding
             // or checking by default (see docs/14).
             reask_truncated: self.thinking,
+            sizing_hint: self.bet_sizing,
+            size_menu: self.bet_sizing,
+            notes_thinking_off: self.quick_notes && self.thinking && self.notes == Notes::Own,
             memory: match self.notes {
                 Notes::Off => Mode::None,
                 Notes::Own => Mode::Notes,

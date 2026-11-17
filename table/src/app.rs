@@ -1162,6 +1162,18 @@ impl App {
             may.push(format!("all in {all_in}"));
         }
         doc.pair("may", may.join(", "), theme::INK);
+        if let Some(sizes) = thought.observation["bet_sizes"].as_array() {
+            doc.head("BET SIZES IT WAS SHOWN");
+            let menu: Vec<String> = sizes
+                .iter()
+                .map(|m| format!("{} {}", m["size"].as_str().unwrap_or("?"), m["raise_to"]))
+                .collect();
+            doc.para(&menu.join(", "), theme::DIM);
+            doc.para(
+                "With BET SIZING its instructions also say: size bets to what each opponent will call; bet big against players who rarely fold, and do not bluff them.",
+                theme::FAINT,
+            );
+        }
         if let Some(aids) = thought.aids() {
             doc.head("FACTS SHEET");
             let word = |key: &str| aids[key].as_str().unwrap_or("-").replace('_', " ");
@@ -2087,7 +2099,7 @@ impl App {
             Font::Body,
             theme::FAINT,
         );
-        y += 20;
+        y += 14;
 
         c.text(x, y, "HELP ALLOWED", Font::Bold, theme::CHIP);
         c.text_right(
@@ -2097,51 +2109,98 @@ impl App {
             Font::Body,
             theme::DIM,
         );
-        y += 16;
-        let rows: [(&str, &str, &str, &str); 5] = [
+        y += 14;
+        /// One row of the HELP ALLOWED list.
+        #[derive(Clone, Copy, PartialEq)]
+        enum Help {
+            Facts,
+            Sizing,
+            Cheat,
+            Own,
+            Quick,
+            Tracker,
+            Baseline,
+        }
+        let rows: [(Help, &str, &str, &str, &str); 7] = [
             (
+                Help::Facts,
                 "FACTS SHEET",
                 "position, pot odds, hand strength",
                 "+102",
                 "helps a lot",
             ),
             (
+                Help::Sizing,
+                "BET SIZING",
+                "sizing rule + menu of bet sizes",
+                "   -",
+                "being tested",
+            ),
+            (
+                Help::Cheat,
                 "CHEAT SHEET",
                 "true profile of every opponent",
                 " +28",
                 "helps",
             ),
             (
+                Help::Own,
                 "OWN NOTES",
                 "writes notes after each hand",
                 " +13",
                 "not yet clear",
             ),
             (
+                Help::Quick,
+                "  QUICK",
+                "own notes written without thinking",
+                "   -",
+                "cheaper",
+            ),
+            (
+                Help::Tracker,
                 "TRACKER",
                 "stats per opponent, like a HUD",
                 "   -",
-                "not measured yet",
+                "small help",
             ),
-            ("BASELINE", "no help at all", " +50", "its own level"),
+            (
+                Help::Baseline,
+                "BASELINE",
+                "no help at all",
+                " +50",
+                "its own level",
+            ),
         ];
-        for (i, (name, what, gain, verdict)) in rows.iter().enumerate() {
-            let on = match i {
-                0 => self.draft.facts_sheet,
-                1 => self.draft.notes == Notes::CheatSheet,
-                2 => self.draft.notes == Notes::Own,
-                3 => self.draft.notes == Notes::Tracker,
-                _ => self.draft.is_baseline(),
+        for (help, name, what, gain, verdict) in rows {
+            let draft = &mut self.draft;
+            let on = match help {
+                Help::Facts => draft.facts_sheet,
+                Help::Sizing => draft.bet_sizing,
+                Help::Cheat => draft.notes == Notes::CheatSheet,
+                Help::Own => draft.notes == Notes::Own,
+                Help::Quick => draft.notes == Notes::Own && draft.quick_notes,
+                Help::Tracker => draft.notes == Notes::Tracker,
+                Help::Baseline => draft.is_baseline(),
             };
             if check(c, input, x, y, 488, on, false) {
-                match i {
-                    0 => self.draft.facts_sheet = !on,
-                    1 => self.draft.notes = if on { Notes::Off } else { Notes::CheatSheet },
-                    2 => self.draft.notes = if on { Notes::Off } else { Notes::Own },
-                    3 => self.draft.notes = if on { Notes::Off } else { Notes::Tracker },
-                    _ => {
-                        self.draft.facts_sheet = false;
-                        self.draft.notes = Notes::Off;
+                match help {
+                    Help::Facts => draft.facts_sheet = !on,
+                    Help::Sizing => draft.bet_sizing = !on,
+                    Help::Cheat => draft.notes = if on { Notes::Off } else { Notes::CheatSheet },
+                    Help::Own => draft.notes = if on { Notes::Off } else { Notes::Own },
+                    // Quick notes are own notes written without thinking.
+                    Help::Quick => {
+                        draft.quick_notes = !on;
+                        if !on {
+                            draft.notes = Notes::Own;
+                        }
+                    }
+                    Help::Tracker => draft.notes = if on { Notes::Off } else { Notes::Tracker },
+                    Help::Baseline => {
+                        draft.facts_sheet = false;
+                        draft.bet_sizing = false;
+                        draft.notes = Notes::Off;
                     }
                 }
             }
@@ -2153,13 +2212,13 @@ impl App {
                 y,
                 verdict,
                 Font::Body,
-                if i == 2 || i == 3 {
-                    theme::DIM
-                } else {
+                if matches!(help, Help::Facts | Help::Cheat | Help::Baseline) {
                     theme::GOOD
+                } else {
+                    theme::DIM
                 },
             );
-            y += 14;
+            y += 12;
         }
         c.text(
             x + 16,
@@ -2168,7 +2227,7 @@ impl App {
             Font::Body,
             theme::FAINT,
         );
-        y += 22;
+        y += 14;
 
         c.text(x, y, "TABLE", Font::Bold, theme::CHIP);
         y += 16;

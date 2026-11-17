@@ -466,4 +466,63 @@ fn decisions_list_only_model_seats_when_a_manifest_names_them() {
         rows.iter()
             .all(|r| r["seat"] == 0 && r["label"] == "test/model")
     );
+    // These bots are not the manifest's field, so river grading is skipped with a reason.
+    assert!(
+        rows.iter()
+            .all(|r| r["river"].is_null() && r["river_error"].is_string())
+    );
+    let analysis = poker_lab::analyze::directory(&dir).unwrap();
+    assert_eq!(analysis["river_grade_errors"].as_array().unwrap().len(), 1);
+    assert!(poker_lab::analyze::render(&analysis).contains("River grading skipped"));
+}
+
+#[test]
+fn analyze_grades_model_rivers_against_the_scripted_field() {
+    // A lab-format run whose model seat is played by the solid bot: every other seat follows
+    // the manifest's field, so river grading can replay them.
+    let config = Config {
+        model: "test/model".into(),
+        opponents: Opponents::Mixed,
+        ..Config::default()
+    };
+    let styles = config.seat_styles();
+    let mut agents: Vec<Box<dyn Agent>> = styles
+        .iter()
+        .map(|s| s.unwrap_or(Style::Solid).agent())
+        .collect();
+    let mut session = poker_lab::arena::Session::new(6, 3).unwrap();
+    session.reset_stacks = true;
+    let lines: Vec<String> = (0..120)
+        .map(|_| serde_json::to_string(&session.next_hand(&mut agents).unwrap().record).unwrap())
+        .collect();
+    let dir = std::env::temp_dir().join(format!(
+        "poker-lab-river-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    poker_lab::private_fs::create_dir(&dir).unwrap();
+    std::fs::write(dir.join("evaluator.jsonl"), lines.join("\n") + "\n").unwrap();
+    std::fs::write(
+        dir.join("manifest.json"),
+        serde_json::json!({ "config": serde_json::to_value(&config).unwrap() }).to_string(),
+    )
+    .unwrap();
+    let analysis = poker_lab::analyze::directory(&dir).unwrap();
+    let model = &analysis["model_style_by_condition"][0];
+    assert!(model["river_graded"].as_u64().unwrap() > 0, "{model}");
+    assert!(model["river_cost_bb_per_100"].as_f64().unwrap() >= 0.0);
+    assert!(model["bluffs"].is_u64() && model["truncations"] == 0);
+    let text = poker_lab::analyze::render(&analysis);
+    assert!(text.contains("River decisions graded exactly") && text.contains("Leaks"));
+    let rows = poker_lab::analyze::decisions(&dir).unwrap();
+    let graded = rows.iter().filter(|r| r["river"].is_object()).count();
+    assert_eq!(graded as u64, model["river_graded"].as_u64().unwrap());
+    assert!(
+        rows.iter()
+            .filter(|r| r["street"] != "River")
+            .all(|r| r["river"].is_null())
+    );
 }

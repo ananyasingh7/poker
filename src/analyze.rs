@@ -5,6 +5,8 @@ use crate::{
     engine::{Action, Event, Hand, Street},
     evaluation,
     openrouter::Config,
+    opponents::Style,
+    river::{self, Kind},
     scaffold,
 };
 use serde_json::{Value, json};
@@ -47,6 +49,7 @@ struct Block {
     hands: u64,
     adjusted: f64,
     loss: f64,
+    river_loss: f64,
 }
 
 /// Behaviour and results of one seat label, accumulated hand by hand with `tally`.
@@ -75,6 +78,16 @@ pub struct Tally {
     bad_calls: u64,
     bad_folds: u64,
     grade_loss: f64,
+    /// River decisions graded exactly against the bots (see `river::grade_session`): how many,
+    /// the chips the choices gave up, and the count and chips of each kind of mistake.
+    river_graded: u64,
+    river_loss: f64,
+    river_kinds: BTreeMap<Kind, (u64, f64)>,
+    /// Leak counts: postflop bets or raises with under 30% equity against the cards actually
+    /// held, how many of those were called down to a showdown, and truncated answers.
+    bluffs: u64,
+    bluffs_called_down: u64,
+    truncations: u64,
 }
 impl Tally {
     pub fn add(&mut self, t: &Tally) {
@@ -101,6 +114,26 @@ impl Tally {
         self.net_chips += t.net_chips;
         self.adjusted_net += t.adjusted_net;
         self.grade_loss += t.grade_loss;
+        self.river_graded += t.river_graded;
+        self.river_loss += t.river_loss;
+        for (kind, (n, chips)) in &t.river_kinds {
+            let entry = self.river_kinds.entry(*kind).or_default();
+            entry.0 += n;
+            entry.1 += chips;
+        }
+        self.bluffs += t.bluffs;
+        self.bluffs_called_down += t.bluffs_called_down;
+        self.truncations += t.truncations;
+    }
+    /// Adds exact river grades for this label.
+    pub fn add_river(&mut self, grades: &[river::RiverGrade]) {
+        for g in grades {
+            self.river_graded += 1;
+            self.river_loss += g.loss;
+            let entry = self.river_kinds.entry(g.kind).or_default();
+            entry.0 += 1;
+            entry.1 += g.loss;
+        }
     }
     /// The label's style and result row, as reported by `analyze`.
     pub fn style(&self, label: &str, is_model: bool, big_blind: u64) -> Value {
@@ -114,12 +147,20 @@ impl Tally {
             "adjusted_bb_per_100":(self.hands > 0).then(|| self.adjusted_net / big_blind as f64 / self.hands as f64 * 100.0),
             "graded_decisions":self.graded,"bad_calls":self.bad_calls,"bad_folds":self.bad_folds,
             "mistake_cost_bb_per_100":(self.hands > 0).then(|| self.grade_loss / big_blind as f64 / self.hands as f64 * 100.0),
+            "river_graded":self.river_graded,
+            "river_cost_bb_per_100":(self.hands > 0 && self.river_graded > 0).then(|| self.river_loss / big_blind as f64 / self.hands as f64 * 100.0),
+            "river_kinds":self.river_kinds.iter().map(|(k, (n, chips))| (k.name().to_owned(), json!({"count":n,"bb_per_100":(self.hands > 0).then(|| chips / big_blind as f64 / self.hands as f64 * 100.0)}))).collect::<serde_json::Map<String, Value>>(),
+            "bluffs":self.bluffs,"bluffs_called_down":self.bluffs_called_down,"truncations":self.truncations,
             "net_chips":self.net_chips,"bb_per_100":bb_per_100(self.net_chips, big_blind, self.hands)})
     }
 }
 
 struct SessionData {
+    /// The session directory's name, for messages.
+    name: String,
     labels: Vec<String>,
+    /// Scripted style per seat (None for model seats), when the run used the mixed field.
+    styles: Option<Vec<Option<Style>>>,
     models: BTreeSet<String>,
     condition: String,
     seed: u64,
@@ -162,8 +203,21 @@ fn load(dir: &Path) -> Result<SessionData, String> {
         })
         .unwrap_or_default();
     let stats = summary.as_ref().map(|s| &s["stats"]);
+    let styles = config.as_ref().and_then(|c| {
+        let styles = c.seat_styles();
+        let llm = c.llm_seats();
+        // Gradable only when every non-model seat is a known scripted style.
+        (0..styles.len())
+            .all(|s| styles[s].is_some() || llm.contains(&s))
+            .then_some(styles)
+    });
     Ok(SessionData {
+        name: dir
+            .file_name()
+            .map(|n| n.to_string_lossy().into_owned())
+            .unwrap_or_default(),
         labels,
+        styles,
         models,
         condition: config
             .as_ref()
@@ -197,6 +251,7 @@ pub fn tally(
 ) -> Result<(), String> {
     let seats = record.initial_stacks.len();
     let adjusted = evaluation::allin_adjusted(record)?;
+    let holes = evaluation::holes(record);
     let mut hand = Hand::new(
         record.rules.clone(),
         record.initial_stacks.clone(),
@@ -210,6 +265,12 @@ pub fn tally(
         let t = out.entry(labels[decision.seat].clone()).or_default();
         t.decisions += 1;
         t.fallbacks += u64::from(decision.error.is_some());
+        t.truncations += u64::from(
+            decision
+                .error
+                .as_deref()
+                .is_some_and(|e| e.contains("Truncated")),
+        );
         if models.contains(&labels[decision.seat]) {
             let view = hand.view(decision.seat)?;
             if let Some(reference) = scaffold::suggestion(&view) {
@@ -226,6 +287,21 @@ pub fn tally(
             seat.2 |= raise;
         } else {
             t.aggressive += u64::from(raise);
+            if raise && grade && models.contains(&labels[decision.seat]) {
+                let view = hand.view(decision.seat)?;
+                let opponents: Vec<_> = view
+                    .players
+                    .iter()
+                    .filter(|p| !p.folded && p.seat != decision.seat)
+                    .map(|p| holes[p.seat])
+                    .collect();
+                if evaluation::equity_against(holes[decision.seat], &view.board, &opponents) < 0.3 {
+                    t.bluffs += 1;
+                    t.bluffs_called_down += u64::from(record.events.iter().any(
+                        |e| matches!(e, Event::Reveal { seat, .. } if *seat == decision.seat),
+                    ));
+                }
+            }
             t.calls += u64::from(decision.applied == Action::Call);
             t.faced_bet += u64::from(facing);
             t.folded_to_bet += u64::from(facing && decision.applied == Action::Fold);
@@ -299,6 +375,24 @@ pub fn decisions(dir: &Path) -> Result<Vec<Value>, String> {
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_default();
+        // Exact river grades of the model seats, keyed by (hand, decision).
+        let mut river_grades = BTreeMap::new();
+        let mut river_error = None;
+        if let Some(styles) = &session.styles {
+            let model_seats: Vec<usize> = (0..session.labels.len())
+                .filter(|s| session.models.contains(&session.labels[*s]))
+                .collect();
+            if !model_seats.is_empty() {
+                match river::grade_session(&session.records, styles, &model_seats) {
+                    Ok(grades) => {
+                        for g in grades {
+                            river_grades.insert((g.hand, g.decision), g);
+                        }
+                    }
+                    Err(error) => river_error = Some(error),
+                }
+            }
+        }
         for (index, record) in session.records.iter().enumerate() {
             let holes = evaluation::holes(record);
             let mut hand = Hand::new(
@@ -345,7 +439,15 @@ pub fn decisions(dir: &Path) -> Result<Vec<Value>, String> {
                         "required": facing.then_some(call as f64 / (pot + call as f64)),
                         "ev_call": facing.then_some(equity * (pot + call as f64) - call as f64),
                         "bettor": if facing { bettor.map(|s| session.labels[s].clone()) } else { None },
+                        "river": river_grades.get(&(index, number)).map(|g| json!({
+                            "kind": g.kind, "best": g.best, "loss": g.loss,
+                            "chosen_value": g.chosen_value, "best_value": g.best_value,
+                            "range_sizes": g.range_sizes,
+                        })),
                     }));
+                    if let Some(error) = &river_error {
+                        rows.last_mut().expect("just pushed")["river_error"] = json!(error);
+                    }
                 }
                 if matches!(d.applied, Action::RaiseTo { .. }) {
                     bettor = Some(d.seat);
@@ -379,11 +481,34 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
     let mut conditions = vec![];
     let (mut hands, mut requests, mut cost, mut clean) = (0u64, 0u64, 0.0, 0usize);
     let mut big_blind = 2;
+    let mut river_errors: Vec<String> = vec![];
     for session in &sessions {
         let mut local: BTreeMap<String, Tally> = BTreeMap::new();
         for record in &session.records {
             tally(record, &session.labels, &session.models, grade, &mut local)?;
             big_blind = record.rules.big_blind;
+        }
+        if grade && let Some(styles) = &session.styles {
+            let model_seats: Vec<usize> = (0..session.labels.len())
+                .filter(|s| session.models.contains(&session.labels[*s]))
+                .collect();
+            if !model_seats.is_empty() {
+                // A run whose bots do not match its manifest cannot be graded; it is reported,
+                // not fatal, so the rest of the analysis still stands.
+                match river::grade_session(&session.records, styles, &model_seats) {
+                    Ok(grades) => {
+                        for seat in &model_seats {
+                            let own: Vec<_> =
+                                grades.iter().filter(|g| g.seat == *seat).cloned().collect();
+                            local
+                                .entry(session.labels[*seat].clone())
+                                .or_default()
+                                .add_river(&own);
+                        }
+                    }
+                    Err(error) => river_errors.push(format!("{}: {error}", session.name)),
+                }
+            }
         }
         hands += session.records.len() as u64;
         requests += session.requests;
@@ -402,6 +527,7 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
             block.net += t.net_chips;
             block.adjusted += t.adjusted_net;
             block.loss += t.grade_loss;
+            block.river_loss += t.river_loss;
             block.hands += t.hands;
             if session.models.contains(&label) {
                 by_condition
@@ -435,6 +561,7 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
     let block_values = |key: &(String, String)| per_block(key, |b| b.net as f64);
     let adjusted_values = |key: &(String, String)| per_block(key, |b| b.adjusted);
     let loss_values = |key: &(String, String)| per_block(key, |b| b.loss);
+    let river_values = |key: &(String, String)| per_block(key, |b| b.river_loss);
     let paired_rows = |values: &BTreeMap<u64, f64>, base: &BTreeMap<u64, f64>| {
         let differences: Vec<f64> = values
             .iter()
@@ -455,6 +582,8 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
         row["adjusted"] = interval(&adjusted.values().copied().collect::<Vec<_>>());
         let losses = loss_values(key);
         row["mistake_cost"] = interval(&losses.values().copied().collect::<Vec<_>>());
+        let rivers = river_values(key);
+        row["river_cost"] = interval(&rivers.values().copied().collect::<Vec<_>>());
         win_rates.push(row);
         // Paired comparison against the first condition on the seeds both conditions played.
         let reference = (conditions[0].clone(), key.1.clone());
@@ -462,6 +591,7 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
             let mut row = paired_rows(&values, &block_values(&reference));
             row["adjusted"] = paired_rows(&adjusted, &adjusted_values(&reference));
             row["mistake_cost"] = paired_rows(&losses, &loss_values(&reference));
+            row["river_cost"] = paired_rows(&rivers, &river_values(&reference));
             row["label"] = json!(key.1);
             row["condition"] = json!(key.0);
             row["versus"] = json!(conditions[0]);
@@ -473,7 +603,8 @@ pub fn directory_with(dir: &Path, grade: bool) -> Result<Value, String> {
         "hands":hands,"requests":requests,"reported_cost_usd":cost,
         "cost_per_hand_usd":(hands > 0).then(|| cost / hands as f64),
         "unit":"bb/100; intervals are 95% t-intervals over seed blocks (seat rotations of a seed are averaged); `adjusted` removes all-in luck",
-        "style":style,"model_style_by_condition":model_style,"win_rates":win_rates,"paired_differences":paired}),
+        "style":style,"model_style_by_condition":model_style,"win_rates":win_rates,"paired_differences":paired,
+        "river_grade_errors":river_errors}),
     )
 }
 
@@ -625,6 +756,15 @@ pub fn render(a: &Value) -> String {
                     interval_text(&row["mistake_cost"])
                 );
             }
+            if row["river_cost"]["blocks"].as_u64().unwrap_or(0) > 0
+                && row["river_cost"]["mean"].as_f64().unwrap_or(0.0) != 0.0
+            {
+                let _ = writeln!(
+                    out,
+                    "    river cost (exact):     {}",
+                    interval_text(&row["river_cost"])
+                );
+            }
         }
     }
     let graded: Vec<&Value> = a["style"]
@@ -674,5 +814,127 @@ pub fn render(a: &Value) -> String {
             "(Equity against the opponents' actual cards, board unknown; immediate pot odds only, later betting ignored.)"
         );
     }
+    let models: Vec<&Value> = a["model_style_by_condition"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .collect();
+    let rivers: Vec<&&Value> = models
+        .iter()
+        .filter(|s| s["river_graded"].as_u64().unwrap_or(0) > 0)
+        .collect();
+    if !rivers.is_empty() {
+        let kinds = [
+            "missed bet",
+            "bad bet",
+            "sizing",
+            "bad call",
+            "bad fold",
+            "missed raise",
+            "bad raise",
+        ];
+        let _ = writeln!(
+            out,
+            "\nRiver decisions graded exactly against the bots (cost in bb/100; count in brackets)"
+        );
+        let _ = write!(
+            out,
+            "{:<44} {:>6} {:>7}",
+            "model (condition)", "graded", "total"
+        );
+        for k in kinds {
+            let _ = write!(out, " {k:>13}");
+        }
+        let _ = writeln!(out);
+        for s in rivers {
+            let _ = write!(
+                out,
+                "{:<44} {:>6} {:>7}",
+                model_name(s),
+                s["river_graded"],
+                s["river_cost_bb_per_100"]
+                    .as_f64()
+                    .map_or("-".into(), |x| format!("{x:.1}"))
+            );
+            for k in kinds {
+                let entry = &s["river_kinds"][k];
+                let cell = match entry["count"].as_u64() {
+                    Some(n) => format!("{:.1} ({n})", entry["bb_per_100"].as_f64().unwrap_or(0.0)),
+                    None => "-".into(),
+                };
+                let _ = write!(out, " {cell:>13}");
+            }
+            let _ = writeln!(out);
+        }
+        let _ = writeln!(
+            out,
+            "(Every river alternative replayed against the bots' real policies; the model's own later reply is the better of fold and call.)"
+        );
+    }
+    let leaky: Vec<&&Value> = models
+        .iter()
+        .filter(|s| s["decisions"].as_u64().unwrap_or(1) > 0)
+        .collect();
+    if !leaky.is_empty() && leaky.iter().any(|s| s["bluffs"].as_u64().is_some()) {
+        let _ = writeln!(
+            out,
+            "\nLeaks\n{:<44} {:>14} {:>13} {:>12} {:>11}",
+            "model (condition)", "missed bets", "bluffs", "called down", "truncated"
+        );
+        for s in leaky {
+            let missed = &s["river_kinds"]["missed bet"];
+            let bluffs = s["bluffs"].as_u64().unwrap_or(0);
+            let down = s["bluffs_called_down"].as_u64().unwrap_or(0);
+            let _ = writeln!(
+                out,
+                "{:<44} {:>14} {:>13} {:>12} {:>11}",
+                model_name(s),
+                match missed["count"].as_u64() {
+                    Some(n) => format!(
+                        "{n} ({:.1} bb)",
+                        missed["bb_per_100"].as_f64().unwrap_or(0.0)
+                    ),
+                    None => "-".into(),
+                },
+                bluffs,
+                if bluffs > 0 {
+                    format!("{:.0}%", down as f64 / bluffs as f64 * 100.0)
+                } else {
+                    "-".into()
+                },
+                s["truncations"]
+            );
+        }
+        let _ = writeln!(
+            out,
+            "(Missed bets: river checks where a bet won more, with their cost per 100 hands. Bluffs: postflop bets or raises with under 30% equity against the cards held; called down: the bluffer reached showdown. Truncated: answers cut off by the token limit, played as fallbacks.)"
+        );
+    }
+    out.push_str(&river_errors_text(a));
     out
+}
+
+fn river_errors_text(a: &Value) -> String {
+    let errors: Vec<&str> = a["river_grade_errors"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .collect();
+    if errors.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "\nRiver grading skipped for {} session(s) whose bots do not match the manifest:\n  {}\n",
+            errors.len(),
+            errors.join("\n  ")
+        )
+    }
+}
+
+fn model_name(s: &Value) -> String {
+    match s["condition"].as_str() {
+        Some(condition) => format!("{} ({condition})", s["label"].as_str().unwrap_or("")),
+        None => s["label"].as_str().unwrap_or("").to_owned(),
+    }
 }

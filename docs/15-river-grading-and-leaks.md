@@ -88,3 +88,30 @@ Where the river cost goes (bb/100, count in brackets):
 **Reading.** Every kind of opponent information helps on the river, in the expected order: tracker < notes < cheat sheet. Notes every 5 hands do as well as notes every hand, for about 30% less. But only the cheat sheet fixes **bet sizing** (30 against 150-170 for all the others) and **bluffing the station** (36% called down against 67-84%). The cheat sheet says in words "bet your good hands big; never bluff it"; stats and notes tell the model who calls, not what to do about it. When it bets the river with its own notes, the model bets a median of 0.56 of the pot; the best bet was all-in in 19 of 31 cases.
 
 **Cost of notes every 5 hands.** Only 31% cheaper than every hand, not 5x: reasoning about five hands took a median of 4,548 tokens per update, and 23 of 117 updates (20%) truncated even at 9,216 tokens (4,096 + 1,024 per hand, raised after the smoke test truncated at 5,120). Writing notes probably does not need deep reasoning; a thinking-off note update would be far cheaper and is worth a try.
+
+## Bet-sizing help on the tracker deals (live, 2026-11-16, $0.995)
+
+Three arms on the tracker arm's deals (seeds 1-10, seat 0, 60 hands, same settings): `sizing_hint` (one general sentence, docs/16 section 2e), `size_menu` (a `bet_sizes` menu of raise_to amounts) and both. Configs `examples/experiment-thinking-low-stats-{hint,menu,hint-menu}.json`, runs `runs/thinking-low-stats-{hint,menu,hint-menu}-v1`, $0.33 each. Each hit its cap within the last hands: 9 of 30 sessions stopped 1 to 6 hands short and are left out, so every comparison uses complete sessions on the same seeds. A $0.005 smoke test checked the prompt text and menu first.
+
+Paired against the tracker alone, 95% intervals over seeds:
+
+| | Seeds | Chips | River cost | Missed bets | Sizing | Bluffs |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tracker alone | 10 | | 360 | 137 (59) | 172 (35) | 45, 82% called down |
+| + rule | 8 | +34 [-132, +200] | **-111 [-173, -49]** | 77 (42) | 137 (21) | 23, 78% |
+| + menu | 9 | +52 [-57, +161] | -28 [-97, +42] | 107 (51) | 190 (30) | 37, 78% |
+| + rule and menu | 9 | +42 [-118, +201] | **-100 [-185, -16]** | 73 (49) | 142 (24) | 25, 84% |
+
+River bets in each arm:
+
+| | River bets | Median size | All-in | All-in was best |
+| --- | --- | --- | --- | --- |
+| Tracker alone | 41 | 0.60 pot | 2 | 25 |
+| + rule | 32 | 0.99 pot | 4 | 25 |
+| + menu | 42 | 0.51 pot | 4 | 29 |
+| + rule and menu | 41 | 0.73 pot | 8 | 28 |
+
+**Reading.** The one-sentence rule works: it cuts river cost by about 100 bb/100 on the same deals, taking the tracker from 360 to about 250, close to own notes (300) at a third of the notes' cost. Most of that comes from betting winners it used to check (missed bets 137 to 77) and bluffing half as often. The menu alone does nothing (and its median bet is smaller: it lists the small sizes first), and adds nothing to the rule. **Sizing is still the big leak:** the rule moves the median river bet from 0.6 to 1 pot, but all-in was the best bet in about 25 of 40 river bets and the model shoved in 4 to 8. The cheat sheet's sizing cost is 30; every realistic arm is still at 137 to 190.
+
+**Next idea:** a sharper rule (for example: against a player whose river fold rate is near zero, a strong hand should bet most or all of the stack), or a menu that lists the largest sizes first and includes 2 and 3 pots.
+

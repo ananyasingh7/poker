@@ -2134,7 +2134,7 @@ impl App {
                 "BET SIZING",
                 "sizing rule + menu of bet sizes",
                 "   -",
-                "being tested",
+                "fewer river mistakes",
             ),
             (
                 Help::Cheat,

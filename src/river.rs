@@ -103,39 +103,70 @@ pub fn grade_session(
     styles: &[Option<Style>],
     graded: &[usize],
 ) -> Result<Vec<RiverGrade>, String> {
-    let mut bots: Vec<Option<Bot>> = styles
-        .iter()
-        .enumerate()
-        .map(|(seat, style)| match style {
-            _ if graded.contains(&seat) => Ok(None),
-            Some(Style::Adaptive) => Ok(Some(Bot::Adaptive(Adaptive::default()))),
-            Some(style) => Ok(Some(Bot::Plain(*style))),
-            None => Err(format!(
-                "seat {seat} is neither graded nor a scripted style"
-            )),
-        })
-        .collect::<Result<_, String>>()?;
+    let mut grader = RiverGrader::new(styles, graded)?;
     let mut grades = vec![];
     for (index, record) in records.iter().enumerate() {
-        if record.initial_stacks.len() != bots.len() {
+        for mut g in grader.grade_hand(record)? {
+            g.hand = index;
+            grades.push(g);
+        }
+    }
+    Ok(grades)
+}
+
+/// `grade_session` one hand at a time, for a table that is still playing: feed every finished
+/// hand in order, so the stateful bots learn as they did at the table.
+pub struct RiverGrader {
+    bots: Vec<Option<Bot>>,
+    graded: Vec<usize>,
+    hands: usize,
+}
+impl RiverGrader {
+    pub fn new(styles: &[Option<Style>], graded: &[usize]) -> Result<Self, String> {
+        let bots = styles
+            .iter()
+            .enumerate()
+            .map(|(seat, style)| match style {
+                _ if graded.contains(&seat) => Ok(None),
+                Some(Style::Adaptive) => Ok(Some(Bot::Adaptive(Adaptive::default()))),
+                Some(style) => Ok(Some(Bot::Plain(*style))),
+                None => Err(format!(
+                    "seat {seat} is neither graded nor a scripted style"
+                )),
+            })
+            .collect::<Result<_, String>>()?;
+        Ok(Self {
+            bots,
+            graded: graded.to_vec(),
+            hands: 0,
+        })
+    }
+    /// Grades the graded seats' river decisions in the next hand of the session (`hand` in each
+    /// grade counts the hands fed so far, from 0), then lets the bots learn from it.
+    pub fn grade_hand(&mut self, record: &Record) -> Result<Vec<RiverGrade>, String> {
+        if record.initial_stacks.len() != self.bots.len() {
             return Err("seat count differs from the styles".into());
         }
+        let mut grades = vec![];
         let mut hand = rebuild(record, &deck(record.seed), 0)?;
         for (number, d) in record.decisions.iter().enumerate() {
             let view = hand.view(d.seat)?;
-            if graded.contains(&d.seat) && view.street == Street::River {
-                grades.push(grade(record, &bots, index, number, &view, d.applied)?);
+            if self.graded.contains(&d.seat) && view.street == Street::River {
+                grades.push(grade(
+                    record, &self.bots, self.hands, number, &view, d.applied,
+                )?);
             }
             hand.act(d.seat, d.applied)?;
         }
         // Stateful bots learn from the finished hand, as `arena::play` tells them.
-        for (seat, bot) in bots.iter_mut().enumerate() {
+        for (seat, bot) in self.bots.iter_mut().enumerate() {
             if let Some(Bot::Adaptive(a)) = bot {
                 a.finish_hand(&hand.view(seat)?)?;
             }
         }
+        self.hands += 1;
+        Ok(grades)
     }
-    Ok(grades)
 }
 
 /// The hand dealt from `cards`, as it stood before decision `upto`.

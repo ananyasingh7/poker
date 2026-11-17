@@ -228,11 +228,11 @@ fn seat_lines(text: &str) -> Vec<(usize, String)> {
 /// A compact table of tracker statistics (the stats condition's `completed_hand_stats`).
 fn tracker_lines(stats: &Value, names: &[String], hero: usize) -> Vec<String> {
     let rate = |a: &Value, b: &Value| match (a.as_u64(), b.as_u64()) {
-        (Some(a), Some(b)) if b > 0 => format!("{:>5.0}%", a as f64 / b as f64 * 100.0),
-        _ => "     -".to_owned(),
+        (Some(a), Some(b)) if b > 0 => format!("{:>4.0}%", a as f64 / b as f64 * 100.0),
+        _ => "    -".to_owned(),
     };
     let mut lines = vec![format!(
-        "{:<9}{:>6}{:>6}{:>6}{:>6}{:>6}{:>6}",
+        "{:<8}{:>5}{:>5}{:>5}{:>5}{:>5}{:>5}",
         "", "HANDS", "VPIP", "PFR", "AF", "FOLD", "RIV"
     )];
     for (seat, s) in stats.as_array().into_iter().flatten().enumerate() {
@@ -243,19 +243,19 @@ fn tracker_lines(stats: &Value, names: &[String], hero: usize) -> Vec<String> {
             s["postflop_bets_raises"].as_u64(),
             s["postflop_calls"].as_u64(),
         ) {
-            (Some(b), Some(0)) if b > 0 => "   inf".to_owned(),
-            (Some(b), Some(c)) if c > 0 => format!("{:>6.1}", b as f64 / c as f64),
-            _ => "     -".to_owned(),
+            (Some(b), Some(0)) if b > 0 => "  inf".to_owned(),
+            (Some(b), Some(c)) if c > 0 => format!("{:>5.1}", b as f64 / c as f64),
+            _ => "    -".to_owned(),
         };
         let name: String = names
             .get(seat)
             .cloned()
             .unwrap_or_else(|| format!("SEAT {seat}"))
             .chars()
-            .take(8)
+            .take(7)
             .collect();
         lines.push(format!(
-            "{:<9}{:>6}{}{}{}{}{}",
+            "{:<8}{:>5}{}{}{}{}{}",
             name,
             s["dealt"].to_string(),
             rate(&s["vpip"], &s["preflop_opportunities"]),
@@ -1900,10 +1900,19 @@ impl App {
                     "Statistics of every seat from the hands so far, like the trackers online players use. The model sees these before each move.",
                     theme::FAINT,
                 );
+                // In a replay, the statistics it was shown during that hand.
+                let upto = match self.view {
+                    View::Replay { hand, .. } => state.hands[hand].number,
+                    View::Live => usize::MAX,
+                };
+                if upto != usize::MAX {
+                    doc.line(format!("as shown during hand {upto}"), theme::DIM);
+                }
                 let latest = state
                     .thoughts
                     .iter()
                     .rev()
+                    .filter(|t| t.hand <= upto)
                     .find_map(|t| t.observation.get("completed_hand_stats"));
                 match latest {
                     Some(stats) => {

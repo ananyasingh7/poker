@@ -399,7 +399,11 @@ impl Config {
     }
     /// Analysis label of the treatment: the memory condition, plus the scaffold when one is on.
     pub fn condition(&self) -> String {
-        let memory = format!("{:?}", self.memory).to_lowercase();
+        let mut memory = format!("{:?}", self.memory).to_lowercase();
+        // A batched notebook is a different treatment; the default per-hand one keeps its name.
+        if self.memory.updates() && self.notebook_every > 1 {
+            memory = format!("{memory}-every{}", self.notebook_every);
+        }
         match self.scaffold {
             Scaffold::None => memory,
             scaffold => format!("{memory}+{}", scaffold.name()),
@@ -1836,6 +1840,14 @@ mod tests {
         assert_eq!(notebook_max_tokens(&cfg), 4096 + 5 * 1024);
         cfg.reasoning_enabled = Some(false);
         assert_eq!(notebook_max_tokens(&cfg), 1024);
+        // Its own condition label, so analysis does not pool it with per-hand notes.
+        let mut cfg = config();
+        cfg.memory = Mode::Notes;
+        assert_eq!(cfg.condition(), "notes");
+        cfg.notebook_every = 5;
+        assert_eq!(cfg.condition(), "notes-every5");
+        cfg.memory = Mode::Oracle;
+        assert_eq!(cfg.condition(), "oracle");
         let mut cfg = config();
         cfg.notebook_every = 0;
         assert!(cfg.validate().is_err());

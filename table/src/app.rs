@@ -61,12 +61,14 @@ pub enum Tab {
     Hand,
     Session,
     Hands,
+    Notes,
 }
-const TABS: [(Tab, &str); 4] = [
+const TABS: [(Tab, &str); 5] = [
     (Tab::Mind, "MIND"),
     (Tab::Hand, "HAND"),
     (Tab::Session, "SESSION"),
     (Tab::Hands, "HANDS"),
+    (Tab::Notes, "NOTES"),
 ];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -212,6 +214,60 @@ fn action_name(action: Action) -> String {
         Action::RaiseTo(n) => format!("raise to {n}"),
     }
 }
+/// "Seat N: text" lines of a notebook or cheat sheet, as (seat, text).
+fn seat_lines(text: &str) -> Vec<(usize, String)> {
+    text.lines()
+        .filter_map(|line| {
+            let rest = line.trim().strip_prefix("Seat ")?;
+            let (seat, text) = rest.split_once(':')?;
+            Some((seat.trim().parse().ok()?, text.trim().to_owned()))
+        })
+        .collect()
+}
+
+/// A compact table of tracker statistics (the stats condition's `completed_hand_stats`).
+fn tracker_lines(stats: &Value, names: &[String], hero: usize) -> Vec<String> {
+    let rate = |a: &Value, b: &Value| match (a.as_u64(), b.as_u64()) {
+        (Some(a), Some(b)) if b > 0 => format!("{:>5.0}%", a as f64 / b as f64 * 100.0),
+        _ => "     -".to_owned(),
+    };
+    let mut lines = vec![format!(
+        "{:<9}{:>6}{:>6}{:>6}{:>6}{:>6}{:>6}",
+        "", "HANDS", "VPIP", "PFR", "AF", "FOLD", "RIV"
+    )];
+    for (seat, s) in stats.as_array().into_iter().flatten().enumerate() {
+        if seat == hero {
+            continue;
+        }
+        let af = match (
+            s["postflop_bets_raises"].as_u64(),
+            s["postflop_calls"].as_u64(),
+        ) {
+            (Some(b), Some(0)) if b > 0 => "   inf".to_owned(),
+            (Some(b), Some(c)) if c > 0 => format!("{:>6.1}", b as f64 / c as f64),
+            _ => "     -".to_owned(),
+        };
+        let name: String = names
+            .get(seat)
+            .cloned()
+            .unwrap_or_else(|| format!("SEAT {seat}"))
+            .chars()
+            .take(8)
+            .collect();
+        lines.push(format!(
+            "{:<9}{:>6}{}{}{}{}{}",
+            name,
+            s["dealt"].to_string(),
+            rate(&s["vpip"], &s["preflop_opportunities"]),
+            rate(&s["pfr"], &s["preflop_opportunities"]),
+            af,
+            rate(&s["folded_to_postflop_bets"], &s["faced_postflop_bets"]),
+            rate(&s["folded_to_river_bets"], &s["faced_river_bets"]),
+        ));
+    }
+    lines
+}
+
 fn short_position(position: &str) -> &'static str {
     match position {
         "under_the_gun" => "UTG",
@@ -313,7 +369,7 @@ pub struct App {
     pub tab: Tab,
     pub view: View,
     reveal: bool,
-    scroll: [i32; 4],
+    scroll: [i32; TABS.len()],
     resume_after_replay: bool,
     seen_hands: usize,
 }
@@ -348,7 +404,7 @@ impl App {
                 View::Live
             },
             reveal: false,
-            scroll: [0; 4],
+            scroll: [0; TABS.len()],
             resume_after_replay: false,
             seen_hands: hands,
         }
@@ -531,7 +587,7 @@ impl App {
                 'c' => self.open_setup(state),
                 'h' => self.reveal = !self.reveal,
                 'l' => self.show_live(state),
-                '1'..='4' => self.tab = TABS[ch as usize - '1' as usize].0,
+                '1'..='5' => self.tab = TABS[ch as usize - '1' as usize].0,
                 '+' | '=' => self.change_speed(state, 1),
                 '-' => self.change_speed(state, -1),
                 _ => {}
@@ -903,6 +959,7 @@ impl App {
             Tab::Hand => self.hand_doc(state),
             Tab::Session => self.session_doc(state),
             Tab::Hands => self.hands_doc(state),
+            Tab::Notes => self.notes_doc(state),
         };
         let area = Rect::new(PANEL.x + 7, 23, PANEL.w - 14, H - 27);
         let height: i32 = doc.lines.iter().map(|l| l.font.h() + 1).sum();
@@ -1256,6 +1313,12 @@ impl App {
             ),
             theme::DIM,
         );
+        if let Some(stats) = thought.observation.get("completed_hand_stats") {
+            doc.head("TRACKER STATS IT WAS SHOWN");
+            for line in tracker_lines(stats, &state.names, state.hero) {
+                doc.line(line, theme::DIM);
+            }
+        }
         if let Some(notes) = thought.notes_shown().filter(|n| !n.trim().is_empty()) {
             doc.head(if notes.starts_with("Opponent profiles supplied") {
                 "CHEAT SHEET IT WAS SHOWN"
@@ -1385,6 +1448,14 @@ impl App {
                 theme::INK,
             );
         }
+        if !log.river.is_empty() {
+            let lost: f64 = log.river.iter().map(|g| g.loss).sum();
+            doc.pair(
+                "river choices cost",
+                format!("{:.1} bb", lost / a.big_blind as f64),
+                if lost > 0.0 { theme::BAD } else { theme::INK },
+            );
+        }
 
         doc.head("DECISIONS");
         if a.decisions.is_empty() {
@@ -1433,7 +1504,7 @@ impl App {
             if let Some(g) = &d.graded {
                 let third = doc.line(
                     format!(
-                        "  needs {:.0}%  EV: call {}, fold 0",
+                        "  needs {:.0}%  EV call {}",
                         g.required * 100.0,
                         signed(g.ev_call, 1)
                     ),
@@ -1451,11 +1522,37 @@ impl App {
             let fourth = doc.line(rule, theme::FAINT);
             fourth.click = click;
             fourth.marked = marked;
+            if let Some(g) = log.river.iter().find(|g| g.decision == d.index) {
+                let text = if g.loss > 0.0 {
+                    format!(
+                        "  river: {} better by {:.1} bb",
+                        action_name(g.best),
+                        g.loss / a.big_blind as f64
+                    )
+                } else {
+                    "  river: the best choice".to_owned()
+                };
+                let line = doc.line(
+                    text,
+                    if g.loss > 0.0 {
+                        theme::BAD
+                    } else {
+                        theme::GOOD
+                    },
+                );
+                line.right = Some((g.kind.name().to_owned(), theme::DIM));
+                line.click = click;
+                line.marked = marked;
+            }
             if let Some(reason) = &d.fallback {
                 doc.line(format!("  FALLBACK played: {reason}"), theme::BAD);
             }
         }
         doc.head("HOW TO READ THIS");
+        doc.para(
+            "River choices are graded by replaying every option (check, call, fold, bet sizes, all-in) against every hand each bot could hold given how it plays and what it did, with the bots' real answers: the best a player who knows how each bot plays could do, without seeing its cards.",
+            theme::FAINT,
+        );
         doc.para(
             "Equity is the share of showdowns it would win against the cards the others really held. EV call = equity x (pot + call) - call, in chips; folding is 0. Only calls and folds are graded: the lab has no model yet of how opponents answer a bet or raise. The rule is the lab's solid bot. Click a decision to see what it was thinking.",
             theme::FAINT,
@@ -1528,6 +1625,18 @@ impl App {
             ),
             theme::DIM,
         );
+        if row["river_graded"].as_u64().unwrap_or(0) > 0 {
+            doc.pair(
+                "river choices cost",
+                format!("{:.0} bb/100", number("river_cost_bb_per_100")),
+                theme::INK,
+            );
+            doc.pair(
+                "  graded river decisions",
+                row["river_graded"].to_string(),
+                theme::DIM,
+            );
+        }
         doc.pair("plays a hand (VPIP)", percent(&row["vpip"]), theme::INK);
         doc.pair("raises before flop (PFR)", percent(&row["pfr"]), theme::INK);
         doc.pair(
@@ -1557,6 +1666,40 @@ impl App {
             } else {
                 theme::INK
             },
+        );
+        doc.head("LEAKS");
+        let kind = |k: &str| {
+            let e = &row["river_kinds"][k];
+            match e["count"].as_u64() {
+                Some(n) => format!("{n}, {:.0} bb/100", e["bb_per_100"].as_f64().unwrap_or(0.0)),
+                None => "none".to_owned(),
+            }
+        };
+        doc.pair("river: missed bets", kind("missed bet"), theme::INK);
+        doc.pair("river: bet the wrong size", kind("sizing"), theme::INK);
+        doc.pair("river: bets that lost", kind("bad bet"), theme::INK);
+        let bluffs = row["bluffs"].as_u64().unwrap_or(0);
+        doc.pair(
+            "bluffs called down",
+            if bluffs > 0 {
+                format!("{} of {bluffs}", row["bluffs_called_down"])
+            } else {
+                "no bluffs".to_owned()
+            },
+            theme::INK,
+        );
+        doc.pair(
+            "answers cut off (fallback)",
+            row["truncations"].to_string(),
+            if row["truncations"].as_u64().unwrap_or(0) > 0 {
+                theme::BAD
+            } else {
+                theme::INK
+            },
+        );
+        doc.para(
+            "A bluff is a bet with under 30% equity against the cards really held; called down means it went to showdown anyway, as it does against a calling station.",
+            theme::FAINT,
         );
         if hands < 200 {
             doc.para(
@@ -1650,6 +1793,125 @@ impl App {
             doc.pair(label, format!("{value:>5} {range:>12}"), theme::INK);
         }
         doc.para("Cheat sheet and own notes were measured with the facts sheet on. Own notes are not yet clearly different from zero.", theme::FAINT);
+    }
+
+    /// What the watched seat knows about its opponents: the cheat sheet, its own notes and how
+    /// they changed, or the tracker statistics, depending on the help in force.
+    fn notes_doc(&self, state: &State) -> Doc {
+        let mut doc = Doc::new();
+        doc.title("NOTES");
+        let help = match &state.applied {
+            Some(settings) => settings.notes,
+            // A saved lab run: read its condition.
+            None => match state.hands.last().map(|h| h.help.as_str()).unwrap_or("") {
+                h if h.contains("ORACLE") => Notes::CheatSheet,
+                h if h.contains("NOTES") => Notes::Own,
+                h if h.contains("STATS") => Notes::Tracker,
+                _ => Notes::Off,
+            },
+        };
+        let name = |seat: usize| {
+            state
+                .names
+                .get(seat)
+                .cloned()
+                .unwrap_or_else(|| format!("SEAT {seat}"))
+        };
+        match help {
+            Notes::CheatSheet => {
+                doc.para(
+                    "The cheat sheet: an exact description of how each bot plays. Real poker has no such thing; it measures the most that knowing your opponents can be worth.",
+                    theme::FAINT,
+                );
+                for (seat, text) in seat_lines(&state.notebook) {
+                    doc.head(name(seat));
+                    doc.para(&text, theme::INK);
+                }
+            }
+            Notes::Own => {
+                doc.para(
+                    "Notes the model writes about each opponent after every hand, as a player would. This is the realistic way to learn who is who.",
+                    theme::FAINT,
+                );
+                // In a replay, the notes it had during that hand: those written after earlier
+                // hands. Live, the latest.
+                let before_hand = match self.view {
+                    View::Replay { hand, .. } => Some(state.hands[hand].number),
+                    View::Live => None,
+                };
+                if let Some(number) = before_hand {
+                    doc.line(format!("as it had them during hand {number}"), theme::DIM);
+                }
+                // Every notes update in order, to see when each opponent's profile changed.
+                let mut current: Vec<(usize, String)> = vec![];
+                let mut changes: Vec<(usize, usize, String)> = vec![];
+                for t in state.thoughts.iter().filter(|t| {
+                    t.purpose.starts_with("notebook") && before_hand.is_none_or(|n| t.hand < n)
+                }) {
+                    let Some(after) = &t.notes_after else {
+                        continue;
+                    };
+                    for (seat, text) in seat_lines(after) {
+                        let before = current.iter().find(|(s, _)| *s == seat).map(|(_, x)| x);
+                        if before != Some(&text) {
+                            changes.push((t.hand, seat, text.clone()));
+                            current.retain(|(s, _)| *s != seat);
+                            current.push((seat, text));
+                        }
+                    }
+                }
+                let shown = if before_hand.is_some() || state.notebook.trim().is_empty() {
+                    current.clone()
+                } else {
+                    seat_lines(&state.notebook)
+                };
+                if shown.is_empty() {
+                    doc.para("No notes yet: they are written after each hand.", theme::DIM);
+                }
+                for (seat, text) in &shown {
+                    doc.head(name(*seat));
+                    if let Some((hand, _, _)) = changes.iter().rev().find(|(_, s, _)| s == seat) {
+                        doc.line(format!("since hand {hand}"), theme::FAINT);
+                    }
+                    doc.para(text, theme::INK);
+                }
+                if !changes.is_empty() {
+                    doc.head("HOW THEY CHANGED");
+                    for (hand, seat, text) in &changes {
+                        doc.line(format!("hand {hand}  {}", name(*seat)), theme::DIM);
+                        doc.para(text, theme::FAINT);
+                    }
+                }
+            }
+            Notes::Tracker => {
+                doc.para(
+                    "Statistics of every seat from the hands so far, like the trackers online players use. The model sees these before each move.",
+                    theme::FAINT,
+                );
+                let latest = state
+                    .thoughts
+                    .iter()
+                    .rev()
+                    .find_map(|t| t.observation.get("completed_hand_stats"));
+                match latest {
+                    Some(stats) => {
+                        for line in tracker_lines(stats, &state.names, state.hero) {
+                            doc.line(line, theme::INK);
+                        }
+                        doc.para(
+                            "VPIP: plays a hand. PFR: raises first. AF: bets per call after the flop. FOLD: folds when bet into after the flop; RIV: the same on the river.",
+                            theme::FAINT,
+                        );
+                    }
+                    None => doc.para("No statistics yet: they count finished hands.", theme::DIM),
+                }
+            }
+            Notes::Off => doc.para(
+                "No notes at this help setting. Press C and choose CHEAT SHEET, OWN NOTES or TRACKER.",
+                theme::DIM,
+            ),
+        }
+        doc
     }
 
     fn hands_doc(&self, state: &State) -> Doc {
@@ -1836,7 +2098,7 @@ impl App {
             theme::DIM,
         );
         y += 16;
-        let rows: [(&str, &str, &str, &str); 4] = [
+        let rows: [(&str, &str, &str, &str); 5] = [
             (
                 "FACTS SHEET",
                 "position, pot odds, hand strength",
@@ -1855,6 +2117,12 @@ impl App {
                 " +13",
                 "not yet clear",
             ),
+            (
+                "TRACKER",
+                "stats per opponent, like a HUD",
+                "   -",
+                "not measured yet",
+            ),
             ("BASELINE", "no help at all", " +50", "its own level"),
         ];
         for (i, (name, what, gain, verdict)) in rows.iter().enumerate() {
@@ -1862,6 +2130,7 @@ impl App {
                 0 => self.draft.facts_sheet,
                 1 => self.draft.notes == Notes::CheatSheet,
                 2 => self.draft.notes == Notes::Own,
+                3 => self.draft.notes == Notes::Tracker,
                 _ => self.draft.is_baseline(),
             };
             if check(c, input, x, y, 488, on, false) {
@@ -1869,6 +2138,7 @@ impl App {
                     0 => self.draft.facts_sheet = !on,
                     1 => self.draft.notes = if on { Notes::Off } else { Notes::CheatSheet },
                     2 => self.draft.notes = if on { Notes::Off } else { Notes::Own },
+                    3 => self.draft.notes = if on { Notes::Off } else { Notes::Tracker },
                     _ => {
                         self.draft.facts_sheet = false;
                         self.draft.notes = Notes::Off;
@@ -1883,14 +2153,18 @@ impl App {
                 y,
                 verdict,
                 Font::Body,
-                if i == 2 { theme::DIM } else { theme::GOOD },
+                if i == 2 || i == 3 {
+                    theme::DIM
+                } else {
+                    theme::GOOD
+                },
             );
             y += 14;
         }
         c.text(
             x + 16,
             y,
-            "Cheat sheet and own notes are one or the other, as the lab measured them.",
+            "Cheat sheet, own notes and tracker are one at a time, as the lab measures them.",
             Font::Body,
             theme::FAINT,
         );

@@ -33,7 +33,7 @@ USAGE (from the poker-lab directory, so the key file and runs/ are found):
   poker-table --no-save       do not save the session
   poker-table --snapshot DIR  write pictures of every screen (mock model) and exit
 
-KEYS  space pause/resume   c settings   h show all cards   tab or 1-4 panel tabs
+KEYS  space pause/resume   c settings   h show all cards   tab or 1-5 panel tabs
       left/right step through hands   up/down previous/next hand   l or esc back to live   +/- speed";
 
 struct Options {
@@ -158,7 +158,9 @@ fn snapshot(dir: &Path, open: Option<&Path>) -> Result<(), String> {
         shot(&mut app, "run-2-hand", &idle)?;
         app.tab = Tab::Session;
         shot(&mut app, "run-3-session", &idle)?;
-        println!("wrote 3 pictures to {}", dir.display());
+        app.tab = Tab::Notes;
+        shot(&mut app, "run-4-notes", &idle)?;
+        println!("wrote 4 pictures to {}", dir.display());
         return Ok(());
     }
     shot(&mut app, "1-setup", &idle)?;
@@ -225,6 +227,8 @@ fn snapshot(dir: &Path, open: Option<&Path>) -> Result<(), String> {
     shot(&mut app, "7-session", &idle)?;
     app.tab = Tab::Hands;
     shot(&mut app, "8-hands", &idle)?;
+    app.tab = Tab::Notes;
+    shot(&mut app, "8b-notes", &idle)?;
     shot(
         &mut app,
         "9-settings-mid-game",
@@ -234,7 +238,7 @@ fn snapshot(dir: &Path, open: Option<&Path>) -> Result<(), String> {
         },
     )?;
     shared.control(|state| state.quit = true);
-    println!("wrote 9 pictures to {}", dir.display());
+    println!("wrote 10 pictures to {}", dir.display());
     Ok(())
 }
 

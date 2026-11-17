@@ -299,3 +299,51 @@ fn thinking_asks_for_low_reasoning_effort() {
     assert_eq!(quick.reasoning_effort, None);
     assert!(!quick.reask_truncated);
 }
+
+#[test]
+fn tracker_help_shows_stats_and_river_decisions_are_graded_as_hands_finish() {
+    let env = Env {
+        key: Some("mock-key".into()),
+        endpoint: Some(mock::serve().unwrap()),
+        runs_root: None,
+    };
+    let settings = Settings {
+        model: "mock/model".into(),
+        facts_sheet: false,
+        notes: Notes::Tracker,
+        ..Settings::default()
+    };
+    assert_eq!(settings.help_label(), "TRACKER");
+    assert_eq!(settings.lab_config().memory, poker_lab::memory::Mode::Stats);
+    let shared = start(settings, env);
+    wait_for(&shared, "a graded river decision", |s| {
+        s.hands.len() >= 10 && s.hands.iter().any(|h| !h.river.is_empty())
+    });
+    settle(&shared);
+    let state = shared.lock();
+    assert_eq!(state.notice, None);
+    // Every river decision of the watched seat is graded, and only those.
+    for hand in &state.hands {
+        let rivers = hand
+            .analysis
+            .decisions
+            .iter()
+            .filter(|d| d.street == poker_lab::engine::Street::River)
+            .count();
+        assert_eq!(hand.river.len(), rivers, "hand {}", hand.number);
+        for g in &hand.river {
+            assert!(g.best_value >= g.chosen_value);
+        }
+    }
+    let row = &state.stats.rows[state.hero];
+    let graded: usize = state.hands.iter().map(|h| h.river.len()).sum();
+    assert_eq!(row["river_graded"].as_u64().unwrap() as usize, graded);
+    // After the first hand the model is shown tracker statistics with the postflop fields.
+    let shown = state
+        .thoughts
+        .iter()
+        .filter(|t| t.hand > 1 && t.is_action())
+        .find_map(|t| t.observation.get("completed_hand_stats"))
+        .expect("tracker stats were sent");
+    assert!(shown[1].get("faced_river_bets").is_some());
+}

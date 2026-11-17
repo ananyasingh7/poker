@@ -16,6 +16,7 @@ use poker_lab::{
     },
     opponents::Style,
     private_fs,
+    river::{RiverGrade, RiverGrader},
     scaffold::Scaffold,
 };
 use serde_json::{Value, json};
@@ -71,6 +72,8 @@ pub enum Notes {
     Own,
     /// Accurate descriptions of the scripted opponents (`memory: oracle`).
     CheatSheet,
+    /// Tracker statistics of every seat, like a poker HUD (`memory: stats`).
+    Tracker,
 }
 
 /// What the spectator chooses before the game and during a pause.
@@ -115,6 +118,7 @@ impl Settings {
         match self.notes {
             Notes::Own => parts.push("OWN NOTES"),
             Notes::CheatSheet => parts.push("CHEAT SHEET"),
+            Notes::Tracker => parts.push("TRACKER"),
             Notes::Off => {}
         }
         if parts.is_empty() {
@@ -158,6 +162,7 @@ impl Settings {
                 Notes::Off => Mode::None,
                 Notes::Own => Mode::Notes,
                 Notes::CheatSheet => Mode::Oracle,
+                Notes::Tracker => Mode::Stats,
             },
             notebook_chars: 2000,
             opponents: Opponents::Mixed,
@@ -279,6 +284,8 @@ pub struct HandLog {
     pub record: Record,
     pub frames: Vec<Frame>,
     pub analysis: HandAnalysis,
+    /// The watched seat's river decisions graded against the bots (see `poker_lab::river`).
+    pub river: Vec<RiverGrade>,
     /// The help in force when it was played.
     pub help: String,
 }
@@ -290,6 +297,8 @@ pub struct HelpTotals {
     pub net_bb: f64,
     pub adjusted_bb: f64,
     pub mistake_bb: f64,
+    /// Expected big blinds given up by river choices.
+    pub river_bb: f64,
 }
 
 /// Session-wide numbers. `rows` are the lab's `analyze` style rows, one per seat.
@@ -667,6 +676,8 @@ struct Game {
     names: Vec<String>,
     tallies: BTreeMap<String, Tally>,
     by_help: Vec<HelpTotals>,
+    /// Grades the watched seat's river decisions as hands finish; dropped after an error.
+    river: Option<RiverGrader>,
     run_dir: Option<PathBuf>,
     segment: Option<Segment>,
     segments: usize,
@@ -713,6 +724,7 @@ impl Game {
             names: vec![],
             tallies: BTreeMap::new(),
             by_help: vec![],
+            river: RiverGrader::new(&settings.lab_config().seat_styles(), &[HERO]).ok(),
             run_dir,
             segment: None,
             segments: 0,
@@ -768,7 +780,7 @@ impl Game {
                 match settings.notes {
                     Notes::CheatSheet => agent.set_notebook(config.oracle_notes()),
                     Notes::Own => agent.restore_memory(std::mem::take(&mut self.own_notes)),
-                    Notes::Off => {}
+                    Notes::Off | Notes::Tracker => {}
                 }
                 let agent = Rc::new(RefCell::new(agent));
                 self.model = Some(agent.clone());
@@ -878,6 +890,21 @@ impl Game {
                 let analysis = analyse(&record, HERO)?;
                 let models: BTreeSet<String> = [self.names[HERO].clone()].into();
                 analyze::tally(&record, &self.names, &models, true, &mut self.tallies)?;
+                let river = match self.river.as_mut().map(|g| g.grade_hand(&record)) {
+                    Some(Ok(grades)) => grades,
+                    Some(Err(error)) => {
+                        // Grading is a lens, not the game: report it and stop grading.
+                        self.river = None;
+                        self.shared.lock().notice =
+                            Some(format!("River grading stopped at hand {number}: {error}"));
+                        vec![]
+                    }
+                    None => vec![],
+                };
+                self.tallies
+                    .entry(self.names[HERO].clone())
+                    .or_default()
+                    .add_river(&river);
                 match self.by_help.last_mut() {
                     Some(last) if last.help == help => {}
                     _ => self.by_help.push(HelpTotals {
@@ -890,6 +917,7 @@ impl Game {
                 totals.net_bb += analysis.net_bb();
                 totals.adjusted_bb += analysis.adjusted_bb();
                 totals.mistake_bb += analysis.mistake_cost / analysis.big_blind as f64;
+                totals.river_bb += river_bb(&river, analysis.big_blind);
                 let stats = self.stats.borrow().clone();
                 if let Some(segment) = &mut self.segment {
                     segment.record(&record, &stats, &self.labels)?;
@@ -923,6 +951,7 @@ impl Game {
                         record,
                         frames,
                         analysis,
+                        river,
                         help,
                     });
                     if let Some(error) = lifecycle_errors.first() {
@@ -1022,6 +1051,11 @@ pub fn spawn(shared: Arc<Shared>, env: Env) -> std::thread::JoinHandle<()> {
     })
 }
 
+/// Expected big blinds the river choices gave up.
+fn river_bb(grades: &[RiverGrade], big_blind: u64) -> f64 {
+    grades.iter().map(|g| g.loss).sum::<f64>() / big_blind as f64
+}
+
 /// Loads a saved lab run (a session directory with `evaluator.jsonl`) for replay and analysis.
 pub fn load_run(dir: &Path) -> Result<State, String> {
     let at = |e: std::io::Error| format!("{}: {e}", dir.display());
@@ -1045,6 +1079,9 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
         }
     }
     let mut tallies: BTreeMap<String, Tally> = BTreeMap::new();
+    let mut grader = config
+        .as_ref()
+        .and_then(|c| RiverGrader::new(&c.seat_styles(), &[c.model_seat]).ok());
     let mut totals = HelpTotals {
         help: help.clone(),
         ..HelpTotals::default()
@@ -1062,14 +1099,32 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
         let models: BTreeSet<String> = [state.names[state.hero].clone()].into();
         analyze::tally(&record, &state.names, &models, true, &mut tallies)?;
         let analysis = analyse(&record, state.hero)?;
+        let river = match grader.as_mut().map(|g| g.grade_hand(&record)) {
+            Some(Ok(grades)) => grades,
+            Some(Err(error)) => {
+                grader = None;
+                state.notice = Some(format!(
+                    "River grading stopped at hand {}: {error}",
+                    index + 1
+                ));
+                vec![]
+            }
+            None => vec![],
+        };
+        tallies
+            .entry(state.names[state.hero].clone())
+            .or_default()
+            .add_river(&river);
         totals.hands += 1;
         totals.net_bb += analysis.net_bb();
         totals.adjusted_bb += analysis.adjusted_bb();
         totals.mistake_bb += analysis.mistake_cost / analysis.big_blind as f64;
+        totals.river_bb += river_bb(&river, analysis.big_blind);
         state.hands.push(HandLog {
             number: index + 1,
             frames: frames::of_record(&record, &state.names)?,
             analysis,
+            river,
             record,
             help: help.clone(),
         });

@@ -61,7 +61,7 @@ fn spectator_can_start_pause_replay_and_return_to_live() {
 
     // Every tab draws something, live and in replay, with all cards shown or hidden.
     for text in ["", "h"] {
-        for tab in [Tab::Mind, Tab::Hand, Tab::Session, Tab::Hands] {
+        for tab in [Tab::Mind, Tab::Hand, Tab::Session, Tab::Hands, Tab::Notes] {
             app.tab = tab;
             app.frame(&mut canvas, &keys(&[], text), 0);
             assert!(canvas.px.iter().any(|c| *c != canvas.px[0]));
@@ -97,7 +97,7 @@ fn spectator_can_start_pause_replay_and_return_to_live() {
         unreachable!()
     };
     assert_eq!((previous + 1, first), (hand, 0));
-    for tab in [Tab::Mind, Tab::Hand, Tab::Session, Tab::Hands] {
+    for tab in [Tab::Mind, Tab::Hand, Tab::Session, Tab::Hands, Tab::Notes] {
         app.tab = tab;
         app.frame(&mut canvas, &idle, 0);
     }

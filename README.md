@@ -25,6 +25,7 @@ Poker is a useful test of decision-making with incomplete information, but perfo
 - [Spectator table](docs/13-spectator-table.md)
 - [Thinking with low effort: no help, own notes and the cheat sheet](docs/14-thinking-low-effort-and-cheat-sheet.md)
 - [River grading, leak report, tracker stats and cheaper notes](docs/15-river-grading-and-leaks.md)
+- [Everything the model can be sent](docs/16-what-the-model-sees.md)
 - [Paper: arXiv 2606.13815](docs/paper-2606.13815.md)
 - [Paper: arXiv 2605.30094](docs/paper-2605.30094.md)
 - [Paper: arXiv 2604.04157](docs/paper-2604.04157.md)

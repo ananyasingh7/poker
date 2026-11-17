@@ -159,6 +159,12 @@ pub struct ModelSettings {
     #[serde(default = "default_notebook_every")]
     pub notebook_every: u32,
     #[serde(default)]
+    pub notes_thinking_off: bool,
+    #[serde(default)]
+    pub sizing_hint: bool,
+    #[serde(default)]
+    pub size_menu: bool,
+    #[serde(default)]
     pub label_positions: bool,
     /// Experimenter-supplied notebook for the oracle condition.
     pub oracle_notes: Option<String>,

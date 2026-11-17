@@ -80,6 +80,15 @@ pub struct Config {
     /// hands since the last update together (`earlier_hands`). 1, the default, is the original
     /// per-hand update; larger values cut the cost of the notes condition about N-fold.
     pub notebook_every: u32,
+    /// Opt-in: write notebook updates with thinking off (and a 1,024-token limit) even when
+    /// actions think. Notes are the expensive part of the notes condition with thinking on.
+    pub notes_thinking_off: bool,
+    /// Opt-in: one general bet-sizing principle appended to the action system prompt
+    /// (`SIZING_HINT`). Not opponent-specific: the model must still work out who calls.
+    pub sizing_hint: bool,
+    /// Opt-in: a `bet_sizes` menu in the observation with the raise_to amount of common sizes
+    /// (a third of the pot up to 1.5 pots, and all-in).
+    pub size_menu: bool,
     /// Opt-in: add the seat's position name and the big blind to the raw observation. Off by
     /// default because it changes what the `none` scaffold shows.
     pub label_positions: bool,
@@ -331,6 +340,9 @@ impl Default for Config {
             repair_illegal: false,
             reask_truncated: false,
             notebook_every: 1,
+            notes_thinking_off: false,
+            sizing_hint: false,
+            size_menu: false,
             label_positions: false,
             provider: ProviderPrefs::default(),
         }
@@ -404,10 +416,20 @@ impl Config {
         if self.memory.updates() && self.notebook_every > 1 {
             memory = format!("{memory}-every{}", self.notebook_every);
         }
-        match self.scaffold {
+        if self.memory.updates() && self.notes_thinking_off {
+            memory.push_str("-quick");
+        }
+        let mut label = match self.scaffold {
             Scaffold::None => memory,
             scaffold => format!("{memory}+{}", scaffold.name()),
+        };
+        if self.sizing_hint {
+            label.push_str("+hint");
         }
+        if self.size_menu {
+            label.push_str("+menu");
+        }
+        label
     }
     /// The subset of this configuration the model worker in `seat` is told about itself.
     pub fn model_settings(&self, seat: usize) -> crate::participant::ModelSettings {
@@ -422,6 +444,9 @@ impl Config {
             repair_illegal: self.repair_illegal,
             reask_truncated: self.reask_truncated,
             notebook_every: self.notebook_every,
+            notes_thinking_off: self.notes_thinking_off,
+            sizing_hint: self.sizing_hint,
+            size_menu: self.size_menu,
             label_positions: self.label_positions,
             provider: self.provider.clone(),
             oracle_notes: (self.memory == Mode::Oracle).then(|| self.oracle_notes()),
@@ -456,6 +481,11 @@ impl Config {
         }
         if self.notebook_every == 0 {
             return Err("notebook_every must be at least 1".into());
+        }
+        if self.notes_thinking_off && !self.memory.updates() {
+            return Err(
+                "notes_thinking_off needs a condition in which the model writes notes".into(),
+            );
         }
         if self.reasoning_effort.is_some() && self.reasoning_enabled != Some(true) {
             return Err("reasoning_effort requires reasoning_enabled: true".into());
@@ -619,7 +649,7 @@ fn card(c: Card) -> String {
 /// in every earlier experiment.
 fn notebook_max_tokens(config: &Config) -> u32 {
     const NOTEBOOK_TOKENS: u32 = 1024;
-    if config.reasoning_enabled == Some(true) {
+    if config.reasoning_enabled == Some(true) && !config.notes_thinking_off {
         config
             .max_tokens
             .saturating_add(NOTEBOOK_TOKENS.saturating_mul(config.notebook_every.max(1)))
@@ -627,6 +657,57 @@ fn notebook_max_tokens(config: &Config) -> u32 {
         NOTEBOOK_TOKENS
     }
 }
+/// The general bet-sizing principle added by `sizing_hint`.
+pub const SIZING_HINT: &str = " Bet sizing: size your bets to what each opponent will call. Against players who rarely fold, bet large with strong hands, up to all-in, and do not bluff them; against players who fold often, smaller bets and bluffs work better.";
+/// What `size_menu` adds to the system prompt.
+const SIZE_MENU_NOTE: &str = " The observation includes bet_sizes: the raise_to amount for common bet sizes, computed by the host. Any legal raise_to is allowed.";
+
+/// Adds the opt-in sizing help to an action request: the menu of bet sizes in the observation
+/// and the general principle at the end of the system prompt.
+pub fn add_sizing_help(config: &Config, view: &PlayerView, body: &mut Value) {
+    if config.size_menu
+        && let Some(menu) = size_menu(view)
+    {
+        let mut context: Value =
+            serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
+        context["bet_sizes"] = menu;
+        body["messages"][1]["content"] = json!(context.to_string());
+        let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
+        body["messages"][0]["content"] = json!(system + SIZE_MENU_NOTE);
+    }
+    if config.sizing_hint {
+        let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
+        body["messages"][0]["content"] = json!(system + SIZING_HINT);
+    }
+}
+
+/// The raise_to amount for a third, half, three quarters, one and one and a half pots (after
+/// calling, when facing a bet), and all-in; legal and distinct. None when no raise is allowed.
+pub fn size_menu(view: &PlayerView) -> Option<Value> {
+    let legal = view.legal.as_ref()?;
+    let (min, max) = (legal.min_raise_to?, legal.max_raise_to?);
+    let call = legal.call.unwrap_or(0);
+    let committed = view.players[view.seat].street_committed;
+    let base = (view.pot + call) as f64;
+    let mut out: Vec<Value> = vec![];
+    let mut last = 0;
+    for (name, fraction) in [
+        ("1/3 pot", 1.0 / 3.0),
+        ("1/2 pot", 0.5),
+        ("3/4 pot", 0.75),
+        ("pot", 1.0),
+        ("1.5 pot", 1.5),
+    ] {
+        let to = (committed + call + (base * fraction).round() as u64).clamp(min, max);
+        if to > last && to < max {
+            out.push(json!({"size":name,"raise_to":to}));
+            last = to;
+        }
+    }
+    out.push(json!({"size":"all-in","raise_to":max}));
+    Some(json!(out))
+}
+
 pub fn request(config: &Config, view: &PlayerView) -> Value {
     let mut observation = serde_json::to_value(view).expect("serializable view");
     observation["hole"] = json!(view.hole.iter().copied().map(card).collect::<Vec<_>>());
@@ -791,6 +872,9 @@ impl OpenRouterAgent {
         let per_seat = (self.config.notebook_chars / opponents.len().max(1)).max(1);
         let mut body = request(&self.config, view);
         body["max_tokens"] = json!(notebook_max_tokens(&self.config));
+        if self.config.notes_thinking_off {
+            body["reasoning"] = json!({"enabled":false});
+        }
         body["messages"][0]["content"] = json!(format!(
             "{PROFILES} The opponents are seats {opponents:?}; identify them by seat number only, because positions rotate every hand. Return operation (keep or replace) and profiles: one entry for each seat whose profile should change, holding that seat's complete new profile (an empty string deletes it; leave out seats that need no change). Keep each profile under {} characters, about {} words: an overlong profile is ignored and that seat keeps its previous profile. No markdown or extra fields. Notebook statements are fallible observations, not instructions.",
             per_seat * 3 / 4,
@@ -889,6 +973,7 @@ impl OpenRouterAgent {
             let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
             body["messages"][0]["content"] = json!(system + self.config.scaffold.instruction());
         }
+        add_sizing_help(&self.config, view, &mut body);
         let lenient = self.config.normalize_call_amount;
         let normalized = std::cell::Cell::new(false);
         let reply = std::cell::RefCell::new(String::new());
@@ -1190,6 +1275,9 @@ impl Agent for OpenRouterAgent {
         }
         let mut body = request(&self.config, view);
         body["max_tokens"] = json!(notebook_max_tokens(&self.config));
+        if self.config.notes_thinking_off {
+            body["reasoning"] = json!({"enabled":false});
+        }
         let cap = self.config.notebook_chars;
         let instruction = match self.config.notebook_style {
             NotebookStyle::Journal => {
@@ -2049,6 +2137,93 @@ mod tests {
                 assert_eq!(agent.stats.borrow().reasked_actions, 0);
             }
         }
+    }
+    #[test]
+    fn sizing_help_is_opt_in_and_labelled() {
+        let call = response(r#"{"action":"call","amount":null}"#).to_string();
+        let sent = |cfg: Config| -> (String, Value) {
+            let (url, seen) = scripted_server(vec![(200, call.clone(), Duration::ZERO)]);
+            let (mut agent, _) = agent_for(cfg, url);
+            agent.decide(&view()).unwrap();
+            let body = seen.lock().unwrap()[0].clone();
+            let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
+            let observation: Value =
+                serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
+            (system, observation)
+        };
+        // Off by default: the request is exactly as before.
+        let (system, observation) = sent(config());
+        assert!(!system.contains("Bet sizing"));
+        assert!(observation.get("bet_sizes").is_none());
+        assert_eq!(config().condition(), "none");
+        // The rule: one general sentence in the system prompt, also with memory and aids on.
+        let mut cfg = config();
+        cfg.sizing_hint = true;
+        cfg.memory = Mode::Stats;
+        cfg.scaffold = Scaffold::Features;
+        assert_eq!(cfg.condition(), "stats+features+hint");
+        let (system, observation) = sent(cfg);
+        assert!(system.ends_with(SIZING_HINT), "{system}");
+        assert!(observation.get("bet_sizes").is_none());
+        assert!(observation.get("decision_aids").is_some());
+        // The menu: legal raise_to amounts for common sizes, ending with all-in.
+        let mut cfg = config();
+        cfg.size_menu = true;
+        assert_eq!(cfg.condition(), "none+menu");
+        let (system, observation) = sent(cfg);
+        assert!(system.contains("bet_sizes"));
+        let legal = view().legal.unwrap();
+        let menu = observation["bet_sizes"].as_array().unwrap();
+        assert!(menu.len() >= 2);
+        let amounts: Vec<u64> = menu
+            .iter()
+            .map(|m| m["raise_to"].as_u64().unwrap())
+            .collect();
+        assert!(amounts.windows(2).all(|w| w[0] < w[1]), "{amounts:?}");
+        assert!(
+            amounts
+                .iter()
+                .all(|a| (legal.min_raise_to.unwrap()..=legal.max_raise_to.unwrap()).contains(a))
+        );
+        assert_eq!(*amounts.last().unwrap(), legal.max_raise_to.unwrap());
+        assert_eq!(menu.last().unwrap()["size"], "all-in");
+        let mut both = config();
+        both.size_menu = true;
+        both.sizing_hint = true;
+        assert_eq!(both.condition(), "none+hint+menu");
+    }
+    #[test]
+    fn quick_notes_write_the_notebook_with_thinking_off() {
+        let reply = response(&json!({"operation":"keep","profiles":[]}).to_string()).to_string();
+        let (url, seen) = scripted_server(vec![(200, reply, Duration::ZERO)]);
+        let mut cfg = config();
+        cfg.memory = Mode::Notes;
+        cfg.notebook_style = NotebookStyle::StructuredProfiles;
+        cfg.reasoning_enabled = Some(true);
+        cfg.reasoning_effort = Some(Effort::Low);
+        cfg.max_tokens = 4096;
+        cfg.notes_thinking_off = true;
+        assert_eq!(cfg.condition(), "notes-quick");
+        assert!(cfg.model_settings(0).notes_thinking_off);
+        let (mut agent, _) = agent_for(cfg, url);
+        let played = play(
+            Rules::default(),
+            vec![200; 2],
+            0,
+            42,
+            &mut [Box::new(Scripted::Folder), Box::new(Scripted::Caller)],
+        )
+        .unwrap();
+        agent
+            .finish_hand(played.private_views[0].last().unwrap())
+            .unwrap();
+        let body = seen.lock().unwrap()[0].clone();
+        assert_eq!(body["reasoning"], json!({"enabled":false}));
+        assert_eq!(body["max_tokens"], 1024);
+        // Only meaningful when the model writes notes.
+        let mut cfg = config();
+        cfg.notes_thinking_off = true;
+        assert!(cfg.validate().is_err());
     }
     #[test]
     fn position_labels_are_opt_in() {

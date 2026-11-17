@@ -62,3 +62,29 @@ The stats condition now also gives, per seat, postflop bets/raises and calls, po
 ## Table
 
 NOTES tab (key `5`), TRACKER help, river grades in HAND and SESSION, LEAKS block: see [docs/13](13-spectator-table.md).
+
+## Tracker vs notes vs cheat sheet (live, 2026-11-16, $0.77)
+
+Two new arms on the deals of docs/14 (seeds 1-10, model in seat 0, 60 hands, thinking on with effort low, `max_tokens: 4096`, no re-ask): `examples/experiment-thinking-low-stats.json` (`runs/thinking-low-stats-v1`, $0.318, all 10 sessions) and `examples/experiment-thinking-low-notes-every5.json` (`runs/thinking-low-notes-every5-v1`, $0.452, cap reached: 8 complete sessions, the 2 partial ones left out). Compared with the seat-0 sessions of the earlier arms on the same seeds; paired against no help, 95% intervals over seeds.
+
+| vs no help | Seeds | Chips (bb/100) | River cost (bb/100) | Cost per hand |
+| --- | --- | --- | --- | --- |
+| No help | 10 | (+116 overall) | 435 | $0.00033 |
+| Tracker stats | 10 | +8 [-43, +58] | **-75 [-141, -9]** | $0.00053 |
+| Own notes, every hand | 5 | +2 [-148, +152] | **-106 [-155, -57]** | $0.00112 |
+| Own notes, every 5 hands | 8 | -6 [-72, +60] | **-144 [-186, -102]** | $0.00077 |
+| Cheat sheet | 10 | +144 [+27, +262] | **-274 [-435, -113]** | $0.00057 |
+
+Where the river cost goes (bb/100, count in brackets):
+
+| | Missed bets | Sizing | Bluffs called down |
+| --- | --- | --- | --- |
+| No help | 224 (81) | 159 (23) | 84% of 38 |
+| Tracker | 137 (59) | 172 (35) | 82% of 45 |
+| Notes, every hand | 73 (22) | 167 (23) | 67% of 21 |
+| Notes, every 5 hands | 103 (37) | 153 (28) | 81% of 21 |
+| Cheat sheet | 127 (43) | 30 (22) | 36% of 39 |
+
+**Reading.** Every kind of opponent information helps on the river, in the expected order: tracker < notes < cheat sheet. Notes every 5 hands do as well as notes every hand, for about 30% less. But only the cheat sheet fixes **bet sizing** (30 against 150-170 for all the others) and **bluffing the station** (36% called down against 67-84%). The cheat sheet says in words "bet your good hands big; never bluff it"; stats and notes tell the model who calls, not what to do about it. When it bets the river with its own notes, the model bets a median of 0.56 of the pot; the best bet was all-in in 19 of 31 cases.
+
+**Cost of notes every 5 hands.** Only 31% cheaper than every hand, not 5x: reasoning about five hands took a median of 4,548 tokens per update, and 23 of 117 updates (20%) truncated even at 9,216 tokens (4,096 + 1,024 per hand, raised after the smoke test truncated at 5,120). Writing notes probably does not need deep reasoning; a thinking-off note update would be far cheaper and is worth a try.

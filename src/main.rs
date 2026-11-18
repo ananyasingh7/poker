@@ -34,13 +34,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let json_output = args.iter().any(|a| a == "--json");
         let no_grades = args.iter().any(|a| a == "--no-grades");
         let per_decision = args.iter().any(|a| a == "--decisions");
+        let turn = args.iter().any(|a| a == "--turn");
         let paths: Vec<_> = args[1..]
             .iter()
-            .filter(|a| !matches!(a.as_str(), "--json" | "--no-grades" | "--decisions"))
+            .filter(|a| {
+                !matches!(
+                    a.as_str(),
+                    "--json" | "--no-grades" | "--decisions" | "--turn"
+                )
+            })
             .collect();
         let [path] = paths.as_slice() else {
             return Err(
-                "usage: poker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades] [--decisions]"
+                "usage: poker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades] [--decisions] [--turn]"
                     .into(),
             );
         };
@@ -56,11 +62,42 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             return Ok(());
         }
-        let analysis = poker_lab::analyze::directory_with(Path::new(path), !no_grades)?;
+        let analysis = poker_lab::analyze::directory_graded(Path::new(path), !no_grades, turn)?;
         if json_output {
             println!("{}", serde_json::to_string_pretty(&analysis)?);
         } else {
             print!("{}", poker_lab::analyze::render(&analysis));
+        }
+        return Ok(());
+    }
+    if args.first().is_some_and(|a| a == "compare") {
+        let json_output = args.iter().any(|a| a == "--json");
+        let turn = args.iter().any(|a| a == "--turn");
+        let usage = "usage: poker-lab compare BATCH_DIRECTORY... [--seat N] [--turn] [--json] [--save FILE.json]";
+        let mut seat = None;
+        let mut save = None;
+        let mut dirs: Vec<&Path> = vec![];
+        let mut rest = args[1..].iter();
+        while let Some(arg) = rest.next() {
+            match arg.as_str() {
+                "--json" | "--turn" => {}
+                "--seat" => seat = Some(rest.next().ok_or(usage)?.parse::<usize>()?),
+                "--save" => save = Some(rest.next().ok_or(usage)?),
+                dir => dirs.push(Path::new(dir)),
+            }
+        }
+        if dirs.is_empty() {
+            return Err(usage.into());
+        }
+        let comparison = poker_lab::compare::compare(&dirs, turn, seat)?;
+        if let Some(file) = save {
+            // The full result (per-seed values included) beside the table, for later reading.
+            std::fs::write(file, serde_json::to_string_pretty(&comparison)?)?;
+        }
+        if json_output {
+            println!("{}", serde_json::to_string_pretty(&comparison)?);
+        } else {
+            print!("{}", poker_lab::compare::render(&comparison));
         }
         return Ok(());
     }
@@ -101,7 +138,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     if args.iter().any(|a| a == "--help") {
         println!(
-            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]   playing style, cost per hand, win rates with seed-block intervals, all-in adjusted results and pot-odds decision grades\n    --decisions: instead, one JSON line per model decision (spot, action, equity against the real cards, pot odds, bettor)\npoker-lab ceiling [FIELD=default|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]   exploitation ceiling against a scripted field\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
+            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]   playing style, cost per hand, win rates with seed-block intervals, all-in adjusted results and pot-odds decision grades\n    --decisions: instead, one JSON line per model decision (spot, action, equity against the real cards, pot odds, bettor)\n    --turn: also grade turn decisions approximately against the bots (slower; see docs/17)\npoker-lab compare BATCH_DIRECTORY... [--seat N] [--turn] [--json] [--save FILE.json]   arms of several runs side by side (model · thinking · condition), paired on shared complete seeds; the first directory's model is the reference\npoker-lab ceiling [FIELD=default|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]   exploitation ceiling against a scripted field\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
         );
         return Ok(());
     }

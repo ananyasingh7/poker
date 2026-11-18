@@ -13,3 +13,9 @@ libc = "0.2"
 
 [workspace]
 members = ["table"]
+
+# The lab's graders (river exact, turn approximate) run after every hand; unoptimised they are
+# slow enough to stall a debug table and its tests
+# (the table runs them on its game thread).
+[profile.dev.package.poker-lab]
+opt-level = 2

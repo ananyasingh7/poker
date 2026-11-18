@@ -225,6 +225,16 @@ fn snapshot(dir: &Path, open: Option<&Path>) -> Result<(), String> {
     )?;
     app.tab = Tab::Session;
     shot(&mut app, "7-session", &idle)?;
+    // The end of the session panel: the leak report and what the lab measured.
+    shot(
+        &mut app,
+        "7b-session-end",
+        &Input {
+            mouse: (600, 200),
+            wheel: 10_000,
+            ..idle.clone()
+        },
+    )?;
     app.tab = Tab::Hands;
     shot(&mut app, "8-hands", &idle)?;
     app.tab = Tab::Notes;

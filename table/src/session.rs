@@ -9,7 +9,7 @@ use poker_lab::{
     analyze::{self, Tally},
     arena::{Agent, Record, replay},
     cards::Card,
-    engine::{Action, PlayerView},
+    engine::{Action, PlayerView, Street},
     memory::{Memory, Mode},
     openrouter::{
         Config, Effort, Format, NotebookStyle, OpenRouterAgent, Opponents, ProviderPrefs, Stats,
@@ -87,8 +87,9 @@ pub struct Settings {
     /// Host-computed facts with every decision (`scaffold: features`).
     pub facts_sheet: bool,
     pub notes: Notes,
-    /// The bet-sizing principle and a menu of bet sizes with every decision (`sizing_hint` and
-    /// `size_menu`; docs/16).
+    /// The sharp bet-sizing rule with every decision (`sharp_sizing`; docs/16 2f). It replaced
+    /// the plain rule plus bet menu on 2026-11-17: on fresh deals it cut river mistakes where the
+    /// plain rule's cut was unresolved, and the menu never showed an effect (docs/17).
     pub bet_sizing: bool,
     /// With own notes and thinking on, write the notes with thinking off (`notes_thinking_off`):
     /// much cheaper.
@@ -170,8 +171,7 @@ impl Settings {
             // A rare runaway answer is re-asked quickly with thinking off instead of folding
             // or checking by default (see docs/14).
             reask_truncated: self.thinking,
-            sizing_hint: self.bet_sizing,
-            size_menu: self.bet_sizing,
+            sharp_sizing: self.bet_sizing,
             notes_thinking_off: self.quick_notes && self.thinking && self.notes == Notes::Own,
             memory: match self.notes {
                 Notes::Off => Mode::None,
@@ -299,7 +299,8 @@ pub struct HandLog {
     pub record: Record,
     pub frames: Vec<Frame>,
     pub analysis: HandAnalysis,
-    /// The watched seat's river decisions graded against the bots (see `poker_lab::river`).
+    /// The watched seat's river decisions graded against the bots (see `poker_lab::river`), and
+    /// its turn decisions graded approximately (`poker_lab::turn`); `street` tells them apart.
     pub river: Vec<RiverGrade>,
     /// The help in force when it was played.
     pub help: String,
@@ -314,6 +315,8 @@ pub struct HelpTotals {
     pub mistake_bb: f64,
     /// Expected big blinds given up by river choices.
     pub river_bb: f64,
+    /// The same for turn choices (approximate grade).
+    pub turn_bb: f64,
 }
 
 /// Session-wide numbers. `rows` are the lab's `analyze` style rows, one per seat.
@@ -739,7 +742,7 @@ impl Game {
             names: vec![],
             tallies: BTreeMap::new(),
             by_help: vec![],
-            river: RiverGrader::new(&settings.lab_config().seat_styles(), &[HERO]).ok(),
+            river: RiverGrader::with_turn(&settings.lab_config().seat_styles(), &[HERO]).ok(),
             run_dir,
             segment: None,
             segments: 0,
@@ -910,8 +913,9 @@ impl Game {
                     Some(Err(error)) => {
                         // Grading is a lens, not the game: report it and stop grading.
                         self.river = None;
-                        self.shared.lock().notice =
-                            Some(format!("River grading stopped at hand {number}: {error}"));
+                        self.shared.lock().notice = Some(format!(
+                            "River and turn grading stopped at hand {number}: {error}"
+                        ));
                         vec![]
                     }
                     None => vec![],
@@ -932,7 +936,8 @@ impl Game {
                 totals.net_bb += analysis.net_bb();
                 totals.adjusted_bb += analysis.adjusted_bb();
                 totals.mistake_bb += analysis.mistake_cost / analysis.big_blind as f64;
-                totals.river_bb += river_bb(&river, analysis.big_blind);
+                totals.river_bb += street_bb(&river, Street::River, analysis.big_blind);
+                totals.turn_bb += street_bb(&river, Street::Turn, analysis.big_blind);
                 let stats = self.stats.borrow().clone();
                 if let Some(segment) = &mut self.segment {
                     segment.record(&record, &stats, &self.labels)?;
@@ -1066,9 +1071,14 @@ pub fn spawn(shared: Arc<Shared>, env: Env) -> std::thread::JoinHandle<()> {
     })
 }
 
-/// Expected big blinds the river choices gave up.
-fn river_bb(grades: &[RiverGrade], big_blind: u64) -> f64 {
-    grades.iter().map(|g| g.loss).sum::<f64>() / big_blind as f64
+/// Expected big blinds the choices on one graded street gave up.
+fn street_bb(grades: &[RiverGrade], street: Street, big_blind: u64) -> f64 {
+    grades
+        .iter()
+        .filter(|g| g.street == street)
+        .map(|g| g.loss)
+        .sum::<f64>()
+        / big_blind as f64
 }
 
 /// Loads a saved lab run (a session directory with `evaluator.jsonl`) for replay and analysis.
@@ -1096,7 +1106,7 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
     let mut tallies: BTreeMap<String, Tally> = BTreeMap::new();
     let mut grader = config
         .as_ref()
-        .and_then(|c| RiverGrader::new(&c.seat_styles(), &[c.model_seat]).ok());
+        .and_then(|c| RiverGrader::with_turn(&c.seat_styles(), &[c.model_seat]).ok());
     let mut totals = HelpTotals {
         help: help.clone(),
         ..HelpTotals::default()
@@ -1119,7 +1129,7 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
             Some(Err(error)) => {
                 grader = None;
                 state.notice = Some(format!(
-                    "River grading stopped at hand {}: {error}",
+                    "River and turn grading stopped at hand {}: {error}",
                     index + 1
                 ));
                 vec![]
@@ -1134,7 +1144,8 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
         totals.net_bb += analysis.net_bb();
         totals.adjusted_bb += analysis.adjusted_bb();
         totals.mistake_bb += analysis.mistake_cost / analysis.big_blind as f64;
-        totals.river_bb += river_bb(&river, analysis.big_blind);
+        totals.river_bb += street_bb(&river, Street::River, analysis.big_blind);
+        totals.turn_bb += street_bb(&river, Street::Turn, analysis.big_blind);
         state.hands.push(HandLog {
             number: index + 1,
             frames: frames::of_record(&record, &state.names)?,

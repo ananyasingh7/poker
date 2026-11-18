@@ -316,28 +316,45 @@ fn tracker_help_shows_stats_and_river_decisions_are_graded_as_hands_finish() {
     assert_eq!(settings.help_label(), "TRACKER");
     assert_eq!(settings.lab_config().memory, poker_lab::memory::Mode::Stats);
     let shared = start(settings, env);
+    let river = poker_lab::engine::Street::River;
+    let turn = poker_lab::engine::Street::Turn;
     wait_for(&shared, "a graded river decision", |s| {
-        s.hands.len() >= 10 && s.hands.iter().any(|h| !h.river.is_empty())
+        s.hands.len() >= 10
+            && s.hands
+                .iter()
+                .any(|h| h.river.iter().any(|g| g.street == river))
     });
     settle(&shared);
     let state = shared.lock();
     assert_eq!(state.notice, None);
-    // Every river decision of the watched seat is graded, and only those.
+    // Every river and turn decision of the watched seat is graded, and only those.
+    let count = |hand: &session::HandLog, street| {
+        (
+            hand.analysis
+                .decisions
+                .iter()
+                .filter(|d| d.street == street)
+                .count(),
+            hand.river.iter().filter(|g| g.street == street).count(),
+        )
+    };
     for hand in &state.hands {
-        let rivers = hand
-            .analysis
-            .decisions
-            .iter()
-            .filter(|d| d.street == poker_lab::engine::Street::River)
-            .count();
-        assert_eq!(hand.river.len(), rivers, "hand {}", hand.number);
+        for street in [river, turn] {
+            let (decisions, grades) = count(hand, street);
+            assert_eq!(grades, decisions, "hand {} {street:?}", hand.number);
+        }
         for g in &hand.river {
             assert!(g.best_value >= g.chosen_value);
         }
     }
     let row = &state.stats.rows[state.hero];
-    let graded: usize = state.hands.iter().map(|h| h.river.len()).sum();
-    assert_eq!(row["river_graded"].as_u64().unwrap() as usize, graded);
+    let graded = |street| -> usize { state.hands.iter().map(|h| count(h, street).1).sum() };
+    assert_eq!(
+        row["river_graded"].as_u64().unwrap() as usize,
+        graded(river)
+    );
+    assert_eq!(row["turn_graded"].as_u64().unwrap() as usize, graded(turn));
+    assert!(graded(turn) > 0, "no turn decision graded");
     // After the first hand the model is shown tracker statistics with the postflop fields.
     let shown = state
         .thoughts
@@ -352,14 +369,19 @@ fn tracker_help_shows_stats_and_river_decisions_are_graded_as_hands_finish() {
 fn bet_sizing_and_quick_notes_map_to_the_lab_flags() {
     let base = Settings::default();
     let config = base.lab_config();
-    assert!(!config.sizing_hint && !config.size_menu && !config.notes_thinking_off);
+    assert!(
+        !config.sizing_hint
+            && !config.sharp_sizing
+            && !config.size_menu
+            && !config.notes_thinking_off
+    );
     let sizing = Settings {
         facts_sheet: false,
         bet_sizing: true,
         ..Settings::default()
     };
     let config = sizing.lab_config();
-    assert!(config.sizing_hint && config.size_menu);
+    assert!(config.sharp_sizing && !config.sizing_hint && !config.size_menu);
     assert!(!sizing.is_baseline());
     assert_eq!(sizing.help_label(), "BET SIZING");
     let quick = Settings {

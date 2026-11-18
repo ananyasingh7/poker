@@ -164,13 +164,45 @@ const SPEEDS: [f32; 4] = [0.5, 1.0, 2.0, 4.0];
 const REPLAY_STEP_MS: u64 = 900;
 const TYPING_CHARS_PER_SECOND: u128 = 400;
 
-/// The lab's measured effect of each kind of help on DeepSeek, in bb/100 with all-in luck
-/// removed and 95% intervals (docs/12 and milestones 7 and 9).
-const LAB_REFERENCE: [(&str, &str, &str); 4] = [
-    ("baseline", "+50", "[+27, +73]"),
-    ("facts sheet adds", "+102", "[+17, +186]"),
-    ("cheat sheet adds", "+28", "[-2, +60]"),
-    ("own notes add", "+13", "[-12, +38]"),
+/// What the lab measured, one block per setup so results from different eras and models are
+/// never read side by side as if comparable: (heading, unit, rows of label, value, 95% interval).
+/// Thinking-on rows are DeepSeek with low effort on the deals of docs/15 and docs/17; the older
+/// thinking-off rows are milestones 7 and 9 (docs/12). Model rows are docs/17's lineup.
+/// One measured row: label, value and 95% interval.
+type LabRow = (&'static str, &'static str, &'static str);
+const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [
+    (
+        "DeepSeek, thinking on (11-17)",
+        "river mistakes vs no help, bb/100",
+        &[
+            ("tracker + sharp rule", "-142", "[-265, -19]"),
+            ("tracker + plain rule", "-135", "[-213, -57]"),
+            ("cheat sheet", "-274", "[-435, -113]"),
+            ("own notes, every 5", "-144", "[-186, -102]"),
+            ("tracker alone", "-75", "[-141, -9]"),
+        ],
+    ),
+    (
+        "Other models, no help (11-17)",
+        "chips won, bb/100",
+        &[
+            ("DeepSeek, think on", "+175", "[+87, +264]"),
+            ("GLM-5.3 Flash, on", "+180", "[+79, +280]"),
+            ("DeepSeek, think off", "+15", "[-63, +93]"),
+            ("Gemma 4 26B, off", "-10", "[-64, +44]"),
+            ("gpt-oss-20b, on", "-744", "[-984, -504]"),
+        ],
+    ),
+    (
+        "Older: DeepSeek, think off (11-14)",
+        "chips won, bb/100, luck removed",
+        &[
+            ("baseline", "+50", "[+27, +73]"),
+            ("facts sheet adds", "+102", "[+17, +186]"),
+            ("cheat sheet adds", "+28", "[-2, +60]"),
+            ("own notes add", "+13", "[-12, +38]"),
+        ],
+    ),
 ];
 
 fn signed(value: f64, places: usize) -> String {
@@ -1170,7 +1202,7 @@ impl App {
                 .collect();
             doc.para(&menu.join(", "), theme::DIM);
             doc.para(
-                "With BET SIZING its instructions also say: size bets to what each opponent will call; bet big against players who rarely fold, and do not bluff them.",
+                "With BET SIZING its instructions also say: size bets to what each opponent will call; against players who rarely fold, bet at least the pot on the river with strong hands, usually all-in, and never bluff them.",
                 theme::FAINT,
             );
         }
@@ -1460,13 +1492,19 @@ impl App {
                 theme::INK,
             );
         }
-        if !log.river.is_empty() {
-            let lost: f64 = log.river.iter().map(|g| g.loss).sum();
-            doc.pair(
-                "river choices cost",
-                format!("{:.1} bb", lost / a.big_blind as f64),
-                if lost > 0.0 { theme::BAD } else { theme::INK },
-            );
+        for (street, label) in [
+            (Street::River, "river choices cost"),
+            (Street::Turn, "turn choices cost (approx)"),
+        ] {
+            let grades: Vec<_> = log.river.iter().filter(|g| g.street == street).collect();
+            if !grades.is_empty() {
+                let lost: f64 = grades.iter().map(|g| g.loss).sum();
+                doc.pair(
+                    label,
+                    format!("{:.1} bb", lost / a.big_blind as f64),
+                    if lost > 0.0 { theme::BAD } else { theme::INK },
+                );
+            }
         }
 
         doc.head("DECISIONS");
@@ -1535,14 +1573,20 @@ impl App {
             fourth.click = click;
             fourth.marked = marked;
             if let Some(g) = log.river.iter().find(|g| g.decision == d.index) {
+                // The turn grade is an estimate (later play stood in for): marked with "~".
+                let street = if g.street == Street::Turn {
+                    "turn ~"
+                } else {
+                    "river"
+                };
                 let text = if g.loss > 0.0 {
                     format!(
-                        "  river: {} better by {:.1} bb",
+                        "  {street}: {} (+{:.1} bb)",
                         action_name(g.best),
                         g.loss / a.big_blind as f64
                     )
                 } else {
-                    "  river: the best choice".to_owned()
+                    format!("  {street}: the best choice")
                 };
                 let line = doc.line(
                     text,
@@ -1649,6 +1693,18 @@ impl App {
                 theme::DIM,
             );
         }
+        if row["turn_graded"].as_u64().unwrap_or(0) > 0 {
+            doc.pair(
+                "turn choices cost (approx)",
+                format!("{:.0} bb/100", number("turn_cost_bb_per_100")),
+                theme::INK,
+            );
+            doc.pair(
+                "  graded turn decisions",
+                row["turn_graded"].to_string(),
+                theme::DIM,
+            );
+        }
         doc.pair("plays a hand (VPIP)", percent(&row["vpip"]), theme::INK);
         doc.pair("raises before flop (PFR)", percent(&row["pfr"]), theme::INK);
         doc.pair(
@@ -1690,6 +1746,21 @@ impl App {
         doc.pair("river: missed bets", kind("missed bet"), theme::INK);
         doc.pair("river: bet the wrong size", kind("sizing"), theme::INK);
         doc.pair("river: bets that lost", kind("bad bet"), theme::INK);
+        let turn_kind = |k: &str| {
+            let e = &row["turn_kinds"][k];
+            match e["count"].as_u64() {
+                Some(n) => format!("{n}, {:.0} bb/100", e["bb_per_100"].as_f64().unwrap_or(0.0)),
+                None => "none".to_owned(),
+            }
+        };
+        if row["turn_graded"].as_u64().unwrap_or(0) > 0 {
+            doc.pair("turn ~: missed bets", turn_kind("missed bet"), theme::INK);
+            doc.pair(
+                "turn ~: bet the wrong size",
+                turn_kind("sizing"),
+                theme::INK,
+            );
+        }
         let bluffs = row["bluffs"].as_u64().unwrap_or(0);
         doc.pair(
             "bluffs called down",
@@ -1757,6 +1828,13 @@ impl App {
                     ),
                     tone(totals.net_bb),
                 );
+                if totals.river_bb > 0.0 || totals.turn_bb > 0.0 {
+                    doc.pair(
+                        "  given up: river / turn ~",
+                        format!("{:.1} / {:.1} bb", totals.river_bb, totals.turn_bb),
+                        theme::DIM,
+                    );
+                }
             }
         }
 
@@ -1800,11 +1878,14 @@ impl App {
 
     fn reference(&self, doc: &mut Doc) {
         doc.head("WHAT THE LAB MEASURED");
-        doc.line("DeepSeek, bb/100, luck removed", theme::DIM);
-        for (label, value, range) in LAB_REFERENCE {
-            doc.pair(label, format!("{value:>5} {range:>12}"), theme::INK);
+        for (heading, unit, rows) in LAB_REFERENCE {
+            doc.line(heading, theme::INK);
+            doc.line(unit, theme::DIM);
+            for (label, value, range) in rows {
+                doc.pair(label, format!("{value:>5} {range:>12}"), theme::INK);
+            }
         }
-        doc.para("Cheat sheet and own notes were measured with the facts sheet on. Own notes are not yet clearly different from zero.", theme::FAINT);
+        doc.para("Lower river mistakes is better. Each block is its own setup: do not compare numbers across blocks. Model rows are 60-hand sessions against the same five bots, 10-20 deals each.", theme::FAINT);
     }
 
     /// What the watched seat knows about its opponents: the cheat sheet, its own notes and how
@@ -2104,7 +2185,7 @@ impl App {
         c.text(
             x + 32,
             y,
-            "The lab's results were measured with thinking off. On costs more.",
+            "Lab numbers below: DeepSeek with thinking on (low effort). Off is cheaper.",
             Font::Body,
             theme::FAINT,
         );
@@ -2114,7 +2195,7 @@ impl App {
         c.text_right(
             sheet.right() - 16,
             y + 2,
-            "lab result for DeepSeek, bb/100",
+            "river mistakes vs no help, bb/100",
             Font::Body,
             theme::DIM,
         );
@@ -2135,50 +2216,50 @@ impl App {
                 Help::Facts,
                 "FACTS SHEET",
                 "position, pot odds, hand strength",
-                "+102",
-                "helps a lot",
+                "   -",
+                "untested with thinking",
             ),
             (
                 Help::Sizing,
                 "BET SIZING",
-                "sizing rule + menu of bet sizes",
-                "   -",
-                "fewer river mistakes",
+                "sharp rule (tested with tracker)",
+                "-142",
+                "held on new cards",
             ),
             (
                 Help::Cheat,
                 "CHEAT SHEET",
                 "true profile of every opponent",
-                " +28",
-                "helps",
+                "-274",
+                "biggest cut",
             ),
             (
                 Help::Own,
                 "OWN NOTES",
                 "writes notes after each hand",
-                " +13",
-                "not yet clear",
+                "-106",
+                "helps; costs 3x",
             ),
             (
                 Help::Quick,
                 "  QUICK",
                 "own notes written without thinking",
                 "   -",
-                "cheaper",
+                "cheaper; not yet tested",
             ),
             (
                 Help::Tracker,
                 "TRACKER",
                 "stats per opponent, like a HUD",
-                "   -",
+                " -75",
                 "small help",
             ),
             (
                 Help::Baseline,
                 "BASELINE",
                 "no help at all",
-                " +50",
-                "its own level",
+                "   0",
+                "the reference",
             ),
         ];
         for (help, name, what, gain, verdict) in rows {
@@ -2221,7 +2302,7 @@ impl App {
                 y,
                 verdict,
                 Font::Body,
-                if matches!(help, Help::Facts | Help::Cheat | Help::Baseline) {
+                if matches!(help, Help::Sizing | Help::Cheat) {
                     theme::GOOD
                 } else {
                     theme::DIM

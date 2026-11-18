@@ -51,14 +51,16 @@ impl Kind {
     }
 }
 
-/// One graded river decision. Values are the seat's expected stack at the end of the hand,
-/// averaged over the opponents' possible holdings.
+/// One graded river (or, approximately, turn) decision. Values are the seat's expected stack at
+/// the end of the hand, averaged over the opponents' possible holdings.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct RiverGrade {
     /// Index of the hand in the session (0-based) and of the decision within the hand.
     pub hand: usize,
     pub decision: usize,
     pub seat: usize,
+    /// River (exact) or turn (approximate: see `crate::turn`).
+    pub street: Street,
     pub facing_bet: bool,
     pub pot: Chips,
     /// Holdings each live opponent could have, given its policy and what it did.
@@ -74,13 +76,13 @@ pub struct RiverGrade {
 
 /// A scripted seat as it stood at a point in the session: `Adaptive` carries what it has
 /// learned from earlier hands; every other style is stateless between hands.
-enum Bot {
+pub(crate) enum Bot {
     Plain(Style),
     Adaptive(Adaptive),
 }
 impl Bot {
     /// A fresh policy that decides exactly as this seat would now.
-    fn policy(&self) -> Box<dyn Agent> {
+    pub(crate) fn policy(&self) -> Box<dyn Agent> {
         match self {
             Self::Plain(style) => style.agent(),
             Self::Adaptive(a) => Box::new(Solid::new(a.params())),
@@ -103,7 +105,19 @@ pub fn grade_session(
     styles: &[Option<Style>],
     graded: &[usize],
 ) -> Result<Vec<RiverGrade>, String> {
-    let mut grader = RiverGrader::new(styles, graded)?;
+    grade_with(RiverGrader::new(styles, graded)?, records)
+}
+
+/// `grade_session` plus approximate turn grades (`crate::turn`), told apart by `street`.
+pub fn grade_session_with_turn(
+    records: &[Record],
+    styles: &[Option<Style>],
+    graded: &[usize],
+) -> Result<Vec<RiverGrade>, String> {
+    grade_with(RiverGrader::with_turn(styles, graded)?, records)
+}
+
+fn grade_with(mut grader: RiverGrader, records: &[Record]) -> Result<Vec<RiverGrade>, String> {
     let mut grades = vec![];
     for (index, record) in records.iter().enumerate() {
         for mut g in grader.grade_hand(record)? {
@@ -120,6 +134,9 @@ pub struct RiverGrader {
     bots: Vec<Option<Bot>>,
     graded: Vec<usize>,
     hands: usize,
+    /// Also grade turn decisions, approximately (`crate::turn`). Off unless asked for: it takes
+    /// several times as long as the river grade.
+    turn: bool,
 }
 impl RiverGrader {
     pub fn new(styles: &[Option<Style>], graded: &[usize]) -> Result<Self, String> {
@@ -139,7 +156,14 @@ impl RiverGrader {
             bots,
             graded: graded.to_vec(),
             hands: 0,
+            turn: false,
         })
+    }
+    /// As `new`, also grading turn decisions approximately (`crate::turn`).
+    pub fn with_turn(styles: &[Option<Style>], graded: &[usize]) -> Result<Self, String> {
+        let mut grader = Self::new(styles, graded)?;
+        grader.turn = true;
+        Ok(grader)
     }
     /// Grades the graded seats' river decisions in the next hand of the session (`hand` in each
     /// grade counts the hands fed so far, from 0), then lets the bots learn from it.
@@ -153,6 +177,10 @@ impl RiverGrader {
             let view = hand.view(d.seat)?;
             if self.graded.contains(&d.seat) && view.street == Street::River {
                 grades.push(grade(
+                    record, &self.bots, self.hands, number, &view, d.applied,
+                )?);
+            } else if self.turn && self.graded.contains(&d.seat) && view.street == Street::Turn {
+                grades.push(crate::turn::grade(
                     record, &self.bots, self.hands, number, &view, d.applied,
                 )?);
             }
@@ -170,7 +198,7 @@ impl RiverGrader {
 }
 
 /// The hand dealt from `cards`, as it stood before decision `upto`.
-fn rebuild(record: &Record, cards: &[Card], upto: usize) -> Result<Hand, String> {
+pub(crate) fn rebuild(record: &Record, cards: &[Card], upto: usize) -> Result<Hand, String> {
     let mut hand = Hand::with_deck(
         record.rules.clone(),
         record.initial_stacks.clone(),
@@ -185,7 +213,7 @@ fn rebuild(record: &Record, cards: &[Card], upto: usize) -> Result<Hand, String>
 
 /// The record's deck with the given seats' hole cards replaced. Cards are popped from the end:
 /// one card per seat starting left of the button, twice, then the board.
-fn deal(record: &Record, holes: &[(usize, [Card; 2])]) -> Vec<Card> {
+pub(crate) fn deal(record: &Record, holes: &[(usize, [Card; 2])]) -> Vec<Card> {
     let mut cards = deck(record.seed);
     let n = record.initial_stacks.len();
     for (seat, hole) in holes {
@@ -201,7 +229,7 @@ fn deal(record: &Record, holes: &[(usize, [Card; 2])]) -> Vec<Card> {
 
 /// Every hole-card pair `seat` could hold given its policy and its decisions before `upto`,
 /// drawn from the cards the graded seat cannot see.
-fn range(
+pub(crate) fn range(
     record: &Record,
     bot: &Bot,
     seat: usize,
@@ -237,7 +265,7 @@ fn range(
 
 /// Joint holdings of the live opponents: all non-overlapping combinations when there are at
 /// most `JOINT_SAMPLES`, otherwise that many deterministic samples.
-fn joint(ranges: &[(usize, Vec<[Card; 2]>)], seed: u64) -> Vec<Vec<(usize, [Card; 2])>> {
+pub(crate) fn joint(ranges: &[(usize, Vec<[Card; 2]>)], seed: u64) -> Vec<Vec<(usize, [Card; 2])>> {
     let overlaps = |chosen: &[(usize, [Card; 2])], hole: &[Card; 2]| {
         chosen
             .iter()
@@ -288,7 +316,7 @@ fn joint(ranges: &[(usize, Vec<[Card; 2]>)], seed: u64) -> Vec<Vec<(usize, [Card
 
 /// Every action tried at this spot: the passive options, a range of sizes, all-in, and the
 /// action actually taken.
-fn candidates(view: &PlayerView, chosen: Action) -> Result<Vec<Action>, String> {
+pub(crate) fn candidates(view: &PlayerView, chosen: Action) -> Result<Vec<Action>, String> {
     let legal = view.legal.as_ref().ok_or("not acting")?;
     let call = legal.call.unwrap_or(0);
     let committed = view.players[view.seat].street_committed;
@@ -353,6 +381,18 @@ fn grade(
             value(record, bots, number, seat, action, &holdings)?,
         ));
     }
+    finish(hand_index, number, view, chosen, &ranges, &results)
+}
+
+/// The grade of a decision from the value of every alternative tried.
+pub(crate) fn finish(
+    hand_index: usize,
+    number: usize,
+    view: &PlayerView,
+    chosen: Action,
+    ranges: &[(usize, Vec<[Card; 2]>)],
+    results: &[(Action, f64)],
+) -> Result<RiverGrade, String> {
     let chosen_value = results
         .iter()
         .find(|(a, _)| *a == chosen)
@@ -387,7 +427,8 @@ fn grade(
     Ok(RiverGrade {
         hand: hand_index,
         decision: number,
-        seat,
+        seat: view.seat,
+        street: view.street,
         facing_bet,
         pot: view.pot,
         range_sizes: ranges.iter().map(|(_, r)| r.len()).collect(),

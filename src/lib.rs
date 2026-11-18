@@ -16,5 +16,6 @@ pub mod report;
 pub mod river;
 pub mod runner;
 pub mod scaffold;
+pub mod turn;
 pub mod supervisor;
 pub mod worker;

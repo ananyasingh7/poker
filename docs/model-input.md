@@ -39,7 +39,7 @@ Each block is appended to the one before it.
 
 > Bet sizing: size your bets to what each opponent will call. Against players who rarely fold, bet large with strong hands, up to all-in, and do not bluff them; against players who fold often, smaller bets and bluffs work better.
 
-**2f. Sharp sizing rule on** (`sharp_sizing`, the table's BET SIZING since 2026-11-17; replaces 2e and cannot be combined with it; condition label `+sharp`; see [docs/17](17-new-cards-model-lineup-turn-grade.md)):
+**2f. Sharp sizing rule on** (`sharp_sizing`, the table's BET SIZING since 2026-11-17; replaces 2e and cannot be combined with it; condition label `+sharp`; see [results §6](results.md#6-new-cards-model-lineup-sharp-rule-2026-11-17)):
 
 > Bet sizing: size your bets to what each opponent will call. Against a player who rarely folds (few folds to postflop or river bets), bet big with strong hands: on the river bet at least the pot, and usually all-in, never half the pot; never bluff that player. Against players who fold often, smaller bets and bluffs work better.
 

@@ -87,9 +87,9 @@ pub struct Settings {
     /// Host-computed facts with every decision (`scaffold: features`).
     pub facts_sheet: bool,
     pub notes: Notes,
-    /// The sharp bet-sizing rule with every decision (`sharp_sizing`; docs/16 2f). It replaced
+    /// The sharp bet-sizing rule with every decision (`sharp_sizing`; docs/model-input.md 2f). It replaced
     /// the plain rule plus bet menu on 2026-11-17: on fresh deals it cut river mistakes where the
-    /// plain rule's cut was unresolved, and the menu never showed an effect (docs/17).
+    /// plain rule's cut was unresolved, and the menu never showed an effect (docs/results.md §6).
     pub bet_sizing: bool,
     /// With own notes and thinking on, write the notes with thinking off (`notes_thinking_off`):
     /// much cheaper.
@@ -169,7 +169,7 @@ impl Settings {
             reasoning_enabled: Some(self.thinking),
             reasoning_effort: self.thinking.then_some(THINKING_EFFORT),
             // A rare runaway answer is re-asked quickly with thinking off instead of folding
-            // or checking by default (see docs/14).
+            // or checking by default (see docs/results.md §4).
             reask_truncated: self.thinking,
             sharp_sizing: self.bet_sizing,
             notes_thinking_off: self.quick_notes && self.thinking && self.notes == Notes::Own,

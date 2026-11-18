@@ -671,7 +671,7 @@ fn notebook_max_tokens(config: &Config) -> u32 {
 }
 /// The general bet-sizing principle added by `sizing_hint`.
 pub const SIZING_HINT: &str = " Bet sizing: size your bets to what each opponent will call. Against players who rarely fold, bet large with strong hands, up to all-in, and do not bluff them; against players who fold often, smaller bets and bluffs work better.";
-/// The sharper sizing rule added by `sharp_sizing` (docs/17): the plain rule moved the median
+/// The sharper sizing rule added by `sharp_sizing` (docs/results.md §6): the plain rule moved the median
 /// river bet only to about 1 pot, while all-in was the best river bet in most spots against a
 /// station. It names the size and the tracker numbers to look at, but not who the opponents are.
 pub const SHARP_SIZING_HINT: &str = " Bet sizing: size your bets to what each opponent will call. Against a player who rarely folds (few folds to postflop or river bets), bet big with strong hands: on the river bet at least the pot, and usually all-in, never half the pot; never bluff that player. Against players who fold often, smaller bets and bluffs work better.";

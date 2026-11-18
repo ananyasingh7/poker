@@ -166,8 +166,8 @@ const TYPING_CHARS_PER_SECOND: u128 = 400;
 
 /// What the lab measured, one block per setup so results from different eras and models are
 /// never read side by side as if comparable: (heading, unit, rows of label, value, 95% interval).
-/// Thinking-on rows are DeepSeek with low effort on the deals of docs/15 and docs/17; the older
-/// thinking-off rows are milestones 7 and 9 (docs/12). Model rows are docs/17's lineup.
+/// Thinking-on rows are DeepSeek with low effort on the deals of docs/results.md §5 and §6; the older
+/// thinking-off rows are docs/results.md §2. Model rows are §6's lineup.
 /// One measured row: label, value and 95% interval.
 type LabRow = (&'static str, &'static str, &'static str);
 const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [

@@ -163,6 +163,8 @@ pub struct ModelSettings {
     #[serde(default)]
     pub sizing_hint: bool,
     #[serde(default)]
+    pub sharp_sizing: bool,
+    #[serde(default)]
     pub size_menu: bool,
     #[serde(default)]
     pub label_positions: bool,

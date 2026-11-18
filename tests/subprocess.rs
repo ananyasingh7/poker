@@ -562,6 +562,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         notebook_every: 1,
         notes_thinking_off: false,
         sizing_hint: false,
+        sharp_sizing: false,
         size_menu: false,
         label_positions: false,
         oracle_notes: None,

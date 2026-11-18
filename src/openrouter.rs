@@ -86,6 +86,10 @@ pub struct Config {
     /// Opt-in: one general bet-sizing principle appended to the action system prompt
     /// (`SIZING_HINT`). Not opponent-specific: the model must still work out who calls.
     pub sizing_hint: bool,
+    /// Opt-in: the sharper sizing rule (`SHARP_SIZING_HINT`) instead of `sizing_hint`: against
+    /// players who rarely fold, bet at least the pot on the river with strong hands, usually all-in.
+    /// Still not opponent-specific. Labelled `+sharp`; cannot be combined with `sizing_hint`.
+    pub sharp_sizing: bool,
     /// Opt-in: a `bet_sizes` menu in the observation with the raise_to amount of common sizes
     /// (a third of the pot up to 1.5 pots, and all-in).
     pub size_menu: bool,
@@ -342,6 +346,7 @@ impl Default for Config {
             notebook_every: 1,
             notes_thinking_off: false,
             sizing_hint: false,
+            sharp_sizing: false,
             size_menu: false,
             label_positions: false,
             provider: ProviderPrefs::default(),
@@ -426,6 +431,9 @@ impl Config {
         if self.sizing_hint {
             label.push_str("+hint");
         }
+        if self.sharp_sizing {
+            label.push_str("+sharp");
+        }
         if self.size_menu {
             label.push_str("+menu");
         }
@@ -446,6 +454,7 @@ impl Config {
             notebook_every: self.notebook_every,
             notes_thinking_off: self.notes_thinking_off,
             sizing_hint: self.sizing_hint,
+            sharp_sizing: self.sharp_sizing,
             size_menu: self.size_menu,
             label_positions: self.label_positions,
             provider: self.provider.clone(),
@@ -486,6 +495,9 @@ impl Config {
             return Err(
                 "notes_thinking_off needs a condition in which the model writes notes".into(),
             );
+        }
+        if self.sizing_hint && self.sharp_sizing {
+            return Err("sizing_hint and sharp_sizing are alternative rules; set one".into());
         }
         if self.reasoning_effort.is_some() && self.reasoning_enabled != Some(true) {
             return Err("reasoning_effort requires reasoning_enabled: true".into());
@@ -659,6 +671,10 @@ fn notebook_max_tokens(config: &Config) -> u32 {
 }
 /// The general bet-sizing principle added by `sizing_hint`.
 pub const SIZING_HINT: &str = " Bet sizing: size your bets to what each opponent will call. Against players who rarely fold, bet large with strong hands, up to all-in, and do not bluff them; against players who fold often, smaller bets and bluffs work better.";
+/// The sharper sizing rule added by `sharp_sizing` (docs/17): the plain rule moved the median
+/// river bet only to about 1 pot, while all-in was the best river bet in most spots against a
+/// station. It names the size and the tracker numbers to look at, but not who the opponents are.
+pub const SHARP_SIZING_HINT: &str = " Bet sizing: size your bets to what each opponent will call. Against a player who rarely folds (few folds to postflop or river bets), bet big with strong hands: on the river bet at least the pot, and usually all-in, never half the pot; never bluff that player. Against players who fold often, smaller bets and bluffs work better.";
 /// What `size_menu` adds to the system prompt.
 const SIZE_MENU_NOTE: &str = " The observation includes bet_sizes: the raise_to amount for common bet sizes, computed by the host. Any legal raise_to is allowed.";
 
@@ -675,9 +691,14 @@ pub fn add_sizing_help(config: &Config, view: &PlayerView, body: &mut Value) {
         let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
         body["messages"][0]["content"] = json!(system + SIZE_MENU_NOTE);
     }
-    if config.sizing_hint {
+    let rule = match (config.sizing_hint, config.sharp_sizing) {
+        (_, true) => Some(SHARP_SIZING_HINT),
+        (true, false) => Some(SIZING_HINT),
+        (false, false) => None,
+    };
+    if let Some(rule) = rule {
         let system = body["messages"][0]["content"].as_str().unwrap().to_owned();
-        body["messages"][0]["content"] = json!(system + SIZING_HINT);
+        body["messages"][0]["content"] = json!(system + rule);
     }
 }
 
@@ -2191,6 +2212,17 @@ mod tests {
         both.size_menu = true;
         both.sizing_hint = true;
         assert_eq!(both.condition(), "none+hint+menu");
+        // The sharper rule replaces the plain one, under its own label, and excludes it.
+        let mut sharp = config();
+        sharp.sharp_sizing = true;
+        sharp.memory = Mode::Stats;
+        assert_eq!(sharp.condition(), "stats+sharp");
+        assert!(sharp.validate().is_ok());
+        let (system, _) = sent(sharp.clone());
+        assert!(system.ends_with(SHARP_SIZING_HINT), "{system}");
+        assert!(!system.contains(SIZING_HINT));
+        sharp.sizing_hint = true;
+        assert!(sharp.validate().is_err());
     }
     #[test]
     fn quick_notes_write_the_notebook_with_thinking_off() {

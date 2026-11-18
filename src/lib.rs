@@ -2,6 +2,7 @@ pub mod analyze;
 pub mod arena;
 pub mod bench;
 pub mod cards;
+pub mod catalog;
 pub mod ceiling;
 pub mod compare;
 pub mod engine;

@@ -530,16 +530,18 @@ fn analyze_grades_model_rivers_against_the_scripted_field() {
 #[test]
 fn every_example_config_parses_and_validates() {
     // Batch configs have a "pilot" block; the rest are single-run configs.
+    // Configs are grouped in topic folders (examples/1-pilots, ...), so walk the whole tree.
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples");
     let mut files = vec![];
-    for entry in std::fs::read_dir(&root).unwrap() {
-        let path = entry.unwrap().path();
-        if path.is_dir() {
-            for inner in std::fs::read_dir(&path).unwrap() {
-                files.push(inner.unwrap().path());
+    let mut dirs = vec![root];
+    while let Some(dir) = dirs.pop() {
+        for entry in std::fs::read_dir(&dir).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                dirs.push(path);
+            } else {
+                files.push(path);
             }
-        } else {
-            files.push(path);
         }
     }
     let mut checked = 0;
@@ -568,5 +570,5 @@ fn every_example_config_parses_and_validates() {
         }
         checked += 1;
     }
-    assert!(checked > 20, "only {checked} example configs");
+    assert!(checked > 50, "only {checked} example configs");
 }

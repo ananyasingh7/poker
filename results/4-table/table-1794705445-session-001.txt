@@ -1,0 +1,51 @@
+1 sessions (0 clean), 309 hands, 572 requests, $0.1501 reported ($0.000486/hand)
+
+Playing style by seat label
+label                                  hands  VPIP   PFR    AF fold/bet    SD fallbk    bb/100
+adaptive                                 309    9%    9% 11.00      50%   12%      0     -17.8
+deepseek/deepseek-v4.1-flash-1017 *      309   33%   25% 66.00      87%   23%     16     -33.2
+overfolder                               309   46%    2%  0.36      37%   31%      0    -110.5
+solid                                    309   13%   12%  7.30      23%    9%      0     +89.3
+station                                  309   48%    0%  0.00      22%   43%      0     -35.6
+tight                                    309   12%    6%  3.70      32%    9%      0    +107.8
+(* model seat. AF = postflop bets and raises per call.)
+
+Model style by condition
+condition          hands  VPIP   PFR    AF fold/bet fallbk  agrees
+none                 309   33%   25% 66.00      87%     16     72%
+(agrees = share of model decisions matching the reference rule's fold/passive/raise choice.)
+
+Win rate in bb/100 by condition
+  none             adaptive                             -17.8 (one block: no interval)
+                     all-in adjusted:                   +16.8 (one block: no interval)
+  none             deepseek/deepseek-v4.1-flash-1017    -33.2 (one block: no interval)
+                     all-in adjusted:                   +109.8 (one block: no interval)
+  none             overfolder                           -110.5 (one block: no interval)
+                     all-in adjusted:                   -122.4 (one block: no interval)
+  none             solid                                +89.3 (one block: no interval)
+                     all-in adjusted:                   +160.5 (one block: no interval)
+  none             station                              -35.6 (one block: no interval)
+                     all-in adjusted:                   -140.4 (one block: no interval)
+  none             tight                                +107.8 (one block: no interval)
+                     all-in adjusted:                   -24.3 (one block: no interval)
+
+Call-or-fold decisions graded against pot odds
+label (condition)                                     graded  bad call  bad fold cost bb/100
+adaptive                                                 257        2%       19%        32.7
+deepseek/deepseek-v4.1-flash-1017                        220        5%        5%        24.4
+overfolder                                               441       36%       10%       205.4
+solid                                                    262        4%       26%        56.0
+station                                                  475       42%        5%       312.6
+tight                                                    287        6%       18%        45.4
+deepseek/deepseek-v4.1-flash-1017 (none)                 220        5%        5%        24.4
+(Equity against the opponents' actual cards, board unknown; immediate pot odds only, later betting ignored.)
+
+River decisions graded exactly against the bots (cost in bb/100; count in brackets)
+model (condition)                            graded   total    missed bet       bad bet        sizing      bad call      bad fold  missed raise     bad raise
+deepseek/deepseek-v4.1-flash-1017 (none)     80   269.9    196.0 (35)             -      74.0 (6)             -             -             -             -
+(Every river alternative replayed against the bots' real policies; the model's own later reply is the better of fold and call.)
+
+Leaks
+model (condition)                               missed bets        bluffs  called down   truncated
+deepseek/deepseek-v4.1-flash-1017 (none)      35 (196.0 bb)            19          74% 13
+(Missed bets: river checks where a bet won more, with their cost per 100 hands. Bluffs: postflop bets or raises with under 30% equity against the cards held; called down: the bluffer reached showdown. Truncated: answers cut off by the token limit, played as fallbacks.)

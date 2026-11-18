@@ -1,0 +1,51 @@
+168 sessions (156 clean), 10070 hands, 21970 requests, $1.5553 reported ($0.000154/hand)
+
+Playing style by seat label
+label                                  hands  VPIP   PFR    AF fold/bet    SD fallbk    bb/100
+adaptive                               10070   12%   11%  6.81      24%   13%      0    +110.4
+deepseek/deepseek-v4.1-flash-1017 *    10070   37%   18%  0.43      58%   30%     15     +56.1
+overfolder                             10070   50%    2%  0.55      26%   42%      0     -17.9
+solid                                  10070   12%   11%  6.33      22%   12%      0     +71.4
+station                                10070   50%    0%  0.00      13%   50%      0    -220.3
+tight                                  10070   12%    6%  4.10      19%   16%      0      +0.4
+(* model seat. AF = postflop bets and raises per call.)
+
+Model style by condition
+condition          hands  VPIP   PFR    AF fold/bet fallbk  agrees
+none               10070   37%   18%  0.43      58%     15     60%
+(agrees = share of model decisions matching the reference rule's fold/passive/raise choice.)
+
+Win rate in bb/100 by condition
+  none             adaptive                             +110.4 ± 17.2 SE, 95% CI [+75.1, +145.7], 28 blocks
+                     all-in adjusted:                   +105.4 ± 15.7 SE, 95% CI [+73.2, +137.6], 28 blocks
+  none             deepseek/deepseek-v4.1-flash-1017    +56.1 ± 15.3 SE, 95% CI [+24.8, +87.5], 28 blocks
+                     all-in adjusted:                   +49.9 ± 11.3 SE, 95% CI [+26.6, +73.1], 28 blocks
+  none             overfolder                           -17.9 ± 18.9 SE, 95% CI [-56.7, +21.0], 28 blocks
+                     all-in adjusted:                   -8.1 ± 19.1 SE, 95% CI [-47.2, +31.0], 28 blocks
+  none             solid                                +71.3 ± 19.1 SE, 95% CI [+32.1, +110.6], 28 blocks
+                     all-in adjusted:                   +69.1 ± 18.2 SE, 95% CI [+31.6, +106.5], 28 blocks
+  none             station                              -220.2 ± 22.9 SE, 95% CI [-267.3, -173.1], 28 blocks
+                     all-in adjusted:                   -211.1 ± 21.4 SE, 95% CI [-255.1, -167.2], 28 blocks
+  none             tight                                +0.2 ± 15.7 SE, 95% CI [-31.9, +32.4], 28 blocks
+                     all-in adjusted:                   -5.0 ± 16.3 SE, 95% CI [-38.5, +28.5], 28 blocks
+
+Call-or-fold decisions graded against pot odds
+label (condition)                                     graded  bad call  bad fold cost bb/100
+adaptive                                                8670        4%       19%        46.4
+deepseek/deepseek-v4.1-flash-1017                       9248       17%       11%        66.7
+overfolder                                             14021       41%        6%       240.4
+solid                                                   8637        4%       21%        51.4
+station                                                14809       46%        4%       361.0
+tight                                                   9292        9%       16%        65.3
+deepseek/deepseek-v4.1-flash-1017 (none)                9248       17%       11%        66.7
+(Equity against the opponents' actual cards, board unknown; immediate pot odds only, later betting ignored.)
+
+River decisions graded exactly against the bots (cost in bb/100; count in brackets)
+model (condition)                            graded   total    missed bet       bad bet        sizing      bad call      bad fold  missed raise     bad raise
+deepseek/deepseek-v4.1-flash-1017 (none)     3569   570.7  420.9 (1800)       0.2 (1)     26.5 (43)      7.8 (84)     50.8 (91)     64.0 (87)       0.5 (2)
+(Every river alternative replayed against the bots' real policies; the model's own later reply is the better of fold and call.)
+
+Leaks
+model (condition)                               missed bets        bluffs  called down   truncated
+deepseek/deepseek-v4.1-flash-1017 (none)     1800 (420.9 bb)            33          91% 0
+(Missed bets: river checks where a bet won more, with their cost per 100 hands. Bluffs: postflop bets or raises with under 30% equity against the cards held; called down: the bluffer reached showdown. Truncated: answers cut off by the token limit, played as fallbacks.)

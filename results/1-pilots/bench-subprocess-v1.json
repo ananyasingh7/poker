@@ -1,0 +1,57 @@
+{
+  "decisions": 18336,
+  "hands": 1000,
+  "hands_per_session": 10,
+  "in_process": {
+    "decide": {
+      "count": 18336,
+      "max_us": 13,
+      "median_us": 0,
+      "p95_us": 1,
+      "p99_us": 2
+    },
+    "hands_per_second": 50015.0045013504,
+    "session_play": {
+      "count": 100,
+      "max_us": 356,
+      "median_us": 196,
+      "p95_us": 256,
+      "p99_us": 296
+    }
+  },
+  "note": "scripted policies only; excludes model/API latency. session_play excludes worker startup and shutdown.",
+  "records_identical": true,
+  "seats": 6,
+  "sessions": 100,
+  "subprocess": {
+    "decide_round_trip": {
+      "count": 18336,
+      "max_us": 145,
+      "median_us": 29,
+      "p95_us": 44,
+      "p99_us": 55
+    },
+    "hands_per_second": 1091.5552916417428,
+    "session_play": {
+      "count": 100,
+      "max_us": 16809,
+      "median_us": 8638,
+      "p95_us": 12131,
+      "p99_us": 15045
+    },
+    "shutdown_six_workers": {
+      "count": 100,
+      "max_us": 2397,
+      "median_us": 1703,
+      "p95_us": 2175,
+      "p99_us": 2374
+    },
+    "startup_six_workers": {
+      "count": 100,
+      "max_us": 11641,
+      "median_us": 9999,
+      "p95_us": 11074,
+      "p99_us": 11231
+    }
+  }
+}

@@ -1,0 +1,93 @@
+144 sessions (99 clean), 17026 hands, 46531 requests, $4.8842 reported ($0.000287/hand)
+
+Playing style by seat label
+label                                  hands  VPIP   PFR    AF fold/bet    SD fallbk    bb/100
+adaptive                               17026   12%   11%  7.21      21%   13%      0     +83.7
+deepseek/deepseek-v4.1-flash-1017 *    17026   42%   19%  0.77      57%   33%      5     +86.7
+overfolder                             17026   51%    2%  0.52      26%   42%      0      +4.0
+solid                                  17026   12%   12%  6.89      24%   13%      0     +87.3
+station                                17026   50%    0%  0.00      13%   50%      0    -228.8
+tight                                  17026   12%    6%  4.33      22%   16%      0     -32.8
+(* model seat. AF = postflop bets and raises per call.)
+
+Model style by condition
+condition          hands  VPIP   PFR    AF fold/bet fallbk  agrees
+none+features       5760   44%   23%  0.61      52%      1     60%
+notes+features      5592   44%   18%  0.77      57%      0     60%
+oracle+features     5674   40%   15%  0.98      61%      4     62%
+(agrees = share of model decisions matching the reference rule's fold/passive/raise choice.)
+
+Win rate in bb/100 by condition
+  none+features    adaptive                             +80.4 ± 21.6 SE, 95% CI [+29.2, +131.6], 8 blocks
+                     all-in adjusted:                   +81.2 ± 23.0 SE, 95% CI [+26.9, +135.5], 8 blocks
+  none+features    deepseek/deepseek-v4.1-flash-1017    +68.0 ± 17.9 SE, 95% CI [+25.7, +110.3], 8 blocks
+                     all-in adjusted:                   +74.9 ± 18.1 SE, 95% CI [+32.1, +117.8], 8 blocks
+  none+features    overfolder                           +7.1 ± 32.2 SE, 95% CI [-69.0, +83.2], 8 blocks
+                     all-in adjusted:                   +8.2 ± 29.9 SE, 95% CI [-62.5, +78.8], 8 blocks
+  none+features    solid                                +95.7 ± 27.9 SE, 95% CI [+29.7, +161.8], 8 blocks
+                     all-in adjusted:                   +88.2 ± 27.8 SE, 95% CI [+22.6, +153.9], 8 blocks
+  none+features    station                              -225.1 ± 31.2 SE, 95% CI [-298.9, -151.3], 8 blocks
+                     all-in adjusted:                   -218.7 ± 31.6 SE, 95% CI [-293.5, -143.8], 8 blocks
+  none+features    tight                                -26.2 ± 24.0 SE, 95% CI [-83.0, +30.7], 8 blocks
+                     all-in adjusted:                   -33.9 ± 15.8 SE, 95% CI [-71.3, +3.5], 8 blocks
+  notes+features   adaptive                             +88.3 ± 22.1 SE, 95% CI [+36.0, +140.6], 8 blocks
+                     all-in adjusted:                   +86.7 ± 23.3 SE, 95% CI [+31.6, +141.8], 8 blocks
+  notes+features   deepseek/deepseek-v4.1-flash-1017    +91.7 ± 14.1 SE, 95% CI [+58.5, +125.0], 8 blocks
+                     all-in adjusted:                   +87.8 ± 14.3 SE, 95% CI [+54.0, +121.6], 8 blocks
+  notes+features   overfolder                           +8.4 ± 29.4 SE, 95% CI [-61.2, +78.0], 8 blocks
+                     all-in adjusted:                   +14.4 ± 23.8 SE, 95% CI [-41.9, +70.7], 8 blocks
+  notes+features   solid                                +79.5 ± 26.2 SE, 95% CI [+17.6, +141.4], 8 blocks
+                     all-in adjusted:                   +75.3 ± 24.4 SE, 95% CI [+17.7, +132.9], 8 blocks
+  notes+features   station                              -228.1 ± 28.6 SE, 95% CI [-295.7, -160.6], 8 blocks
+                     all-in adjusted:                   -217.3 ± 28.3 SE, 95% CI [-284.3, -150.4], 8 blocks
+  notes+features   tight                                -39.8 ± 20.3 SE, 95% CI [-87.7, +8.1], 8 blocks
+                     all-in adjusted:                   -46.9 ± 9.1 SE, 95% CI [-68.5, -25.3], 8 blocks
+  oracle+features  adaptive                             +82.4 ± 22.4 SE, 95% CI [+29.6, +135.3], 8 blocks
+                     all-in adjusted:                   +83.6 ± 23.0 SE, 95% CI [+29.1, +138.0], 8 blocks
+  oracle+features  deepseek/deepseek-v4.1-flash-1017    +101.4 ± 22.7 SE, 95% CI [+47.7, +155.2], 8 blocks
+                     all-in adjusted:                   +103.4 ± 16.4 SE, 95% CI [+64.6, +142.2], 8 blocks
+  oracle+features  overfolder                           -4.0 ± 31.3 SE, 95% CI [-77.9, +70.0], 8 blocks
+                     all-in adjusted:                   -4.1 ± 27.4 SE, 95% CI [-68.8, +60.6], 8 blocks
+  oracle+features  solid                                +86.6 ± 27.5 SE, 95% CI [+21.4, +151.7], 8 blocks
+                     all-in adjusted:                   +83.8 ± 26.2 SE, 95% CI [+21.7, +145.9], 8 blocks
+  oracle+features  station                              -232.3 ± 29.5 SE, 95% CI [-302.1, -162.4], 8 blocks
+                     all-in adjusted:                   -226.9 ± 29.9 SE, 95% CI [-297.5, -156.2], 8 blocks
+  oracle+features  tight                                -34.2 ± 23.2 SE, 95% CI [-89.1, +20.7], 8 blocks
+                     all-in adjusted:                   -39.9 ± 13.2 SE, 95% CI [-71.0, -8.7], 8 blocks
+
+Paired difference on shared seeds (condition minus reference)
+  notes+features vs none+features deepseek/deepseek-v4.1-flash-1017 +23.7 ± 12.1 SE, 95% CI [-4.9, +52.4], 8 blocks
+    all-in adjusted: +12.9 ± 10.5 SE, 95% CI [-11.9, +37.7], 8 blocks
+    call/fold mistake cost: -5.6 ± 5.0 SE, 95% CI [-17.4, +6.1], 8 blocks
+    river cost (exact):     -39.6 ± 20.1 SE, 95% CI [-87.0, +7.9], 8 blocks
+  oracle+features vs none+features deepseek/deepseek-v4.1-flash-1017 +33.4 ± 13.5 SE, 95% CI [+1.5, +65.3], 8 blocks
+    all-in adjusted: +28.5 ± 13.1 SE, 95% CI [-2.5, +59.5], 8 blocks
+    call/fold mistake cost: -12.5 ± 5.2 SE, 95% CI [-24.7, -0.3], 8 blocks
+    river cost (exact):     -55.1 ± 17.2 SE, 95% CI [-95.7, -14.5], 8 blocks
+
+Call-or-fold decisions graded against pot odds
+label (condition)                                     graded  bad call  bad fold cost bb/100
+adaptive                                               14534        4%       19%        52.5
+deepseek/deepseek-v4.1-flash-1017                      15781       17%        3%        53.4
+overfolder                                             24216       41%        6%       266.6
+solid                                                  14559        4%       21%        49.1
+station                                                25438       47%        4%       393.6
+tight                                                  15736        9%       15%        59.3
+deepseek/deepseek-v4.1-flash-1017 (none+features)       5068       16%        4%        59.4
+deepseek/deepseek-v4.1-flash-1017 (notes+features)      5263       18%        3%        53.8
+deepseek/deepseek-v4.1-flash-1017 (oracle+features)     5450       16%        4%        46.9
+(Equity against the opponents' actual cards, board unknown; immediate pot odds only, later betting ignored.)
+
+River decisions graded exactly against the bots (cost in bb/100; count in brackets)
+model (condition)                            graded   total    missed bet       bad bet        sizing      bad call      bad fold  missed raise     bad raise
+deepseek/deepseek-v4.1-flash-1017 (none+features) 2344   553.1  373.8 (1077)       0.2 (1)     83.1 (84)     14.4 (91)     11.6 (22)     70.0 (63)             -
+deepseek/deepseek-v4.1-flash-1017 (notes+features) 2277   515.2  329.6 (1007)       0.3 (3)     91.4 (92)     14.1 (81)     11.1 (23)     68.7 (63)             -
+deepseek/deepseek-v4.1-flash-1017 (oracle+features) 2170   495.8   302.7 (925)       0.5 (3)    96.0 (111)      8.8 (47)     25.3 (37)     62.5 (53)             -
+(Every river alternative replayed against the bots' real policies; the model's own later reply is the better of fold and call.)
+
+Leaks
+model (condition)                               missed bets        bluffs  called down   truncated
+deepseek/deepseek-v4.1-flash-1017 (none+features) 1077 (373.8 bb)            20         100% 0
+deepseek/deepseek-v4.1-flash-1017 (notes+features) 1007 (329.6 bb)            37         100% 0
+deepseek/deepseek-v4.1-flash-1017 (oracle+features) 925 (302.7 bb)            35          94% 0
+(Missed bets: river checks where a bet won more, with their cost per 100 hands. Bluffs: postflop bets or raises with under 30% equity against the cards held; called down: the bluffer reached showdown. Truncated: answers cut off by the token limit, played as fallbacks.)

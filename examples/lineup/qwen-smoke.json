@@ -1,0 +1,49 @@
+{
+  "all_models": false,
+  "execution": "in_process",
+  "hands": 10,
+  "label_positions": false,
+  "max_attempts": 6,
+  "max_consecutive_failures": 3,
+  "max_request_bytes": 65536,
+  "max_requests": 200,
+  "max_tokens": 4096,
+  "memory": "none",
+  "model": "qwen/qwen3.7-flash",
+  "model_offset": 0,
+  "model_seat": 0,
+  "models": [],
+  "normalize_call_amount": true,
+  "notebook_chars": 2000,
+  "notebook_style": "structured_profiles",
+  "opponent_field": [
+    "station",
+    "overfolder",
+    "solid",
+    "adaptive",
+    "tight"
+  ],
+  "opponent_offset": 0,
+  "opponents": "mixed",
+  "provider": {
+    "order": [
+      "Alibaba"
+    ],
+    "only": [],
+    "allow_fallbacks": false,
+    "quantizations": [],
+    "sort": null
+  },
+  "reasoning_enabled": true,
+  "repair_illegal": false,
+  "reset_stacks": true,
+  "response_format": "json_object",
+  "retry_backoff_max_ms": 30000,
+  "retry_backoff_ms": 500,
+  "scaffold": "none",
+  "seats": 6,
+  "seed": 11,
+  "spend_limit_usd": 0.02,
+  "timeout_ms": 120000,
+  "reasoning_effort": "low"
+}

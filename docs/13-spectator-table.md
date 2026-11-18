@@ -25,6 +25,7 @@ Keys: `space` pause/resume, `c` settings, `h` show all hole cards, `tab` or `1`-
 - **SESSION**: the lab's `analyze` row for every seat (win rate, luck-adjusted, VPIP, PFR, AF, mistake cost, rule agreement), spend, totals per help setting, and the lab's measured reference numbers.
 - **HANDS**: every finished hand; click to replay.
 - **NOTES**: what the model knows about each opponent. With the cheat sheet, the fixed descriptions; with own notes, each opponent's current profile (in a replay, as it stood during that hand), when it last changed, and every change in order; with the tracker, the statistics table it is shown.
+- **Turn grades** (added 2026-11-17, [docs/17](17-new-cards-model-lineup-turn-grade.md)): turn decisions are graded approximately too, marked `turn ~` in HAND, with a turn cost and turn leaks in SESSION.
 - **River grades** (HAND and SESSION): every river decision of the model is graded against the bots (see [docs/15](15-river-grading-and-leaks.md)); HAND shows the better choice and its cost per decision, SESSION the river cost and a LEAKS block (missed river bets, wrong sizes, bets that lost, bluffs called down, answers cut off).
 
 ## Settings (before the game and during a pause)

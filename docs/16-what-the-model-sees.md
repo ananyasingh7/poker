@@ -31,13 +31,17 @@ Each block is appended to the one before it.
 
 > The observation includes decision_aids computed by the host from your own observation only (no hidden information). They are approximate and may be wrong; the decision is yours.
 
-**2d. Bet menu on** (`size_menu`, the table's BET SIZING):
+**2d. Bet menu on** (`size_menu`; the table's BET SIZING until 2026-11-17):
 
 > The observation includes bet_sizes: the raise_to amount for common bet sizes, computed by the host. Any legal raise_to is allowed.
 
-**2e. Sizing rule on** (`sizing_hint`, the table's BET SIZING):
+**2e. Sizing rule on** (`sizing_hint`; the table's BET SIZING until 2026-11-17):
 
 > Bet sizing: size your bets to what each opponent will call. Against players who rarely fold, bet large with strong hands, up to all-in, and do not bluff them; against players who fold often, smaller bets and bluffs work better.
+
+**2f. Sharp sizing rule on** (`sharp_sizing`, the table's BET SIZING since 2026-11-17; replaces 2e and cannot be combined with it; condition label `+sharp`; see [docs/17](17-new-cards-model-lineup-turn-grade.md)):
+
+> Bet sizing: size your bets to what each opponent will call. Against a player who rarely folds (few folds to postflop or river bets), bet big with strong hands: on the river bet at least the pot, and usually all-in, never half the pot; never bluff that player. Against players who fold often, smaller bets and bluffs work better.
 
 ## 3. The action observation (user message)
 
@@ -89,7 +93,7 @@ Observation: the finished hand (the same keys as an action observation, with the
 | --- | --- |
 | SHOW THINKING | `reasoning: {"effort": "low"}`, 12,288 tokens, 240 s timeout, re-ask after a truncation |
 | FACTS SHEET | 2c and `decision_aids` |
-| BET SIZING | 2d, 2e and `bet_sizes` |
+| BET SIZING | 2f (until 2026-11-17: 2d, 2e and `bet_sizes`) |
 | CHEAT SHEET | memory wording in 2b, `private_notebook` with the profiles |
 | OWN NOTES | memory wording in 2b, `private_notebook`, a notebook update after every hand |
 | QUICK (own notes) | the notebook update with thinking off |

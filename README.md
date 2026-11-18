@@ -26,6 +26,7 @@ Poker is a useful test of decision-making with incomplete information, but perfo
 - [Thinking with low effort: no help, own notes and the cheat sheet](docs/14-thinking-low-effort-and-cheat-sheet.md)
 - [River grading, leak report, tracker stats and cheaper notes](docs/15-river-grading-and-leaks.md)
 - [Everything the model can be sent](docs/16-what-the-model-sees.md)
+- [New cards, a model lineup, a turn grade and a sharper sizing rule](docs/17-new-cards-model-lineup-turn-grade.md)
 - [Paper: arXiv 2606.13815](docs/paper-2606.13815.md)
 - [Paper: arXiv 2605.30094](docs/paper-2605.30094.md)
 - [Paper: arXiv 2604.04157](docs/paper-2604.04157.md)
@@ -80,6 +81,8 @@ Use a fresh output directory for each run. This mode needs no Docker and loads n
 cargo run --release -- batch examples/experiment-smoke.json runs/smoke   # parallel sessions, one shared budget
 cargo run --release -- analyze runs/smoke                               # style, cost, win rates with intervals
 cargo run --release -- analyze runs/smoke --decisions                   # one JSON line per model decision
+cargo run --release -- analyze runs/smoke --turn                        # also grade turn decisions (approximate)
+cargo run --release -- compare runs/a runs/b --seat 0 --turn --save c.json   # arms of several runs (model · thinking · condition) side by side
 cargo run --release -- batch examples/experiment-scaffold.json runs/scaffold   # milestone 9: decision-aid treatments
 cargo run --release -- batch CONFIG.json EXISTING_DIR --resume          # continue an interrupted batch
 cargo run --release -- ceiling station,overfolder,solid,adaptive,tight  # what a tuned bot wins from a field

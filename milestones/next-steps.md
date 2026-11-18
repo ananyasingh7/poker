@@ -1,5 +1,18 @@
 # Next steps (consolidated 2026-11-13)
 
+## Done 2026-11-17 ([docs/17](../docs/17-new-cards-model-lineup-turn-grade.md), $1.70)
+- New-cards check (seeds 11-20): tracker + plain rule shrinks to river -82 [-200, +35] (tuning seeds: -200); the new sharp rule holds (river -142 [-265, -19], chips +232 [+31, +434]).
+- Model lineup: GLM-5.3 Flash (think low) ties DeepSeek and gains chips from help; gpt-oss-20b loses badly and returns empty answers; Gemma 4 (think off only; ignores effort) ties DeepSeek think-off. Thinking off removes the helpers' effect.
+- Approximate turn grade, `poker-lab compare`, sharp sizing rule (now the table's BET SIZING), table numbers relabelled by era.
+
+## Next (from docs/17)
+- Sharp vs plain rule head to head with about 10 more fresh seeds (21-30); it leans better (river -60 [-126, +7]).
+- GLM-5.3 Flash with the sharp rule and with the cheat sheet: does the river fix carry over to it?
+- Adaptive or less exploitable opponents: everything so far is exploiting fixed bots.
+- Gemma tracker arm is 5 seeds (cap hit); finish it only if Gemma matters.
+- Account privacy settings block Qwen 3.7 Flash and Meta Muse; changing them is the user's call.
+
+
 Everything intended but not yet done, including items from earlier plans. Update as items complete.
 
 ## Experiments

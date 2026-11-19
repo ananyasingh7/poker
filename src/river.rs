@@ -247,7 +247,13 @@ pub(crate) fn range(
     }
     let mut out = vec![];
     for i in 0..unseen.len() {
-        for j in i + 1..unseen.len() {
+        for j in 0..unseen.len() {
+            // Both deal orders, each on its own: a bot whose randomness hashes its cards (the
+            // `solid` bluff roll, mixing) can play [A, B] and [B, A] differently, and both orders
+            // are equally likely to have been dealt.
+            if i == j {
+                continue;
+            }
             let hole = [unseen[i], unseen[j]];
             let mut policy = bot.policy();
             let consistent = spots.iter().all(|(view, applied)| {

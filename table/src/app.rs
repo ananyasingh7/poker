@@ -177,7 +177,7 @@ const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [
         &[
             ("facts sheet", "+151", "[+0, +301]"),
             ("cheat sheet", "+76", "[-105, +258]"),
-            ("tracker + sharp rule", "+76", "[-68, +219]"),
+            ("facts+tracker+sharp", "+222", "[+30, +415]"),
             ("own notes, every 5", "+82", "[-90, +254]"),
             ("DeepSeek instead", "+126", "[+23, +228]"),
         ],

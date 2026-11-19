@@ -15,9 +15,19 @@ use crate::analyze::{self, interval};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, fmt::Write as _, fs::File, path::Path};
 
-/// Per-seed values of one arm, bb/100: chips, all-in adjusted, river cost, turn cost.
-type Seeds = BTreeMap<u64, [Option<f64>; 4]>;
-const MEASURES: [&str; 4] = ["bb_per_100", "adjusted", "river_cost", "turn_cost"];
+/// Per-seed values of one arm, bb/100: chips, all-in adjusted, river cost, turn cost, and the
+/// learning measures (the last 20 hands of a session minus the first 20, see
+/// `analyze::SEGMENT_HANDS`) of the adjusted result, river cost and turn cost.
+type Seeds = BTreeMap<u64, [Option<f64>; 7]>;
+const MEASURES: [&str; 7] = [
+    "bb_per_100",
+    "adjusted",
+    "river_cost",
+    "turn_cost",
+    "learn_adjusted",
+    "learn_river_cost",
+    "learn_turn_cost",
+];
 
 struct Arm {
     name: String,
@@ -327,6 +337,7 @@ pub fn render(c: &Value) -> String {
         out,
         "\nCosts are per 100 hands played, so a model that reaches the river less often shows a lower river cost: read them beside the river decisions and VPIP columns."
     );
+    learning_tables(&mut out, c, turn);
     for (key, title) in [
         (
             "help_effects",
@@ -373,6 +384,77 @@ pub fn render(c: &Value) -> String {
     out
 }
 
+/// Learning: each arm's late-minus-early change, and the same change relative to no help (did an
+/// arm improve more over a session than the no-help arm did on the same cards?).
+fn learning_tables(out: &mut String, c: &Value, turn: bool) {
+    let header = |out: &mut String, first: &str| {
+        let _ = writeln!(
+            out,
+            "| {first} | Seeds | Luck-adjusted | River cost | {}",
+            if turn { "Turn cost |" } else { "" }
+        );
+        let _ = writeln!(
+            out,
+            "| --- {}| --- | --- | --- | {}",
+            if first.contains('|') { "| --- " } else { "" },
+            if turn { "--- |" } else { "" }
+        );
+    };
+    let line = |out: &mut String, first: String, seeds: usize, r: &Value| {
+        let _ = writeln!(
+            out,
+            "| {first} | {seeds} | {} | {} | {}",
+            cell(&r["learn_adjusted"]),
+            cell(&r["learn_river_cost"]),
+            if turn {
+                format!("{} |", cell(&r["learn_turn_cost"]))
+            } else {
+                String::new()
+            }
+        );
+    };
+    let arms = c["arms"].as_array().cloned().unwrap_or_default();
+    if arms
+        .iter()
+        .all(|a| a["learn_adjusted"]["blocks"].as_u64().unwrap_or(0) == 0)
+    {
+        return;
+    }
+    let _ = writeln!(
+        out,
+        "\nLearning within a session: last 20 hands minus first 20, per seed (chips up and costs down mean the arm improved; the cards differ by hand number, so compare an arm with the no-help arm below)\n"
+    );
+    header(out, "Arm");
+    for a in &arms {
+        line(
+            out,
+            a["arm"].as_str().unwrap_or("").to_owned(),
+            a["complete_seeds"].as_array().map_or(0, Vec::len),
+            a,
+        );
+    }
+    let help = c["help_effects"].as_array().cloned().unwrap_or_default();
+    if !help.is_empty() {
+        let _ = writeln!(
+            out,
+            "\nLearning relative to no help: (late minus early) minus the no-help arm's (late minus early), paired on shared seeds\n"
+        );
+        header(out, "Arm | minus");
+        for r in &help {
+            line(
+                out,
+                format!(
+                    "{} | {}",
+                    r["arm"].as_str().unwrap_or(""),
+                    r["versus"].as_str().unwrap_or("")
+                ),
+                r["seeds"].as_array().map_or(0, Vec::len),
+                r,
+            );
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -387,7 +469,7 @@ mod tests {
             directories: vec![],
             seeds: seeds
                 .iter()
-                .map(|(s, v)| (*s, [Some(*v), Some(*v), Some(*v), None]))
+                .map(|(s, v)| (*s, [Some(*v), Some(*v), Some(*v), None, None, None, None]))
                 .collect(),
             hands: 60,
             cost_usd: 0.0,

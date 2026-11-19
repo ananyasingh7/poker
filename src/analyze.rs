@@ -41,6 +41,9 @@ pub fn interval(values: &[f64]) -> Value {
     json!({"blocks":n,"mean":mean,"se":se,"ci95":[mean - t * se, mean + t * se]})
 }
 
+/// Hands per segment of a session's learning curve: hands 1-20, 21-40, 41-60, ...
+pub const SEGMENT_HANDS: usize = 20;
+
 /// One seed block of one (condition, label): the independent unit of every interval.
 #[derive(Default)]
 struct Block {
@@ -50,6 +53,36 @@ struct Block {
     loss: f64,
     river_loss: f64,
     turn_loss: f64,
+    /// The same sums by segment of the session (`SEGMENT_HANDS`), for learning curves.
+    segments: BTreeMap<usize, Block>,
+}
+impl Block {
+    fn add(&mut self, t: &Tally) {
+        self.net += t.net_chips;
+        self.adjusted += t.adjusted_net;
+        self.loss += t.grade_loss;
+        self.river_loss += t.river_loss;
+        self.turn_loss += t.turn_loss;
+        self.hands += t.hands;
+    }
+}
+
+/// One of a block's sums, by name.
+type Measure = (&'static str, fn(&Block) -> f64);
+/// The learning-curve measures: luck-adjusted chips, river cost and turn cost.
+const CURVE: [Measure; 3] = [
+    ("adjusted", |b| b.adjusted),
+    ("river_cost", |b| b.river_loss),
+    ("turn_cost", |b| b.turn_loss),
+];
+
+/// "1-20" for segment 0.
+fn segment_name(segment: usize) -> String {
+    format!(
+        "{}-{}",
+        segment * SEGMENT_HANDS + 1,
+        (segment + 1) * SEGMENT_HANDS
+    )
 }
 
 /// Behaviour and results of one seat label, accumulated hand by hand with `tally`.
@@ -543,20 +576,34 @@ pub fn directory_for_seat(
     };
     for (index, session) in sessions.iter().enumerate() {
         let mut local: BTreeMap<String, Tally> = BTreeMap::new();
-        for record in &session.records {
-            tally(record, &session.labels, &session.models, grade, &mut local)?;
+        // (label, segment) -> tally of that stretch of the session, for learning curves.
+        let mut segments: BTreeMap<(String, usize), Tally> = BTreeMap::new();
+        for (number, record) in session.records.iter().enumerate() {
+            let mut one: BTreeMap<String, Tally> = BTreeMap::new();
+            tally(record, &session.labels, &session.models, grade, &mut one)?;
+            for (label, t) in one {
+                local.entry(label.clone()).or_default().add(&t);
+                segments
+                    .entry((label, number / SEGMENT_HANDS))
+                    .or_default()
+                    .add(&t);
+            }
             big_blind = record.rules.big_blind;
         }
         if let Some((model_seats, graded)) = &street_grades[index] {
             match graded {
                 Ok(grades) => {
                     for seat in model_seats {
+                        let label = &session.labels[*seat];
                         let own: Vec<_> =
                             grades.iter().filter(|g| g.seat == *seat).cloned().collect();
-                        local
-                            .entry(session.labels[*seat].clone())
-                            .or_default()
-                            .add_river(&own);
+                        local.entry(label.clone()).or_default().add_river(&own);
+                        for g in own {
+                            segments
+                                .entry((label.clone(), g.hand / SEGMENT_HANDS))
+                                .or_default()
+                                .add_river(std::slice::from_ref(&g));
+                        }
                     }
                 }
                 // A run whose bots do not match its manifest cannot be graded; it is reported,
@@ -572,18 +619,24 @@ pub fn directory_for_seat(
         if !conditions.contains(&session.condition) {
             conditions.push(session.condition.clone());
         }
-        for (label, t) in local {
-            let block = blocks
+        for ((label, segment), t) in &segments {
+            blocks
                 .entry((session.condition.clone(), label.clone()))
                 .or_default()
                 .entry(session.seed)
-                .or_default();
-            block.net += t.net_chips;
-            block.adjusted += t.adjusted_net;
-            block.loss += t.grade_loss;
-            block.river_loss += t.river_loss;
-            block.turn_loss += t.turn_loss;
-            block.hands += t.hands;
+                .or_default()
+                .segments
+                .entry(*segment)
+                .or_default()
+                .add(t);
+        }
+        for (label, t) in local {
+            blocks
+                .entry((session.condition.clone(), label.clone()))
+                .or_default()
+                .entry(session.seed)
+                .or_default()
+                .add(&t);
             if session.models.contains(&label) {
                 by_condition
                     .entry((session.condition.clone(), label.clone()))
@@ -644,17 +697,21 @@ pub fn directory_for_seat(
         if turn {
             row["turn_cost"] = interval(&turns.values().copied().collect::<Vec<_>>());
         }
+        let curve = learning_curve(&blocks[key], big_blind, turn);
+        row["by_segment"] = curve.by_segment;
+        row["late_minus_early"] = curve.late_minus_early;
         // Per-seed values, so runs in different directories can be paired on shared deals
         // (`poker-lab compare`).
         row["per_seed"] = values
             .keys()
             .map(|seed| {
-                (
-                    seed.to_string(),
-                    json!({"bb_per_100":values[seed],"adjusted":adjusted.get(seed),
-                        "hands":blocks[key][seed].hands,
-                        "river_cost":rivers.get(seed),"turn_cost":turn.then(|| turns.get(seed)).flatten()}),
-                )
+                let mut v = json!({"bb_per_100":values[seed],"adjusted":adjusted.get(seed),
+                    "hands":blocks[key][seed].hands,
+                    "river_cost":rivers.get(seed),"turn_cost":turn.then(|| turns.get(seed)).flatten()});
+                for (name, learned) in &curve.per_seed[seed] {
+                    v[format!("learn_{name}")] = json!(learned);
+                }
+                (seed.to_string(), v)
             })
             .collect::<serde_json::Map<String, Value>>()
             .into();
@@ -672,6 +729,24 @@ pub fn directory_for_seat(
             row["label"] = json!(key.1);
             row["condition"] = json!(key.0);
             row["versus"] = json!(conditions[0]);
+            // Learning relative to the reference: (late minus early) minus the reference's
+            // (late minus early), paired by seed. The cards differ by hand number; the
+            // reference arm saw the same cards, so this difference is what the treatment adds.
+            let base = learning_curve(&blocks[&reference], big_blind, turn);
+            let mut learning = json!({});
+            for (index, (name, _)) in CURVE.iter().enumerate() {
+                let diffs: Vec<f64> = curve
+                    .per_seed
+                    .iter()
+                    .filter_map(|(seed, v)| {
+                        Some(v.get(index)?.1? - base.per_seed.get(seed)?.get(index)?.1?)
+                    })
+                    .collect();
+                if !diffs.is_empty() {
+                    learning[*name] = interval(&diffs);
+                }
+            }
+            row["learning"] = learning;
             paired.push(row);
         }
     }
@@ -683,6 +758,133 @@ pub fn directory_for_seat(
         "style":style,"model_style_by_condition":model_style,"win_rates":win_rates,"paired_differences":paired,
         "river_grade_errors":river_errors}),
     )
+}
+
+/// A label's learning curve over its seed blocks.
+struct Curve {
+    /// Per segment: hands, and intervals over seeds of each `CURVE` measure (bb/100).
+    by_segment: Value,
+    /// Last segment minus first, paired by seed: does the label do better late in a session?
+    late_minus_early: Value,
+    /// Per seed, the late-minus-early value of each measure (None without two segments).
+    per_seed: BTreeMap<u64, Vec<(&'static str, Option<f64>)>>,
+}
+
+fn learning_curve(seeds: &BTreeMap<u64, Block>, big_blind: u64, turn: bool) -> Curve {
+    let rate = |b: &Block, field: fn(&Block) -> f64| {
+        (b.hands > 0).then(|| field(b) / big_blind as f64 / b.hands as f64 * 100.0)
+    };
+    let measures: Vec<_> = CURVE
+        .iter()
+        .filter(|(name, _)| turn || *name != "turn_cost")
+        .collect();
+    let last = seeds
+        .values()
+        .filter_map(|b| b.segments.keys().max())
+        .max()
+        .copied()
+        .unwrap_or(0);
+    let by_segment: Vec<Value> = (0..=last)
+        .map(|segment| {
+            let parts: Vec<&Block> = seeds
+                .values()
+                .filter_map(|b| b.segments.get(&segment))
+                .collect();
+            let mut row = json!({"hands":segment_name(segment),
+                "seat_hands":parts.iter().map(|b| b.hands).sum::<u64>()});
+            for (name, field) in &measures {
+                let values: Vec<f64> = parts.iter().filter_map(|b| rate(b, *field)).collect();
+                row[*name] = interval(&values);
+            }
+            row
+        })
+        .collect();
+    let per_seed: BTreeMap<u64, Vec<(&'static str, Option<f64>)>> = seeds
+        .iter()
+        .map(|(seed, b)| {
+            let first = b.segments.get(&0);
+            let late = b.segments.get(&last).filter(|_| last > 0);
+            let learned = measures
+                .iter()
+                .map(|(name, field)| {
+                    let diff = first
+                        .zip(late)
+                        .and_then(|(f, l)| Some(rate(l, *field)? - rate(f, *field)?));
+                    (*name, diff)
+                })
+                .collect();
+            (*seed, learned)
+        })
+        .collect();
+    let mut late_minus_early = json!({"late":segment_name(last),"early":segment_name(0)});
+    for (index, (name, _)) in measures.iter().enumerate() {
+        let diffs: Vec<f64> = per_seed.values().filter_map(|v| v[index].1).collect();
+        late_minus_early[*name] = interval(&diffs);
+    }
+    Curve {
+        by_segment: json!(by_segment),
+        late_minus_early,
+        per_seed,
+    }
+}
+
+/// The model seats' learning curves: each segment's mean, then late minus early with intervals.
+fn learning_text(out: &mut String, a: &Value) {
+    let models: BTreeSet<&str> = a["style"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|s| s["is_model"] == true)
+        .filter_map(|s| s["label"].as_str())
+        .collect();
+    let rows: Vec<&Value> = a["win_rates"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|r| r["label"].as_str().is_some_and(|l| models.contains(l)))
+        .filter(|r| r["by_segment"].as_array().is_some_and(|s| s.len() > 1))
+        .collect();
+    if rows.is_empty() {
+        return;
+    }
+    let _ = writeln!(
+        out,
+        "\nLearning curve: model seats by hand number within a session (bb/100, mean over seeds; costs lower is better)"
+    );
+    for row in rows {
+        let _ = writeln!(
+            out,
+            "  {} {}",
+            row["condition"].as_str().unwrap_or(""),
+            row["label"].as_str().unwrap_or("")
+        );
+        for segment in row["by_segment"].as_array().into_iter().flatten() {
+            let _ = writeln!(
+                out,
+                "    hands {:<8} adjusted {:>7}   river cost {:>6}   turn cost {:>6}",
+                segment["hands"].as_str().unwrap_or(""),
+                number(&segment["adjusted"]["mean"]),
+                number(&segment["river_cost"]["mean"]),
+                number(&segment["turn_cost"]["mean"])
+            );
+        }
+        let learned = &row["late_minus_early"];
+        for (name, title) in [
+            ("adjusted", "adjusted"),
+            ("river_cost", "river cost"),
+            ("turn_cost", "turn cost"),
+        ] {
+            if learned[name]["blocks"].as_u64().unwrap_or(0) > 0 {
+                let _ = writeln!(
+                    out,
+                    "    {} minus {}, {title}: {}",
+                    learned["late"].as_str().unwrap_or(""),
+                    learned["early"].as_str().unwrap_or(""),
+                    interval_text(&learned[name])
+                );
+            }
+        }
+    }
 }
 
 fn percent(v: &Value) -> String {
@@ -881,8 +1083,22 @@ pub fn render(a: &Value) -> String {
                     interval_text(&row["turn_cost"])
                 );
             }
+            for (name, title) in [
+                ("adjusted", "adjusted"),
+                ("river_cost", "river cost"),
+                ("turn_cost", "turn cost"),
+            ] {
+                if row["learning"][name]["blocks"].as_u64().unwrap_or(0) > 0 {
+                    let _ = writeln!(
+                        out,
+                        "    learning (late minus early, minus the reference's), {title}: {}",
+                        interval_text(&row["learning"][name])
+                    );
+                }
+            }
         }
     }
+    learning_text(&mut out, a);
     let graded: Vec<&Value> = a["style"]
         .as_array()
         .into_iter()
@@ -1065,5 +1281,47 @@ fn model_name(s: &Value) -> String {
     match s["condition"].as_str() {
         Some(condition) => format!("{} ({condition})", s["label"].as_str().unwrap_or("")),
         None => s["label"].as_str().unwrap_or("").to_owned(),
+    }
+}
+
+#[cfg(test)]
+mod learning_tests {
+    use super::*;
+
+    fn block(segments: &[(usize, f64, f64)]) -> Block {
+        let mut b = Block::default();
+        for (segment, adjusted, river) in segments {
+            let part = Block {
+                hands: 20,
+                adjusted: *adjusted,
+                river_loss: *river,
+                ..Block::default()
+            };
+            b.hands += 20;
+            b.adjusted += adjusted;
+            b.segments.insert(*segment, part);
+        }
+        b
+    }
+
+    #[test]
+    fn late_minus_early_is_paired_by_seed() {
+        // Big blind 2, 20 hands: 40 chips is +100 bb/100.
+        let seeds = BTreeMap::from([
+            (1, block(&[(0, 0.0, 40.0), (1, 0.0, 0.0), (2, 40.0, 0.0)])),
+            (2, block(&[(0, 40.0, 40.0), (1, 0.0, 0.0), (2, 120.0, 0.0)])),
+            // A session cut short after one segment has no late value.
+            (3, block(&[(0, 999.0, 0.0)])),
+        ]);
+        let curve = learning_curve(&seeds, 2, false);
+        assert_eq!(curve.by_segment.as_array().unwrap().len(), 3);
+        assert_eq!(curve.by_segment[0]["hands"], "1-20");
+        assert_eq!(curve.by_segment[2]["hands"], "41-60");
+        assert_eq!(curve.by_segment[2]["seat_hands"], 40);
+        assert_eq!(curve.late_minus_early["adjusted"]["blocks"], 2);
+        assert_eq!(curve.late_minus_early["adjusted"]["mean"], 150.0);
+        assert_eq!(curve.late_minus_early["river_cost"]["mean"], -100.0);
+        assert!(curve.late_minus_early.get("turn_cost").is_none());
+        assert_eq!(curve.per_seed[&3][0], ("adjusted", None));
     }
 }

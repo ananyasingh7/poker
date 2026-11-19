@@ -17,7 +17,7 @@ Every experiment so far, oldest first, grouped by the same six topics as `runs/`
 | 7 | Only an explicit sizing instruction fixes bet sizing; the sharp rule holds on fresh cards | sharp: river −142 [−265, −19], chips +232 [+31, +434] | Solid on 10 fresh seeds |
 | 8 | Helper wins tuned on seeds 1-10 shrink on fresh seeds | plain rule −200 → −82 [−200, +35] | Solid warning |
 | 9 | Thinking (low effort) is the largest lever; with thinking off the helpers do nothing | thinking off −238 [−434, −43] | Solid (10 seeds) |
-| 10 | Results carry over to GLM-5.3 Flash (same level as DeepSeek, help gains chips); not to gpt-oss-20b (broken output) | GLM vs DeepSeek +4 [−85, +94] | Two thinking models only |
+| 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +50 [+17, +82] | Two thinking models, one field |
 
 **To date:** 85,755 hands, $16.64 reported by the runs (see [Spend](#spend)).
 
@@ -185,7 +185,7 @@ Rule: cheaper per decision than our DeepSeek route. Only models that honour `rea
 
 Help effect (tracker + rule minus none, paired): DeepSeek low +99 chips / −135 river; GLM +154 [+22, +286] chips / −92 [−190, +6] river / turn **+49** [+7, +90]; DeepSeek off −22 chips / −15 river.
 
-- **GLM-5.3 Flash ties DeepSeek** (+4 [−85, +94] paired, 20 seeds) at a fifth of the cost, and help lifts its chips similarly; its river cut is not resolved and its turn mistakes rise with help (it plays more hands).
+- **GLM-5.3 Flash ties DeepSeek on chips** (+4 [−85, +94] paired, 20 seeds; an interval that wide means "not distinguishable", not "equal") at a fifth of the cost, and help lifts its chips similarly. On decision quality it is worse: turn cost +50 [+17, +82] without help and +124 [+87, +161] with it, river cost +107 [+18, +196] with help. It wins its chips with a looser style (VPIP 40-46%) against a field that pays looseness off. It thinks very briefly (about 57 output tokens per move), runs on 4-bit providers, and has never been tested with the facts sheet, notes or cheat sheet.
 - **gpt-oss-20b** plays 87% of hands and loses heavily; 4-9% of its answers are empty. With the tracker it mostly folds, so its tiny river cost is an artefact of rarely reaching the river.
 - **Thinking off costs DeepSeek 238 bb/100** on the same deals [−434, −43], and removes the helpers' effect.
 - **Gemma 4** ignores effort settings (too dear with thinking), so it ran with thinking off; it ties DeepSeek thinking off. Its tracker arm has 5 seeds only.

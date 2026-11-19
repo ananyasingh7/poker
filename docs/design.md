@@ -6,6 +6,8 @@ What the lab is for, and how it is built. Merges the original vision, strategy, 
 
 **The question:** when a language model plays poker, *which capabilities and supporting tools explain how well it does, against which opponents, and at what cost?* Not "which model wins": poker rewards probabilistic judgment, opponent modelling and adaptation, and a lab that controls what the model is told can separate those.
 
+**The central interest is learning:** how each model turns experience into better play (within a session through notes and statistics, across sessions through persistent profiles, and through fine-tuning), and how we get a model to that stage. Static help (facts, handed-over profiles, sizing rules) is the control that tells us what a model could do if it had learned. See the learning track in the [roadmap](../ROADMAP.md).
+
 Principles that follow from it:
 
 1. **Judge decisions, not outcomes.** A good bluff can lose and a bad one can win. Results are reported as expected value (bb/100) over many deals, with luck removed where possible and decisions graded against the best available choice.

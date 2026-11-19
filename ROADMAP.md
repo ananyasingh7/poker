@@ -23,6 +23,27 @@ What has been built and measured, and what is left, most important first. Result
 | — | Thinking, grading, sizing, model lineup (Nov 15-17) | Done |
 | 10 | Isolation: host-owned inference proxy, then containers | Backlog |
 
+## Main goal: how models learn
+
+The question the user cares most about is how each model *learns*: does it play better after more hands, and which mechanism gets it there? So far the lab measures mostly static help (facts, profiles handed to it, sizing rules); the learning arms (own notes, tracker) improve river decisions but show no resolved chip gain, and no model has yet faced an opponent that changes. The learning track, in order:
+
+1. **Learning curves.** Report every arm's win rate and grades by hand number within a session (hands 1-20, 21-40, 41-60), so "gets better with experience" is measured directly rather than inferred from an end total. Cheap: analysis only, on existing runs.
+2. **Within-session learning against a changing opponent.** The `adaptive` bot switches style after it sees how it is treated. Does a model with notes notice the switch and adjust? (The original "induce a counter-adjustment" idea.)
+3. **Across-session learning.** Let notes persist from one session to the next (a defined identity per bot), and measure session 1 vs session 5 on fresh cards.
+4. **Learning through training.** Fine-tune a model on graded decisions (the river and turn grades supply labels: the best action per spot), then test it at the table against its base model on fresh seeds. Local first (MLX on the Mac Studio).
+5. **Compare models on the same learning curves**, not only on end totals.
+
+## Requested additions (2026-11-18)
+
+- **Play as a human at the table.** A HUMAN player choice in the spectator table: you take a seat, see only your own cards, and act with buttons and a bet-size input, against the bots and/or model seats. Your hands are saved in lab format, so `analyze` grades your decisions too (a human baseline on the same deals).
+- **Local models through Pi.** Run the `qwen3.8-pi` model (set up in Pi) as a table and lab player. Needs an `endpoint` option in the model config so a seat can call a local OpenAI-compatible server instead of OpenRouter (the adapter already supports an endpoint override in tests). Pi's config lists local servers at `127.0.0.1:8000` (omlx) and `localhost:9337` (mesh); neither was running on 2026-11-18, so the model ID and server are still to be confirmed. Local runs cost nothing per hand, so they suit large seed counts.
+- **Does the harness matter?** The same model through (a) the lab's direct, stateless request and (b) an agent harness such as Pi (its own system prompt, tools, conversation state). Paired on the same seeds: does the harness change win rate and grades, or is the difference within noise? Report noise explicitly (repeat the same arm twice to measure run-to-run variation).
+- **Fine-tune a model and seat it at the table.** See learning track item 4.
+
+## Model choice going forward
+
+GLM-5.3 Flash is the proposed **workhorse** for high-volume experiments: chips indistinguishable from DeepSeek at about a fifth of the cost per hand, so the same budget buys about 4-5x the seeds. Keep DeepSeek V4.1 Flash as the **reference** in every key comparison (one anchor arm) so new results stay comparable with everything before. Before switching, confirm cheaply (about $0.40, fresh seeds 21-30): GLM with the facts sheet, the cheat sheet and the sharp rule, against GLM with no help. Caveats to watch: GLM makes more graded mistakes than DeepSeek, thinks very briefly, and is served by 4-bit providers (pin them and record which).
+
 ## Open gaps (most important first)
 
 1. **Easy, fixed opponents.** Every result is about exploiting five deterministic bots. Next: run the model against the `adaptive` bot with memory (does it notice when the bot adjusts?), and seat several models at one table (milestone 7's unfinished item).
@@ -34,6 +55,8 @@ What has been built and measured, and what is left, most important first. Result
 
 | Experiment | Why | Rough cost |
 | --- | --- | --- |
+| Learning curves by hand number on existing runs | The main question, at no cost | $0 |
+| GLM confirmation (facts sheet, cheat sheet, sharp rule; seeds 21-30) | Decide whether GLM becomes the workhorse | $0.40 |
 | Sharp vs plain sizing rule on fresh seeds 21-30 | Leans better (river −60 [−126, +7]); settle it | $0.80 |
 | GLM-5.3 Flash with the sharp rule and with the cheat sheet | Does the river fix carry over to a second model? | $0.30 |
 | Adaptive bot vs the model with notes | The counter-adjustment question from the original vision | $0.50 |

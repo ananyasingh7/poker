@@ -175,11 +175,11 @@ const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [
         "DeepSeek, thinking on (11-17)",
         "river mistakes vs no help, bb/100",
         &[
-            ("tracker + sharp rule", "-142", "[-265, -19]"),
-            ("tracker + plain rule", "-135", "[-213, -57]"),
-            ("cheat sheet", "-274", "[-435, -113]"),
-            ("own notes, every 5", "-144", "[-186, -102]"),
-            ("tracker alone", "-75", "[-141, -9]"),
+            ("tracker + sharp rule", "-142", "[-265, -18]"),
+            ("tracker + plain rule", "-136", "[-213, -59]"),
+            ("cheat sheet", "-278", "[-437, -118]"),
+            ("own notes, every 5", "-140", "[-178, -101]"),
+            ("tracker alone", "-72", "[-130, -13]"),
         ],
     ),
     (
@@ -2115,7 +2115,7 @@ impl App {
         let model_label = if self.mock {
             "MODEL     local mock, nothing is spent"
         } else {
-            "DEEPSEEK  live through OpenRouter; costs money"
+            "MODEL     live through OpenRouter; costs money"
         };
         if check(c, input, x, y, 470, self.draft.brain == Brain::Model, true) {
             self.draft.brain = Brain::Model;
@@ -2230,14 +2230,14 @@ impl App {
                 Help::Cheat,
                 "CHEAT SHEET",
                 "true profile of every opponent",
-                "-274",
+                "-278",
                 "biggest cut",
             ),
             (
                 Help::Own,
                 "OWN NOTES",
                 "writes notes after each hand",
-                "-106",
+                " -98",
                 "helps; costs 3x",
             ),
             (
@@ -2251,7 +2251,7 @@ impl App {
                 Help::Tracker,
                 "TRACKER",
                 "stats per opponent, like a HUD",
-                " -75",
+                " -72",
                 "small help",
             ),
             (
@@ -2384,21 +2384,46 @@ impl App {
                 / 100.0;
         }
         y += 20;
+        c.text(x, y + 3, "bots", Font::Body, theme::DIM);
+        if text_button(
+            c,
+            input,
+            Rect::new(x + 30, y, 60, 15),
+            "FIXED",
+            !self.draft.varied_bots,
+        ) && !started
+        {
+            self.draft.varied_bots = false;
+        }
+        if text_button(
+            c,
+            input,
+            Rect::new(x + 92, y, 60, 15),
+            "VARIED",
+            self.draft.varied_bots,
+        ) && !started
+        {
+            self.draft.varied_bots = true;
+        }
         c.text(
-            x,
-            y,
-            "Opponents: station, overfolder, solid, adaptive, tight (the lab's field).",
+            x + 162,
+            y + 3,
+            if self.draft.varied_bots {
+                "5 bots, thresholds drawn per seed, 10% surprises"
+            } else {
+                "5 bots exactly as in the earlier experiments"
+            },
             Font::Body,
-            theme::FAINT,
+            theme::DIM,
         );
-        y += 11;
+        y += 17;
         c.text(
             x,
             y,
             if started {
-                "Changes take effect from the next hand. The seed is fixed for this game."
+                "Changes apply from the next hand; seed and bots are fixed per game."
             } else {
-                "RESET EACH is the lab's experiment setting: 100 bb in every seat, every hand."
+                "RESET EACH is the lab's setting: 100 bb in every seat, every hand."
             },
             Font::Body,
             theme::FAINT,

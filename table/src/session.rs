@@ -42,7 +42,11 @@ pub const FIELD: [Style; 5] = [
     Style::Adaptive,
     Style::Tight,
 ];
-pub const DEFAULT_MODEL: &str = "deepseek/deepseek-v4.1-flash-1017";
+/// The lab's workhorse since 2026-11-18 (docs/results.md §6): as many chips as DeepSeek at about
+/// a fifth of the cost.
+pub const DEFAULT_MODEL: &str = "z-ai/glm-5.3-flash";
+/// Mixing rate of the table's VARIED bots.
+pub const VARIED_MIXING: f64 = 0.1;
 const STAND_IN_MODEL: &str = "stand-in/solid";
 /// Completion limit with thinking on; reasoning tokens count against it. The first live run
 /// (2026-11-15, 4,096 tokens) truncated 11 of 79 river decisions mid-reasoning, and each became
@@ -96,6 +100,9 @@ pub struct Settings {
     pub quick_notes: bool,
     pub seed: u64,
     pub reset_stacks: bool,
+    /// Less predictable bots: each bot's thresholds drawn per game from the seed, and a
+    /// `VARIED_MIXING` chance per decision of deviating (`opponent_variation`). Fixed for a game.
+    pub varied_bots: bool,
     pub spend_cap_usd: f64,
 }
 impl Default for Settings {
@@ -110,6 +117,7 @@ impl Default for Settings {
             quick_notes: false,
             seed: 42,
             reset_stacks: false,
+            varied_bots: true,
             spend_cap_usd: 0.25,
         }
     }
@@ -182,6 +190,11 @@ impl Settings {
             notebook_chars: 2000,
             opponents: Opponents::Mixed,
             opponent_field: FIELD.to_vec(),
+            opponent_variation: poker_lab::opponents::Variation {
+                personalities: self.varied_bots,
+                mixing: if self.varied_bots { VARIED_MIXING } else { 0.0 },
+                random_field: false,
+            },
             reset_stacks: self.reset_stacks,
             notebook_style: NotebookStyle::StructuredProfiles,
             normalize_call_amount: true,
@@ -190,12 +203,7 @@ impl Settings {
             } else {
                 Scaffold::None
             },
-            provider: ProviderPrefs {
-                order: vec!["DeepInfra".into(), "InferenceNet".into(), "Baidu".into()],
-                quantizations: vec!["fp8".into()],
-                allow_fallbacks: Some(true),
-                ..ProviderPrefs::default()
-            },
+            provider: provider_for(&self.model),
             ..Config::default()
         }
     }
@@ -207,6 +215,25 @@ impl Settings {
             || self.facts_sheet != next.facts_sheet
             || self.notes != next.notes
             || self.spend_cap_usd != next.spend_cap_usd
+    }
+}
+
+/// Provider preferences the lab measured for a model: preferences, not restrictions, so any
+/// other model ID still routes.
+fn provider_for(model: &str) -> ProviderPrefs {
+    let lower = model.to_lowercase();
+    let (order, quantizations): (&[&str], &[&str]) = if lower.contains("deepseek") {
+        (&["DeepInfra", "InferenceNet", "Baidu"], &["fp8"])
+    } else if lower.contains("glm") {
+        (&["Wafer", "Darkbloom"], &[])
+    } else {
+        (&[], &[])
+    };
+    ProviderPrefs {
+        order: order.iter().map(|s| (*s).to_owned()).collect(),
+        quantizations: quantizations.iter().map(|s| (*s).to_owned()).collect(),
+        allow_fallbacks: Some(true),
+        ..ProviderPrefs::default()
     }
 }
 
@@ -703,8 +730,14 @@ struct Game {
 }
 impl Game {
     fn new(shared: Arc<Shared>, env: Env, settings: &Settings) -> Result<Self, String> {
+        // The field as the lab builds it (with this game's personalities when bots are varied);
+        // seat 0 is a placeholder for the watched seat, replaced below.
         let mut agents: Vec<Box<dyn Agent>> = vec![Style::Solid.agent()];
-        agents.extend(FIELD.iter().map(|style| style.agent()));
+        agents.extend(
+            settings.lab_config().seat_bots()[1..]
+                .iter()
+                .map(|bot| bot.expect("scripted seat").agent()),
+        );
         let mut dealer = Dealer::new(SEATS, settings.seed)?;
         dealer.reset_stacks = settings.reset_stacks;
         let run_dir = match &env.runs_root {
@@ -742,7 +775,7 @@ impl Game {
             names: vec![],
             tallies: BTreeMap::new(),
             by_help: vec![],
-            river: RiverGrader::with_turn(&settings.lab_config().seat_styles(), &[HERO]).ok(),
+            river: RiverGrader::for_bots(&settings.lab_config().seat_bots(), &[HERO], true).ok(),
             run_dir,
             segment: None,
             segments: 0,
@@ -1106,7 +1139,7 @@ pub fn load_run(dir: &Path) -> Result<State, String> {
     let mut tallies: BTreeMap<String, Tally> = BTreeMap::new();
     let mut grader = config
         .as_ref()
-        .and_then(|c| RiverGrader::with_turn(&c.seat_styles(), &[c.model_seat]).ok());
+        .and_then(|c| RiverGrader::for_bots(&c.seat_bots(), &[c.model_seat], true).ok());
     let mut totals = HelpTotals {
         help: help.clone(),
         ..HelpTotals::default()

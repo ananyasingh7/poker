@@ -407,3 +407,44 @@ fn bet_sizing_and_quick_notes_map_to_the_lab_flags() {
     assert!(!tracker.lab_config().notes_thinking_off);
     assert!(tracker.lab_config().validate().is_ok());
 }
+
+#[test]
+fn defaults_are_glm_and_varied_bots_drawn_from_the_seed() {
+    let settings = Settings::default();
+    let config = settings.lab_config();
+    assert_eq!(config.model, "z-ai/glm-5.3-flash");
+    assert_eq!(config.provider.order, ["Wafer", "Darkbloom"]);
+    assert!(config.opponent_variation.personalities);
+    assert_eq!(
+        config.opponent_variation.mixing,
+        poker_table::session::VARIED_MIXING
+    );
+    assert!(
+        !config.opponent_variation.random_field,
+        "seat names stay fixed"
+    );
+    // The same five styles in the same seats, with drawn personalities; FIXED is the old field.
+    assert_eq!(
+        config.seat_styles(),
+        Settings {
+            varied_bots: false,
+            ..Settings::default()
+        }
+        .lab_config()
+        .seat_styles()
+    );
+    let fixed = Settings {
+        varied_bots: false,
+        ..Settings::default()
+    }
+    .lab_config();
+    assert!(!fixed.opponent_variation.is_active());
+    assert_ne!(config.seat_bots(), fixed.seat_bots());
+    // A DeepSeek model still gets the providers it was measured on.
+    let deepseek = Settings {
+        model: "deepseek/deepseek-v4.1-flash-1017".into(),
+        ..Settings::default()
+    }
+    .lab_config();
+    assert_eq!(deepseek.provider.quantizations, ["fp8"]);
+}

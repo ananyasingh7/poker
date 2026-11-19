@@ -32,7 +32,8 @@ poker-lab ceiling FIELD [TRAIN_SEEDS] [TEST_SEEDS] [OUT.json]
 
 - **`analyze`**: per seat label, playing style (VPIP, PFR, aggression = postflop bets and raises per call, fold to bet, showdowns, fallbacks), bb/100 with intervals, luck-adjusted bb/100, call/fold mistake cost, river (and with `--turn`, turn) cost, a leak report, cost per hand, and paired differences of each condition against the first. `--decisions` prints one JSON line per model decision with its spot, equity and grades (evaluator-only: it reveals hidden cards).
 - **`compare`**: several batch directories side by side, one row per arm named `model · thinking · condition`; the same treatment on different seeds is merged; only complete seeds count; paired differences of each helper against the same model's no-help arm and of each model against the first directory's model. Columns include VPIP and river decisions per 100 hands, because costs are per 100 hands *played*: a model that folds more shows smaller costs.
-- **`catalog`**: one CSV row per run or batch (model, thinking, help, seeds, completion, requests, cost).
+- **`catalog`**: one CSV row per run or batch (model, thinking, bots, help, seeds, completion, requests, cost).
+- **Varied bots** never merge or pair with fixed-bot runs: `compare` names such arms `... · varied (personalities, mix 0.1, random field) bots` and pairs them only with arms on the same kind of field.
 
 ### Statistics
 
@@ -55,11 +56,15 @@ All grades are evaluator-only (they use hidden information) and are meant for co
 | **River** (`src/river.rs`) | Every river decision | A player who knows exactly how each bot plays but not its cards | Exact: bots are deterministic, so their possible holdings are computable |
 | **Turn** (`src/turn.rs`, `--turn`) | Every turn decision | Same, approximate | Later play is a stand-in; optimistic |
 
-**River grade.** For each live bot, every hole-card pair the model cannot see is kept if the bot's policy would have made every move it made (exact ranges). Each alternative (check/fold, call, bets of 33-150% pot, all-in, and the action taken) is played out over every joint holding (up to 400) with the bots' real responses; if a bot raises back, the model takes the better of fold and call for what it saw. The grade is the expected stack of the chosen action against the best one (the **cost**), and the mistake kind: missed bet, bad bet, sizing, bad call, bad fold, missed raise, bad raise. Against a station the best river bet is often all-in, so "river cost" is distance from perfect exploitation, not from sound poker.
+**River grade.** For each live bot, every hole-card pair the model cannot see, in both deal orders, is kept if the bot's policy would have made every move it made (exact ranges; both orders because a bot whose randomness hashes its cards can play [A, B] and [B, A] differently: fixed 2026-11-18, moving earlier costs by 1-9 bb/100). With varied bots the grader rebuilds each bot with its session's draws. Each alternative (check/fold, call, bets of 33-150% pot, all-in, and the action taken) is played out over every joint holding (up to 400) with the bots' real responses; if a bot raises back, the model takes the better of fold and call for what it saw. The grade is the expected stack of the chosen action against the best one (the **cost**), and the mistake kind: missed bet, bad bet, sizing, bad call, bad fold, missed raise, bad raise. Against a station the best river bet is often all-in, so "river cost" is distance from perfect exploitation, not from sound poker.
 
 **Turn grade.** As above, plus: every river card the model cannot rule out is tried with 12 opponent holdings each; the model's later play is the best of check, pot bet, all-in (when it can check) or fold, call (when facing a bet) for what it saw. With few deals behind each river card that continuation is optimistic, equally for every alternative. About 1 minute per 1,200 hands; sessions are graded in parallel.
 
 **Leak report:** missed river bets, bluffs (postflop bets with under 30% equity against the cards held) and how often they were called down, and truncated answers.
+
+## Default setup (since 2026-11-18)
+
+New experiments use **GLM-5.3 Flash** (`z-ai/glm-5.3-flash`, thinking on with `reasoning_effort: low`, providers Wafer then Darkbloom) against **varied bots** (`opponent_variation`: personalities, mixing 0.1, random field from the five current styles), on **fresh seeds** (21 onward), with **one DeepSeek V4.1 Flash anchor arm** on the same deals so results connect to sections 1-6 of the results. Templates: `examples/7-glm-varied/`. The spectator table defaults to the same model and to VARIED bots.
 
 ## Picking models
 

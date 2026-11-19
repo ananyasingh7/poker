@@ -29,6 +29,7 @@ Keys: `space` pause, `c` settings, `h` show all hole cards, `tab` or `1`-`5` pan
 
 | Setting | Lab meaning |
 | --- | --- |
+| Model (default `z-ai/glm-5.3-flash`) | Any OpenRouter ID; GLM and DeepSeek get the providers the lab measured them on |
 | SHOW THINKING (default on) | `reasoning_effort: low`, 12,288 tokens, 240 s timeout, re-ask after a truncation |
 | FACTS SHEET | `scaffold: features` |
 | BET SIZING | `sharp_sizing` (the sharp rule; until 2026-11-17 the plain rule plus a bet menu) |
@@ -37,6 +38,7 @@ Keys: `space` pause, `c` settings, `h` show all hole cards, `tab` or `1`-`5` pan
 | TRACKER | `memory: stats` |
 | BASELINE | none of the above |
 | RESET EACH | `reset_stacks: true` (the experiments' setting); default carries stacks over |
+| BOTS: VARIED (default) / FIXED | `opponent_variation`: personalities drawn from the seed and a 10% chance per decision of a surprise; FIXED is the exact field of the earlier experiments. Set before the game. |
 | Cap | spend limit for the whole session (default $0.25) |
 
 Cheat sheet, own notes and tracker exclude each other. Changes apply from the next hand. The HELP ALLOWED list shows, for each setting, the river-mistake change the lab measured for DeepSeek with thinking on. Each stretch of settings is saved as `runs/table-<time>/session-NNN` in lab format, readable by `analyze` and `report`.

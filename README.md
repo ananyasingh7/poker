@@ -22,7 +22,8 @@ Details: [design](docs/design.md).
 - The biggest helps, in order of certainty: **thinking** (low effort) on; **host-computed facts** (position, pot odds, hand strength); **accurate opponent profiles**; an explicit **bet-sizing rule** (the sharp rule held up on fresh cards). The model's own notes are accurate but their chip gain is unresolved.
 - Helper gains measured on the seeds used for tuning shrank on fresh seeds: claims now need fresh cards.
 - GLM-5.3 Flash wins as many chips as DeepSeek (+180 vs +175 bb/100; the difference, +4 [−85, +94], cannot be told from zero) at a fifth of the cost, but makes more graded mistakes on the turn and river. gpt-oss-20b is unusable (empty answers).
-- Weaknesses: the opponents are fixed and simple, samples are 10-20 seeds per arm, and only two thinking models have been compared. See the [roadmap](ROADMAP.md).
+- **Going forward:** GLM-5.3 Flash is the workhorse (DeepSeek as an anchor arm), playing against **less predictable bots** whose personalities, occasional surprises and seating are drawn from each seed, so a model has to learn each session's opponents.
+- Weaknesses: the bots are still simple (now varied, not strong), samples are 10-20 seeds per arm, and only two thinking models have been compared. See the [roadmap](ROADMAP.md).
 
 ## Quick start
 
@@ -55,4 +56,4 @@ Full command reference: [methods](docs/methods.md).
 | `docs/` | [design](docs/design.md), [methods](docs/methods.md), [results](docs/results.md), [model input](docs/model-input.md), [table](docs/table.md), [papers](docs/papers.md) |
 | `ROADMAP.md` | Done, open gaps, next experiments |
 
-Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md).
+Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied` (configs ready, not yet run). The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md).

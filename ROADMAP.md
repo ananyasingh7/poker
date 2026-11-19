@@ -40,13 +40,15 @@ The question the user cares most about is how each model *learns*: does it play 
 - **Does the harness matter?** The same model through (a) the lab's direct, stateless request and (b) an agent harness such as Pi (its own system prompt, tools, conversation state). Paired on the same seeds: does the harness change win rate and grades, or is the difference within noise? Report noise explicitly (repeat the same arm twice to measure run-to-run variation).
 - **Fine-tune a model and seat it at the table.** See learning track item 4.
 
-## Model choice going forward
+## Model and field going forward (decided 2026-11-18)
 
-GLM-5.3 Flash is the proposed **workhorse** for high-volume experiments: chips indistinguishable from DeepSeek at about a fifth of the cost per hand, so the same budget buys about 4-5x the seeds. Keep DeepSeek V4.1 Flash as the **reference** in every key comparison (one anchor arm) so new results stay comparable with everything before. Before switching, confirm cheaply (about $0.40, fresh seeds 21-30): GLM with the facts sheet, the cheat sheet and the sharp rule, against GLM with no help. Caveats to watch: GLM makes more graded mistakes than DeepSeek, thinks very briefly, and is served by 4-bit providers (pin them and record which).
+- **GLM-5.3 Flash is the workhorse.** It wins as many chips as DeepSeek at about a fifth of the cost; it makes more graded mistakes, which leaves room to show improvement. **DeepSeek V4.1 Flash stays as one anchor arm** in key comparisons so new results connect to the old ones. GLM has never been tested with the facts sheet, notes or cheat sheet: the first GLM batch covers that.
+- **Varied bots are the default for new experiments** (`opponent_variation`: personalities, mixing 0.1, random field), so a model must learn each session's opponents rather than reuse a fixed profile. Old results were on the fixed field and are not directly comparable; the anchor arm bridges them.
+- Templates: `examples/7-glm-varied/` (GLM: none, facts, oracle, stats + sharp rule, notes every 5; DeepSeek anchor; a 12-hand smoke test).
 
 ## Open gaps (most important first)
 
-1. **Easy, fixed opponents.** Every result is about exploiting five deterministic bots. Next: run the model against the `adaptive` bot with memory (does it notice when the bot adjusts?), and seat several models at one table (milestone 7's unfinished item).
+1. **Simple opponents.** The bots now vary per session (2026-11-18), but they are still simple, and there is no ceiling for the varied field. Next: a varied-field ceiling, the `adaptive` bot with memory (does the model notice when it adjusts?), several models at one table, and a human seat.
 2. **Only two thinking models.** DeepSeek and GLM agree; gpt-oss-20b failed on output format; Gemma had to run with thinking off. Widening needs models that honour low effort, or a reasoning budget the provider respects.
 3. **Small samples.** 10-20 seeds per arm, with many arms compared. Use fresh seeds for every claim; prefer one pre-registered comparison over many.
 4. **Grading is partial.** River exact, turn approximate, flop and preflop bets ungraded (call/fold only).
@@ -55,8 +57,11 @@ GLM-5.3 Flash is the proposed **workhorse** for high-volume experiments: chips i
 
 | Experiment | Why | Rough cost |
 | --- | --- | --- |
-| Learning curves by hand number on existing runs | The main question, at no cost | $0 |
-| GLM confirmation (facts sheet, cheat sheet, sharp rule; seeds 21-30) | Decide whether GLM becomes the workhorse | $0.40 |
+| Learning curves by hand number (`analyze`), on existing runs | The main question, at no cost | $0 |
+| Ceiling for the varied field (`poker-lab ceiling` with variation) | The reference for "how much is there to win" now | $0 |
+| GLM smoke on varied bots (`examples/7-glm-varied/smoke.json`) | Check the new setup end to end live | $0.02 |
+| First GLM batch on varied bots: none, facts, oracle, stats + sharp, plus DeepSeek anchor (seeds 21-40) | Baseline for the new direction; does help work for GLM? | about $1.20 |
+| GLM notes every 5 hands vs none on varied bots | The learning question with the new workhorse | about $0.40 |
 | Sharp vs plain sizing rule on fresh seeds 21-30 | Leans better (river −60 [−126, +7]); settle it | $0.80 |
 | GLM-5.3 Flash with the sharp rule and with the cheat sheet | Does the river fix carry over to a second model? | $0.30 |
 | Adaptive bot vs the model with notes | The counter-adjustment question from the original vision | $0.50 |
@@ -87,3 +92,6 @@ GLM-5.3 Flash is the proposed **workhorse** for high-volume experiments: chips i
 - The table's BET SIZING is the sharp rule alone (the bet menu never showed an effect).
 - Account privacy settings (zero data retention, no training) stay as they are; models they block are out of scope.
 - Budget discipline: quote a cost and a hard cap before every live run; smoke-test new models for about $0.02.
+- GLM-5.3 Flash is the workhorse; DeepSeek is the anchor (2026-11-18).
+- New experiments run against varied bots on fresh seeds (2026-11-18).
+- River and turn ranges consider both deal orders of a bot's cards (grader fix, 2026-11-18).

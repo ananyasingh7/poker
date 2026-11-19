@@ -58,9 +58,17 @@ The current field, each with a written exploit:
 | `adaptive` | `solid` plus one rule: after 8 responses to its bets, folds above 60% raise its bluffing to 80%; below 30% it stops bluffing | Depends on the table |
 | `tight` | Plays strong hands only, folds below a pair to postflop bets | Steal |
 
-All are deterministic (their randomness is seeded from the spot), which is what makes exact range grading possible. The original `tight / loose / aggressive` and `random` fixtures remain for older runs. **Ceiling** (`poker-lab ceiling`): the best of 162 settings of a tunable policy, selected on training seeds, measured on held-out seeds; a lower bound on what a competent exploiter wins (+288 bb/100 against this field).
+All are deterministic (their randomness is seeded from the spot), which is what makes exact range grading possible.
 
-**Weakness:** the field is fixed and simple. Every result is about exploiting these bots; none is about play against strong or adapting players.
+**Less predictable bots** (`opponent_variation`, added 2026-11-18, the default for new experiments). Three switches, all drawn from the session seed, so every hand replays, arms on the same seed meet the same bots, and the range graders stay exact (they rebuild each bot with its draws):
+
+- `personalities`: each bot's numbers are drawn per session (preflop thresholds within 4 points, call share 0.5-1.5x, and for `solid` and `adaptive` value 0.55-0.70, bluff 0-35%, bet 45-100% of the pot). Each bot keeps its defining leak, so the cheat sheet stays qualitatively right (it says so: "this session's version varies").
+- `mixing` (0 to 0.5): on any decision, a seeded chance that the bot deviates (bets instead of checking, calls instead of folding, raises instead of calling, checks instead of betting). The roll ignores card order, as a hand is a set.
+- `random_field`: the five opponents are drawn per seed, with replacement, from `opponent_field` (all seven styles if empty).
+
+A model can no longer carry a fixed profile from earlier runs; it has to learn each session's bots, which is the question the lab now cares most about. In-process only (worker processes take plain styles). The original `tight / loose / aggressive` and `random` fixtures remain for older runs. **Ceiling** (`poker-lab ceiling`): the best of 162 settings of a tunable policy, selected on training seeds, measured on held-out seeds; a lower bound on what a competent exploiter wins (+288 bb/100 against this field).
+
+**Weakness:** the bots are still simple (varied, not strong), and the ceiling has only been measured for the fixed field. No result yet is about play against strong players or people.
 
 ## Treatments the model can be given
 
@@ -73,6 +81,7 @@ All opt-in, all labelled in the condition name that `analyze` reports.
 | Sizing help | `sizing_hint`, `sharp_sizing`, `size_menu` | A sizing sentence, the sharper sizing sentence, or a menu of raise amounts |
 | Thinking | `reasoning_enabled`, `reasoning_effort` | Provider reasoning; `low` effort bounds deliberation |
 | Observation | `label_positions` | Position name and big blind in the raw view |
+| Opponents | `opponent_variation` | Less predictable bots (above); an environment setting, labelled `@ varied (...) bots` in `compare` and the `bots` column of the catalog |
 
 The notebook is the model's choice of what to keep (keep or replace; capped; structured per-seat profiles since prompt v5 so one overrun cannot erase the rest). Statistics are computed by the host with explicit denominators. Notes and statistics never cross seats or sessions.
 

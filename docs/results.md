@@ -2,6 +2,8 @@
 
 Every experiment so far, oldest first, grouped by the same six topics as `runs/`, `examples/` and `results/`. The model is DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash-1017`) unless a section says otherwise. How the numbers are made is in [methods](methods.md).
 
+**Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix.
+
 **Reading the numbers.** bb/100 = big blinds won per 100 hands. `[a, b]` is a 95% interval over seeds (one seed = one set of deals, the unit of replication). "Paired" means two arms on the same deals, differenced seed by seed. "Luck-adjusted" removes all-in luck. "River cost" and "turn cost" are chips per 100 hands given up against the best choice for a player who knows how the bots play (lower is better). Unless noted the field is the five bots `station, overfolder, solid, adaptive, tight`, stacks reset to 100 BB every hand, 60-hand sessions.
 
 ## Headline findings
@@ -13,11 +15,11 @@ Every experiment so far, oldest first, grouped by the same six topics as `runs/`
 | 3 | A calculator or the `solid` rule's advice add nothing measurable on top of those facts | equity −16 [−58, +26] | Unresolved, small |
 | 4 | Accurate opponent descriptions (cheat sheet) help; much more with thinking on | +33 [+2, +65] off; +107 [+54, +159] on | Solid with thinking |
 | 5 | The model's own notes are accurate and change behaviour, but no chip gain is resolved | +13 [−22, +49] off; +2 [−148, +152] on | Unresolved |
-| 6 | Every kind of opponent information cuts river mistakes, in the order tracker < notes < cheat sheet | −75 / −144 / −274 river cost | Solid (10 seeds) |
-| 7 | Only an explicit sizing instruction fixes bet sizing; the sharp rule holds on fresh cards | sharp: river −142 [−265, −19], chips +232 [+31, +434] | Solid on 10 fresh seeds |
-| 8 | Helper wins tuned on seeds 1-10 shrink on fresh seeds | plain rule −200 → −82 [−200, +35] | Solid warning |
+| 6 | Every kind of opponent information cuts river mistakes, in the order tracker < notes < cheat sheet | −72 / −140 / −278 river cost | Solid (10 seeds) |
+| 7 | Only an explicit sizing instruction fixes bet sizing; the sharp rule holds on fresh cards | sharp: river −142 [−265, −18], chips +232 [+31, +434] | Solid on 10 fresh seeds |
+| 8 | Helper wins tuned on seeds 1-10 shrink on fresh seeds | plain rule −200 → −85 [−206, +35] | Solid warning |
 | 9 | Thinking (low effort) is the largest lever; with thinking off the helpers do nothing | thinking off −238 [−434, −43] | Solid (10 seeds) |
-| 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +50 [+17, +82] | Two thinking models, one field |
+| 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +48 [+15, +82] | Two thinking models, one field |
 
 **To date:** 85,755 hands, $16.64 reported by the runs (see [Spend](#spend)).
 
@@ -137,14 +139,14 @@ The chip results could not separate these arms; the [river grade](methods.md#gra
 
 | Arm | Seeds | Chips | River cost | Turn cost (approx) | $/hand |
 | --- | --- | --- | --- | --- | --- |
-| No help (river cost 435) | 10 | | | | 0.00033 |
-| Tracker statistics | 10 | +8 [−43, +58] | **−75 [−141, −9]** | −28 [−52, −4] | 0.00053 |
-| Own notes, every hand | 5 | +2 [−148, +152] | **−106 [−155, −57]** | | 0.00112 |
-| Own notes, every 5 hands | 8 | −6 [−72, +60] | **−144 [−186, −102]** | −35 [−62, −9] | 0.00077 |
-| Cheat sheet | 10 | +144 [+27, +262] | **−274 [−435, −113]** | −58 [−104, −11] | 0.00057 |
-| Tracker + sizing rule | 8 | +60 [−96, +215] | **−200 [−305, −95]** | −38 [−75, −1] | 0.00056 |
-| Tracker + bet menu | 9 | +62 [−48, +172] | −107 [−194, −20] | −22 [−54, +9] | 0.00055 |
-| Tracker + rule + menu | 9 | +63 [−76, +203] | −183 [−292, −74] | −34 [−80, +12] | 0.00056 |
+| No help (river cost 436) | 10 | | | | 0.00033 |
+| Tracker statistics | 10 | +8 [−43, +58] | **−72 [−130, −13]** | −28 [−50, −6] | 0.00053 |
+| Own notes, every hand | 5 | +2 [−148, +152] | **−98 [−146, −50]** | −29 [−92, +34] | 0.00112 |
+| Own notes, every 5 hands | 8 | −6 [−72, +60] | **−140 [−178, −101]** | −32 [−63, −1] | 0.00077 |
+| Cheat sheet | 10 | +144 [+27, +262] | **−278 [−437, −118]** | −56 [−102, −11] | 0.00057 |
+| Tracker + sizing rule | 8 | +60 [−96, +215] | **−200 [−297, −103]** | −35 [−76, +5] | 0.00056 |
+| Tracker + bet menu | 9 | +62 [−48, +172] | −113 [−191, −35] | −18 [−51, +14] | 0.00055 |
+| Tracker + rule + menu | 9 | +63 [−76, +203] | −184 [−289, −80] | −31 [−76, +15] | 0.00056 |
 
 - Every kind of opponent information helps on the river, in the order tracker < notes < cheat sheet; turn effects are in the same order but much smaller. The helpers are mostly river fixes.
 - Only the cheat sheet fixed **bet sizing** (sizing cost 30 against 150-170 for the rest) and bluffing the station (36% called down against 67-84%): it says in words "bet big, never bluff it". The others tell the model who calls, not what to do.
@@ -159,10 +161,10 @@ $1.70. Runs `runs/6-lineup/`, configs `examples/6-lineup/`, full table `results/
 
 | vs no help | Seeds | Chips | River cost | Turn cost |
 | --- | --- | --- | --- | --- |
-| Tracker + rule, tuning seeds 1-10 | 8 | +60 [−96, +215] | −200 [−305, −95] | −38 [−75, −1] |
-| Tracker + rule, fresh seeds 11-20 | 10 | +130 [−10, +271] | −82 [−200, +35] | −4 [−28, +21] |
-| Tracker + rule, both | 18 | **+99 [+5, +193]** | **−135 [−213, −57]** | −19 [−40, +2] |
-| Tracker + **sharp rule**, fresh seeds | 10 | **+232 [+31, +434]** | **−142 [−265, −19]** | **−34 [−67, −1]** |
+| Tracker + rule, tuning seeds 1-10 | 8 | +60 [−96, +215] | −200 [−297, −103] | −35 [−76, +5] |
+| Tracker + rule, fresh seeds 11-20 | 10 | +130 [−10, +271] | −85 [−206, +35] | −7 [−33, +18] |
+| Tracker + rule, both | 18 | **+99 [+5, +193]** | **−136 [−213, −59]** | −20 [−41, +2] |
+| Tracker + **sharp rule**, fresh seeds | 10 | **+232 [+31, +434]** | **−142 [−265, −18]** | **−38 [−72, −4]** |
 
 The plain rule's river effect on fresh cards is less than half the tuning-seed figure: tuning on the same seeds overstated it. The sharp rule ("against a player who rarely folds, bet at least the pot on the river, usually all-in; never bluff them") was written after seeing seeds 1-10 and tested only on 11-20: the first helper clearly better than no help on fresh deals in both chips and river cost. Sharp vs plain directly: river −60 [−126, +7], chips +102 [−81, +285], not yet resolved. It shoves 32 of 44 river bets (plain rule 11 of 36; the grader says all-in was best in 29).
 
@@ -172,24 +174,28 @@ Rule: cheaper per decision than our DeepSeek route. Only models that honour `rea
 
 | Arm | Seeds | Chips | River cost | River decisions /100 hands | VPIP | $/hand | Fallbacks /100 hands |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| DeepSeek · thinking low · none | 20 | +175 [+87, +264] | 362 | 34 | 36% | 0.00032 | 1.3 |
-| DeepSeek · thinking low · tracker + rule | 18 | +292 [+154, +430] | 224 | 31 | 32% | 0.00055 | 2.1 |
-| GLM-5.3 Flash · low · none | 20 | +180 [+79, +280] | 434 | 34 | 40% | 0.00006 | 0.7 |
+| DeepSeek · thinking low · none | 20 | +175 [+87, +264] | 364 | 34 | 36% | 0.00032 | 1.3 |
+| DeepSeek · thinking low · tracker + rule | 18 | +292 [+154, +430] | 225 | 31 | 32% | 0.00055 | 2.1 |
+| GLM-5.3 Flash · low · none | 20 | +180 [+79, +280] | 433 | 34 | 40% | 0.00006 | 0.7 |
 | GLM-5.3 Flash · low · tracker + rule | 20 | +334 [+164, +503] | 342 | 35 | 46% | 0.00015 | 0.7 |
-| gpt-oss-20b · low · none | 18 | −744 [−984, −504] | 1196 | 73 | 87% | 0.00007 | 14.9 |
-| gpt-oss-20b · low · tracker + rule | 20 | −221 [−456, +14] | 45 | 4 | 43% | 0.00006 | 11.3 |
-| DeepSeek · thinking off · none | 10 | +15 [−63, +93] | 574 | 36 | 36% | 0.00011 | 0.0 |
-| DeepSeek · thinking off · tracker + rule | 10 | −8 [−122, +106] | 559 | 32 | 32% | 0.00023 | 0.0 |
-| Gemma 4 26B · off · none | 10 | −10 [−64, +44] | 659 | 40 | 47% | 0.00007 | 0.3 |
-| Gemma 4 26B · off · tracker + rule | 5 | −47 [−216, +122] | 914 | 45 | 56% | 0.00014 | 14.4 |
+| gpt-oss-20b · low · none | 18 | −744 [−984, −504] | 1200 | 73 | 87% | 0.00007 | 14.9 |
+| gpt-oss-20b · low · tracker + rule | 20 | −221 [−456, +14] | 43 | 4 | 43% | 0.00006 | 11.3 |
+| DeepSeek · thinking off · none | 10 | +15 [−63, +93] | 577 | 36 | 36% | 0.00011 | 0.0 |
+| DeepSeek · thinking off · tracker + rule | 10 | −8 [−122, +106] | 563 | 32 | 32% | 0.00023 | 0.0 |
+| Gemma 4 26B · off · none | 10 | −10 [−64, +44] | 662 | 40 | 47% | 0.00007 | 0.3 |
+| Gemma 4 26B · off · tracker + rule | 5 | −47 [−216, +122] | 933 | 45 | 56% | 0.00014 | 14.4 |
 
-Help effect (tracker + rule minus none, paired): DeepSeek low +99 chips / −135 river; GLM +154 [+22, +286] chips / −92 [−190, +6] river / turn **+49** [+7, +90]; DeepSeek off −22 chips / −15 river.
+Help effect (tracker + rule minus none, paired): DeepSeek low +99 chips / −136 river; GLM +154 [+22, +286] chips / −91 [−191, +9] river / turn **+46** [+5, +87]; DeepSeek off −22 chips / −14 river.
 
-- **GLM-5.3 Flash ties DeepSeek on chips** (+4 [−85, +94] paired, 20 seeds; an interval that wide means "not distinguishable", not "equal") at a fifth of the cost, and help lifts its chips similarly. On decision quality it is worse: turn cost +50 [+17, +82] without help and +124 [+87, +161] with it, river cost +107 [+18, +196] with help. It wins its chips with a looser style (VPIP 40-46%) against a field that pays looseness off. It thinks very briefly (about 57 output tokens per move), runs on 4-bit providers, and has never been tested with the facts sheet, notes or cheat sheet.
+- **GLM-5.3 Flash ties DeepSeek on chips** (+4 [−85, +94] paired, 20 seeds; an interval that wide means "not distinguishable", not "equal") at a fifth of the cost, and help lifts its chips similarly. On decision quality it is worse: turn cost +48 [+15, +82] without help and +121 [+85, +157] with it, river cost +105 [+17, +193] with help. It wins its chips with a looser style (VPIP 40-46%) against a field that pays looseness off. It thinks very briefly (about 57 output tokens per move), runs on 4-bit providers, and has never been tested with the facts sheet, notes or cheat sheet.
 - **gpt-oss-20b** plays 87% of hands and loses heavily; 4-9% of its answers are empty. With the tracker it mostly folds, so its tiny river cost is an artefact of rarely reaching the river.
 - **Thinking off costs DeepSeek 238 bb/100** on the same deals [−434, −43], and removes the helpers' effect.
 - **Gemma 4** ignores effort settings (too dear with thinking), so it ran with thinking off; it ties DeepSeek thinking off. Its tracker arm has 5 seeds only.
 - Not testable: Qwen 3.7 Flash and Meta Muse (blocked by the account's privacy settings); Qwen 3.6, Nemotron, Seed, Mistral ignore low effort and cost more than DeepSeek; Llama 4 Scout cannot think.
+
+## 7. GLM against varied bots (planned, 2026-11-18)
+
+From here on the workhorse is GLM-5.3 Flash (thinking low), against less predictable bots (`opponent_variation`: per-session personalities, 10% mixing, a field drawn per seed from the five current styles), on fresh seeds 21-40, with one DeepSeek anchor arm on the same deals. Configs: `examples/7-glm-varied/`. Results will not be comparable one-to-one with sections 1-6 (different opponents); the anchor arm links them.
 
 ## Spend
 

@@ -329,14 +329,18 @@ fn adaptive_policy_follows_its_published_rule() {
 fn ceiling_search_is_deterministic_and_selects_on_training_seeds() {
     use poker_lab::ceiling::{Search, evaluate, grid, run};
     let field = poker_lab::opponents::DEFAULT_FIELD;
-    let blocks = evaluate(Params::default(), &field, 1..3, 6).unwrap();
+    let fixed = poker_lab::opponents::Variation::default();
+    let all: Vec<usize> = (0..6).collect();
+    let blocks = evaluate(Params::default(), &field, &fixed, 1..3, 6, &all).unwrap();
     assert_eq!(blocks.len(), 2);
     assert_eq!(
         blocks,
-        evaluate(Params::default(), &field, 1..3, 6).unwrap()
+        evaluate(Params::default(), &field, &fixed, 1..3, 6, &all).unwrap()
     );
     let search = Search {
         field: field.to_vec(),
+        variation: fixed,
+        check: Some((21..23, 0)),
         train_seeds: 1,
         test_seeds: 2,
         hands: 6,
@@ -346,6 +350,8 @@ fn ceiling_search_is_deterministic_and_selects_on_training_seeds() {
     assert_eq!(result["candidates"], grid().len());
     assert_eq!(result, run(&search).unwrap());
     assert_eq!(result["held_out"]["best_bb_per_100"]["blocks"], 2);
+    assert_eq!(result["check"]["seeds"], serde_json::json!([21, 22]));
+    assert_eq!(result["check"]["best_bb_per_100"]["blocks"], 2);
     assert!(
         result["training"]["best_bb_per_100"].as_f64().unwrap()
             >= result["training"]["worst_bb_per_100"].as_f64().unwrap()

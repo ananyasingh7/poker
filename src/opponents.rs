@@ -410,7 +410,15 @@ fn decide_tuned(style: Style, tweak: &Tweak, v: &PlayerView) -> Result<Action, S
         }
     }
 }
-/// The original mixed field.
+/// The field every experiment since 2026-11-13 uses (`poker-lab ceiling current`).
+pub const CURRENT_FIELD: [Style; 5] = [
+    Style::Station,
+    Style::Overfolder,
+    Style::Solid,
+    Style::Adaptive,
+    Style::Tight,
+];
+/// The original mixed field (the fallback when a config names no field).
 pub const DEFAULT_FIELD: [Style; 5] = [
     Style::Tight,
     Style::Loose,

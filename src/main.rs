@@ -147,7 +147,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     if args.iter().any(|a| a == "--help") {
         println!(
-            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]   playing style, cost per hand, win rates with seed-block intervals, all-in adjusted results and pot-odds decision grades\n    --decisions: instead, one JSON line per model decision (spot, action, equity against the real cards, pot odds, bettor)\n    --turn: also grade turn decisions approximately against the bots (slower; see docs/methods.md)\npoker-lab catalog RUNS_DIRECTORY   one CSV row per run or batch (model, thinking, help, seeds, completion, cost)\npoker-lab compare BATCH_DIRECTORY... [--seat N] [--turn] [--json] [--save FILE.json]   arms of several runs side by side (model · thinking · condition), paired on shared complete seeds; the first directory's model is the reference\npoker-lab ceiling [FIELD=default|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]   exploitation ceiling against a scripted field\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
+            "poker-lab [SEATS=6] [HANDS=10] [SEED=1] [NEW_LOG_DIRECTORY]\npoker-lab replay PATH/evaluator.jsonl\npoker-lab openrouter CONFIG.json NEW_LOG_DIRECTORY\npoker-lab report RUN_DIRECTORY [PRIVATE_SEAT]\npoker-lab batch BATCH_CONFIG.json NEW_LOG_DIRECTORY [--resume: continue an interrupted batch in that directory]\npoker-lab bench [SESSIONS=100] [HANDS=10] [NEW_RESULT.json]   compare in-process and subprocess scripted tables\npoker-lab analyze RUN_OR_BATCH_DIRECTORY [--json] [--no-grades]   playing style, cost per hand, win rates with seed-block intervals, all-in adjusted results and pot-odds decision grades\n    --decisions: instead, one JSON line per model decision (spot, action, equity against the real cards, pot odds, bettor)\n    --turn: also grade turn decisions approximately against the bots (slower; see docs/methods.md)\npoker-lab catalog RUNS_DIRECTORY   one CSV row per run or batch (model, thinking, help, seeds, completion, cost)\npoker-lab compare BATCH_DIRECTORY... [--seat N] [--turn] [--json] [--save FILE.json]   arms of several runs side by side (model · thinking · condition), paired on shared complete seeds; the first directory's model is the reference\npoker-lab ceiling [FIELD=default|current|style,style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json] [--varied] [--check-seeds A-B --check-seat N]   exploitation ceiling against a scripted field (--varied: the experiments' less predictable bots; --check-seeds: also measure on an experiment's own seeds and seat)\npoker-lab participant   internal worker (participant protocol v2 over stdin/stdout)\nSet \"execution\": \"subprocess\" in a model config to run one supervised worker process per seat."
         );
         return Ok(());
     }
@@ -284,14 +284,41 @@ fn bench(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
 
 fn ceiling(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     use poker_lab::{ceiling, opponents};
-    if args.len() > 4 {
-        return Err(
-            "usage: poker-lab ceiling [FIELD] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json]"
-                .into(),
-        );
+    let usage = "usage: poker-lab ceiling [FIELD=default|current|style,...] [TRAIN_SEEDS=8] [TEST_SEEDS=40] [NEW_RESULT.json] [--varied] [--check-seeds A-B --check-seat N]";
+    let mut variation = opponents::Variation::default();
+    let (mut check_seeds, mut check_seat) = (None, None);
+    let mut positional = vec![];
+    let mut rest = args.iter();
+    while let Some(arg) = rest.next() {
+        match arg.as_str() {
+            // The experiments' default (examples/7-glm-varied): personalities, mixing 0.1 and a
+            // field drawn per seed from FIELD.
+            "--varied" => {
+                variation = opponents::Variation {
+                    personalities: true,
+                    mixing: 0.1,
+                    random_field: true,
+                }
+            }
+            "--check-seeds" => {
+                let text = rest.next().ok_or(usage)?;
+                let (a, b) = text.split_once('-').ok_or(usage)?;
+                let (a, b): (u64, u64) = (a.parse()?, b.parse()?);
+                if b < a {
+                    return Err(usage.into());
+                }
+                check_seeds = Some(a..b + 1);
+            }
+            "--check-seat" => check_seat = Some(rest.next().ok_or(usage)?.parse::<usize>()?),
+            _ => positional.push(arg),
+        }
     }
-    let field = match args.first().map(String::as_str) {
+    if positional.len() > 4 {
+        return Err(usage.into());
+    }
+    let field = match positional.first().map(|s| s.as_str()) {
         None | Some("default") => opponents::DEFAULT_FIELD.to_vec(),
+        Some("current") => opponents::CURRENT_FIELD.to_vec(),
         Some(list) => list
             .split(',')
             .map(|name| serde_json::from_value(serde_json::Value::String(name.trim().into())))
@@ -300,13 +327,23 @@ fn ceiling(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     };
     let search = ceiling::Search {
         field,
-        train_seeds: args.get(1).map(|s| s.parse()).transpose()?.unwrap_or(8),
-        test_seeds: args.get(2).map(|s| s.parse()).transpose()?.unwrap_or(40),
+        variation,
+        check: check_seeds.map(|seeds| (seeds, check_seat.unwrap_or(0))),
+        train_seeds: positional
+            .get(1)
+            .map(|s| s.parse())
+            .transpose()?
+            .unwrap_or(8),
+        test_seeds: positional
+            .get(2)
+            .map(|s| s.parse())
+            .transpose()?
+            .unwrap_or(40),
         hands: 60,
         threads: std::thread::available_parallelism().map_or(4, |n| n.get()),
     };
     let text = serde_json::to_string_pretty(&ceiling::run(&search)?)?;
-    if let Some(path) = args.get(3) {
+    if let Some(path) = positional.get(3) {
         let mut file = create(path)?;
         writeln!(file, "{text}")?;
         file.flush()?;

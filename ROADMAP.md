@@ -61,7 +61,7 @@ Done 2026-11-18/19: learning curves, varied-field ceiling, GLM smoke, first GLM 
 | --- | --- | --- |
 | Sharp vs plain sizing rule on fresh seeds 21-30 | Leans better (river −60 [−126, +7]); settle it | $0.80 DeepSeek, about $0.15 with GLM |
 | **Better notes for GLM**: host-kept per-seat counts inside the notebook (notes + stats), or updates every 2-3 hands | GLM's notes rest on 2-4 hands of evidence after 60; the clearest "improve the weaker model" target | $0.20 |
-| **Pre-registered learning replication**: GLM notes vs cheat sheet, 40 fresh seeds (41-80), 120-hand sessions | Test the one learning hint (+393 chips late vs early) with the right control and enough power | $0.60 |
+| **Pre-registered learning replication**: GLM notes vs cheat sheet, 40 fresh seeds (41-80), 60-hand sessions ([results §8](docs/results.md)) | Test the one learning hint (+393 chips late vs early) with the right control and enough power | $0.62 (running 2026-11-19) |
 | Facts sheet + tracker + sharp rule together for GLM | Facts fix the turn, tracker + rule the river: do they add up? | $0.10 |
 | Adaptive bot vs the model with notes | The counter-adjustment question from the original vision | $0.20 |
 | Across-session notes (learning track item 3) | Notes carried from session to session: does session 5 beat session 1? Needs a persistent bot identity per seed | $0.30 + build |

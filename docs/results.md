@@ -242,6 +242,18 @@ Paired against GLM with no help (same deals):
 - **Against that control, GLM's notes close the gap on chips** (late minus early, notes minus cheat sheet: +393 [+112, +673]) **but not on the river** (+134 [−136, +405]); over the whole session they stay 173 [+77, +269] river cost behind the cheat sheet. One positive among many intervals examined: a hypothesis to replicate on fresh seeds, not a finding.
 - **A 20-hand slice is very noisy on chips** (±300 bb/100 at 20 seeds). Learning claims need more seeds (cheap with GLM), longer sessions, or grades rather than chips.
 
+## 8. Pre-registered: does GLM learn from its notes? (registered 2026-11-19, before running)
+
+Written and committed before any of these hands were played, so the test cannot be fitted to the result.
+
+**Hypothesis.** In section 7c, GLM with its own notes closed part of its gap to the cheat sheet over a session: (hands 41-60 minus hands 1-20) for notes minus the same for the cheat sheet was +393 [+112, +673] luck-adjusted bb/100 on seeds 21-40. If GLM really learns from its notes, this holds on new cards.
+
+**Design.** `examples/8-glm-learning/notes-vs-oracle.json`: GLM-5.3 Flash, thinking low, seat 0, varied bots (personalities, mixing 0.1, random field from the five current styles), 60-hand sessions, **seeds 41-80 (never used before)**, two arms on the same deals: cheat sheet (`oracle`) and own notes rewritten every 5 hands (`notes`, structured profiles). Cap $0.75. Only complete seeds count.
+
+**Primary test (the only one that decides replication).** Per seed: notes (hands 41-60 minus 1-20, luck-adjusted bb/100) minus cheat sheet (same). 95% t-interval over seeds, from `poker-lab analyze runs/8-glm-learning/notes-vs-oracle-v1 --turn` (the "learning" row of notes vs oracle). **Replicates** if the interval lies above zero; **fails** if it includes zero or lies below.
+
+**Secondary (reported, not decisive).** The same difference for river cost and turn cost (learning would make them negative); whole-session notes minus cheat sheet for chips, river and turn cost. Anything else is exploratory and labelled so.
+
 ## Spend
 
 From `results/runs.csv` (`poker-lab catalog runs`): cost as reported by each run's summary. Real OpenRouter usage is slightly higher, because sessions killed mid-way and later resumed are not in their batch's summary (the lineup cost $1.70 on the account against $1.58 reported).

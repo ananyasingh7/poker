@@ -86,6 +86,7 @@ pub fn session(config: Config, dir: &Path, env: &Env) -> Result<Value, String> {
     let subprocess = config.execution == Execution::Subprocess;
     private_fs::create_dir(dir).map_err(|e| format!("{}: {e}", dir.display()))?;
     let styles = config.seat_styles();
+    let bots = config.seat_bots();
     let labels = config.seat_labels();
     let mut manifest = create(dir.join("manifest.json"))?;
     serde_json::to_writer_pretty(
@@ -96,6 +97,7 @@ pub fn session(config: Config, dir: &Path, env: &Env) -> Result<Value, String> {
         "memory":config.memory,"scaffold":config.scaffold,"condition":config.condition(),"llm_seats":config.llm_seats(),"seat_labels":labels,
         "opponents":if config.all_models{None}else{Some(config.opponents)},"opponent_version":2,
         "seat_styles":matches!(config.opponents,Opponents::Mixed).then_some(&styles),
+        "seat_bots":config.opponent_variation.is_active().then_some(&bots),
         "rules":{"small_blind":1,"big_blind":2},
         "rebuy":if config.reset_stacks {"reset_every_hand_100bb"} else {"busted_only_100bb"}}),
     )
@@ -106,8 +108,8 @@ pub fn session(config: Config, dir: &Path, env: &Env) -> Result<Value, String> {
         ..Stats::default()
     }));
     let mut agents: Vec<Box<dyn Agent>> = (0..config.seats)
-        .map(|seat| match styles[seat] {
-            Some(style) => style.agent(),
+        .map(|seat| match bots[seat] {
+            Some(bot) => bot.agent(),
             None => Box::new(Scripted::Random(Rng(config.seed.wrapping_add(seat as u64)))),
         })
         .collect();

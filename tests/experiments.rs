@@ -572,3 +572,60 @@ fn every_example_config_parses_and_validates() {
     }
     assert!(checked > 50, "only {checked} example configs");
 }
+
+#[test]
+fn analyze_grades_a_varied_field_from_its_manifest() {
+    // Personalities, mixing and a random field are rebuilt from the manifest's config: if
+    // analyze rebuilt the wrong bots, their real cards would fall outside the graded ranges and
+    // the session would report a grading error.
+    let config = Config {
+        model: "test/model".into(),
+        opponents: Opponents::Mixed,
+        seed: 21,
+        opponent_field: vec![
+            Style::Station,
+            Style::Overfolder,
+            Style::Solid,
+            Style::Adaptive,
+            Style::Tight,
+        ],
+        opponent_variation: poker_lab::opponents::Variation {
+            personalities: true,
+            mixing: 0.15,
+            random_field: true,
+        },
+        ..Config::default()
+    };
+    let bots = config.seat_bots();
+    let mut agents: Vec<Box<dyn Agent>> = bots
+        .iter()
+        .map(|b| b.map_or_else(|| Style::Solid.agent(), |b| b.agent()))
+        .collect();
+    let mut session = poker_lab::arena::Session::new(6, 21).unwrap();
+    session.reset_stacks = true;
+    let lines: Vec<String> = (0..60)
+        .map(|_| serde_json::to_string(&session.next_hand(&mut agents).unwrap().record).unwrap())
+        .collect();
+    let dir = std::env::temp_dir().join(format!(
+        "poker-lab-varied-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    poker_lab::private_fs::create_dir(&dir).unwrap();
+    std::fs::write(dir.join("evaluator.jsonl"), lines.join("\n") + "\n").unwrap();
+    std::fs::write(
+        dir.join("manifest.json"),
+        serde_json::json!({ "config": serde_json::to_value(&config).unwrap() }).to_string(),
+    )
+    .unwrap();
+    let analysis = poker_lab::analyze::directory_graded(&dir, true, true).unwrap();
+    assert_eq!(analysis["river_grade_errors"], serde_json::json!([]));
+    let model = &analysis["model_style_by_condition"][0];
+    assert!(model["river_graded"].as_u64().unwrap() > 0, "{model}");
+    assert!(model["turn_graded"].as_u64().unwrap() > 0, "{model}");
+    // The oracle notes say the session's bots vary.
+    assert!(config.oracle_notes().contains("varies"));
+}

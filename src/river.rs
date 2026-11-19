@@ -4,7 +4,7 @@ use crate::{
     arena::{Agent, Record},
     cards::{Card, Rng, deck},
     engine::{Action, Chips, Hand, PlayerView, Street},
-    opponents::{Adaptive, Solid, Style},
+    opponents::{Adaptive, SeatBot, Solid, Style},
 };
 use serde::Serialize;
 use std::collections::BTreeMap;
@@ -77,15 +77,22 @@ pub struct RiverGrade {
 /// A scripted seat as it stood at a point in the session: `Adaptive` carries what it has
 /// learned from earlier hands; every other style is stateless between hands.
 pub(crate) enum Bot {
-    Plain(Style),
-    Adaptive(Adaptive),
+    Plain(SeatBot),
+    Adaptive(Adaptive, SeatBot),
 }
 impl Bot {
-    /// A fresh policy that decides exactly as this seat would now.
+    /// A fresh policy that decides exactly as this seat would now (with its session's
+    /// personality and mixing, when the field varies).
     pub(crate) fn policy(&self) -> Box<dyn Agent> {
         match self {
-            Self::Plain(style) => style.agent(),
-            Self::Adaptive(a) => Box::new(Solid::new(a.params())),
+            Self::Plain(bot) => bot.agent(),
+            Self::Adaptive(a, bot) => bot.mix(Box::new(Solid::new(a.params()))),
+        }
+    }
+    fn new(bot: SeatBot) -> Self {
+        match bot.style {
+            Style::Adaptive => Self::Adaptive(Adaptive::with_base(bot.tweak.params), bot),
+            _ => Self::Plain(bot),
         }
     }
 }
@@ -106,6 +113,17 @@ pub fn grade_session(
     graded: &[usize],
 ) -> Result<Vec<RiverGrade>, String> {
     grade_with(RiverGrader::new(styles, graded)?, records)
+}
+
+/// `grade_session` for a field built with `Config::seat_bots` (varied bots), river and, with
+/// `turn`, approximate turn grades.
+pub fn grade_session_bots(
+    records: &[Record],
+    bots: &[Option<SeatBot>],
+    graded: &[usize],
+    turn: bool,
+) -> Result<Vec<RiverGrade>, String> {
+    grade_with(RiverGrader::for_bots(bots, graded, turn)?, records)
 }
 
 /// `grade_session` plus approximate turn grades (`crate::turn`), told apart by `street`.
@@ -140,13 +158,21 @@ pub struct RiverGrader {
 }
 impl RiverGrader {
     pub fn new(styles: &[Option<Style>], graded: &[usize]) -> Result<Self, String> {
-        let bots = styles
+        let bots: Vec<Option<SeatBot>> = styles.iter().map(|s| s.map(SeatBot::plain)).collect();
+        Self::for_bots(&bots, graded, false)
+    }
+    /// A grader for the bots a session actually seated (`Config::seat_bots`).
+    pub fn for_bots(
+        bots: &[Option<SeatBot>],
+        graded: &[usize],
+        turn: bool,
+    ) -> Result<Self, String> {
+        let bots = bots
             .iter()
             .enumerate()
-            .map(|(seat, style)| match style {
+            .map(|(seat, bot)| match bot {
                 _ if graded.contains(&seat) => Ok(None),
-                Some(Style::Adaptive) => Ok(Some(Bot::Adaptive(Adaptive::default()))),
-                Some(style) => Ok(Some(Bot::Plain(*style))),
+                Some(bot) => Ok(Some(Bot::new(*bot))),
                 None => Err(format!(
                     "seat {seat} is neither graded nor a scripted style"
                 )),
@@ -156,7 +182,7 @@ impl RiverGrader {
             bots,
             graded: graded.to_vec(),
             hands: 0,
-            turn: false,
+            turn,
         })
     }
     /// As `new`, also grading turn decisions approximately (`crate::turn`).
@@ -188,7 +214,7 @@ impl RiverGrader {
         }
         // Stateful bots learn from the finished hand, as `arena::play` tells them.
         for (seat, bot) in self.bots.iter_mut().enumerate() {
-            if let Some(Bot::Adaptive(a)) = bot {
+            if let Some(Bot::Adaptive(a, _)) = bot {
                 a.finish_hand(&hand.view(seat)?)?;
             }
         }
@@ -594,12 +620,11 @@ mod tests {
         let records = session(&FIELD, 400, 11);
         let styles: Vec<Option<Style>> = FIELD.iter().map(|s| Some(*s)).collect();
         let mut bots: Vec<Option<Bot>> = vec![None];
-        bots.extend(FIELD[1..].iter().map(|s| {
-            Some(match s {
-                Style::Adaptive => Bot::Adaptive(Adaptive::default()),
-                s => Bot::Plain(*s),
-            })
-        }));
+        bots.extend(
+            FIELD[1..]
+                .iter()
+                .map(|s| Some(Bot::new(SeatBot::plain(*s)))),
+        );
         let mut checked = 0;
         for (index, record) in records.iter().enumerate() {
             let real = holes(record);
@@ -646,7 +671,7 @@ mod tests {
                 hand.act(d.seat, d.applied).unwrap();
             }
             for (seat, bot) in bots.iter_mut().enumerate() {
-                if let Some(Bot::Adaptive(a)) = bot {
+                if let Some(Bot::Adaptive(a, _)) = bot {
                     a.finish_hand(&hand.view(seat).unwrap()).unwrap();
                 }
             }
@@ -698,5 +723,75 @@ mod tests {
         let mut styles: Vec<Option<Style>> = vec![Some(Style::Solid); 6];
         styles[3] = None;
         assert!(grade_session(&records, &styles, &[0]).is_err());
+    }
+}
+
+#[cfg(test)]
+mod varied_field_tests {
+    use super::*;
+    use crate::{
+        arena::Session,
+        evaluation::holes,
+        opponents::{Variation, seat_bots},
+    };
+
+    #[test]
+    fn varied_bots_keep_every_real_holding_in_range_and_grade() {
+        // Personalities, mixing and a random field: the grader must rebuild each bot exactly,
+        // or a bot's real cards fall outside the range it computes.
+        let variation = Variation {
+            personalities: true,
+            mixing: 0.2,
+            random_field: true,
+        };
+        let bots = seat_bots(6, 0, 0, &[], &variation, 77);
+        let mut session = Session::new(6, 77).unwrap();
+        session.reset_stacks = true;
+        let mut agents: Vec<Box<dyn Agent>> = vec![Style::Solid.agent()];
+        agents.extend(bots[1..].iter().map(|b| b.unwrap().agent()));
+        let records: Vec<Record> = (0..250)
+            .map(|_| session.next_hand(&mut agents).unwrap().record)
+            .collect();
+        let mut graders: Vec<Option<Bot>> = bots.iter().map(|b| b.map(Bot::new)).collect();
+        graders[0] = None;
+        let mut checked = 0;
+        for record in &records {
+            let real = holes(record);
+            let mut hand = rebuild(record, &deck(record.seed), 0).unwrap();
+            for (number, d) in record.decisions.iter().enumerate() {
+                let view = hand.view(d.seat).unwrap();
+                if d.seat == 0 && view.street == Street::River {
+                    let seen: Vec<Card> = view.hole.iter().chain(&view.board).copied().collect();
+                    let unseen: Vec<Card> = (0..52u8)
+                        .map(|c| Card::try_from(c).unwrap())
+                        .filter(|c| !seen.contains(c))
+                        .collect();
+                    for p in view.players.iter().filter(|p| !p.folded && p.seat != 0) {
+                        let bot = graders[p.seat].as_ref().unwrap();
+                        let r = range(record, bot, p.seat, number, &unseen).unwrap();
+                        let h = real[p.seat];
+                        assert!(
+                            r.contains(&h) || r.contains(&[h[1], h[0]]),
+                            "seat {} {:?} real {:?} outside a range of {}",
+                            p.seat,
+                            bots[p.seat],
+                            h,
+                            r.len()
+                        );
+                        checked += 1;
+                    }
+                }
+                hand.act(d.seat, d.applied).unwrap();
+            }
+            for (seat, bot) in graders.iter_mut().enumerate() {
+                if let Some(Bot::Adaptive(a, _)) = bot {
+                    a.finish_hand(&hand.view(seat).unwrap()).unwrap();
+                }
+            }
+        }
+        assert!(checked > 10, "only {checked} river holdings checked");
+        let grades = grade_session_bots(&records[..120], &bots, &[0], true).unwrap();
+        assert!(grades.iter().any(|g| g.street == Street::Turn));
+        assert!(grades.iter().all(|g| g.best_value >= g.chosen_value));
     }
 }

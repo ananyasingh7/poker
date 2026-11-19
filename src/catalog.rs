@@ -12,7 +12,7 @@ use std::{
     time::UNIX_EPOCH,
 };
 
-pub const HEADER: &str = "path,date,kind,model,thinking,conditions,scaffolds,sizing,seeds,model_seats,hands_per_session,sessions,sessions_scheduled,hands,requests,cost_usd,stop_reason";
+pub const HEADER: &str = "path,date,kind,model,thinking,bots,conditions,scaffolds,sizing,seeds,model_seats,hands_per_session,sessions,sessions_scheduled,hands,requests,cost_usd,stop_reason";
 
 fn read(path: &Path) -> Option<Value> {
     serde_json::from_reader(File::open(path).ok()?).ok()
@@ -65,6 +65,14 @@ fn thinking(pilot: &Value) -> String {
         (Some(true), None) => "on".into(),
         (Some(false), None) => "off".into(),
         (None, None) => String::new(),
+    }
+}
+
+/// "fixed", or the variation (for example "varied (personalities, mix 0.1)").
+fn bots(variation: &Value) -> String {
+    match crate::compare::bots_label(variation) {
+        label if label.is_empty() => "fixed".into(),
+        label => label,
     }
 }
 
@@ -144,6 +152,7 @@ fn batch_row(dir: &Path, root: &Path) -> Option<String> {
         "batch".into(),
         model(pilot),
         thinking(pilot),
+        bots(&pilot["opponent_variation"]),
         list(&manifest["conditions"]),
         match list(&manifest["scaffolds"]) {
             s if s.is_empty() => pilot["scaffold"].as_str().unwrap_or("").to_owned(),
@@ -173,6 +182,7 @@ fn run_row(dir: &Path, root: &Path) -> Option<String> {
         "run".into(),
         model(config),
         thinking(config),
+        bots(&config["opponent_variation"]),
         config["memory"].as_str().unwrap_or("").to_owned(),
         config["scaffold"].as_str().unwrap_or("").to_owned(),
         sizing(config),
@@ -294,12 +304,16 @@ mod tests {
         let _ = std::fs::remove_dir_all(&root);
         assert_eq!(lines.len(), 3, "{lines:?}");
         assert!(lines[1].contains("topic/batch-v1"), "{}", lines[1]);
-        assert!(lines[1].contains(",batch,m/x,off,none,"), "{}", lines[1]);
+        assert!(
+            lines[1].contains(",batch,m/x,off,fixed,none,"),
+            "{}",
+            lines[1]
+        );
         assert!(
             lines[1].contains(",1-2,0,60,2,2,120,10,0.5000,"),
             "{}",
             lines[1]
         );
-        assert!(lines[2].contains(",run,m/y,,notes,"), "{}", lines[2]);
+        assert!(lines[2].contains(",run,m/y,,fixed,notes,"), "{}", lines[2]);
     }
 }

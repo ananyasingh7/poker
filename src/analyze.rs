@@ -5,7 +5,6 @@ use crate::{
     engine::{Action, Event, Hand, Street},
     evaluation,
     openrouter::Config,
-    opponents::Style,
     river::{self, Kind},
     scaffold,
 };
@@ -188,7 +187,8 @@ struct SessionData {
     name: String,
     labels: Vec<String>,
     /// Scripted style per seat (None for model seats), when the run used the mixed field.
-    styles: Option<Vec<Option<Style>>>,
+    /// The bots each seat had, with their drawn personalities when the field varied.
+    styles: Option<Vec<Option<crate::opponents::SeatBot>>>,
     models: BTreeSet<String>,
     condition: String,
     seed: u64,
@@ -232,7 +232,7 @@ fn load(dir: &Path) -> Result<SessionData, String> {
         .unwrap_or_default();
     let stats = summary.as_ref().map(|s| &s["stats"]);
     let styles = config.as_ref().and_then(|c| {
-        let styles = c.seat_styles();
+        let styles = c.seat_bots();
         let llm = c.llm_seats();
         // Gradable only when every non-model seat is a known scripted style.
         (0..styles.len())
@@ -411,7 +411,7 @@ pub fn decisions(dir: &Path) -> Result<Vec<Value>, String> {
                 .filter(|s| session.models.contains(&session.labels[*s]))
                 .collect();
             if !model_seats.is_empty() {
-                match river::grade_session(&session.records, styles, &model_seats) {
+                match river::grade_session_bots(&session.records, styles, &model_seats, false) {
                     Ok(grades) => {
                         for g in grades {
                             river_grades.insert((g.hand, g.decision), g);
@@ -719,11 +719,7 @@ fn grade_sessions(sessions: &[SessionData], turn: bool) -> Vec<SessionGrades> {
         if model_seats.is_empty() {
             return None;
         }
-        let graded = if turn {
-            river::grade_session_with_turn(&session.records, styles, &model_seats)
-        } else {
-            river::grade_session(&session.records, styles, &model_seats)
-        };
+        let graded = river::grade_session_bots(&session.records, styles, &model_seats, turn);
         Some((model_seats, graded))
     };
     let workers = std::thread::available_parallelism().map_or(4, |n| n.get());

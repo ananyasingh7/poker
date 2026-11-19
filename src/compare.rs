@@ -24,6 +24,8 @@ struct Arm {
     model: String,
     thinking: String,
     condition: String,
+    /// "" for the fixed field, else the variation (see `bots_label`).
+    bots: String,
     directories: Vec<String>,
     seeds: Seeds,
     /// Model seat-hands behind the descriptive columns below (all sessions, complete or not).
@@ -123,15 +125,22 @@ fn arms(dir: &Path, turn: bool, seat: Option<usize>) -> Result<Vec<Arm>, String>
         }
         let model = label.rsplit('/').next().unwrap_or(label).to_owned();
         let thinking = thinking(pilot);
+        // Runs against less predictable bots are a different environment: named apart and never
+        // merged or paired with fixed-bot runs of the same treatment.
+        let bots = bots_label(&pilot["opponent_variation"]);
         let hands = style["seat_hands"].as_u64().unwrap_or(0);
         // VPIP is a rate in the style row: turn it back into a sum so merged arms weight each
         // run by its size.
         let per_hand = |key: &str| style[key].as_f64().unwrap_or(0.0) * hands as f64;
         out.push(Arm {
-            name: format!("{model} · {thinking} · {condition}"),
+            name: match bots.as_str() {
+                "" => format!("{model} · {thinking} · {condition}"),
+                b => format!("{model} · {thinking} · {condition} · {b} bots"),
+            },
             model,
             thinking,
             condition: condition.to_owned(),
+            bots,
             directories: vec![dir.display().to_string()],
             seeds,
             hands,
@@ -145,6 +154,25 @@ fn arms(dir: &Path, turn: bool, seat: Option<usize>) -> Result<Vec<Arm>, String>
         });
     }
     Ok(out)
+}
+
+/// "varied" style label of a pilot's `opponent_variation`, or "" for the fixed field.
+pub fn bots_label(variation: &Value) -> String {
+    let mut parts = vec![];
+    if variation["personalities"] == true {
+        parts.push("personalities".to_owned());
+    }
+    if let Some(m) = variation["mixing"].as_f64().filter(|m| *m > 0.0) {
+        parts.push(format!("mix {m}"));
+    }
+    if variation["random_field"] == true {
+        parts.push("random field".to_owned());
+    }
+    if parts.is_empty() {
+        String::new()
+    } else {
+        format!("varied ({})", parts.join(", "))
+    }
 }
 
 fn measure(arm: &Arm, m: usize) -> Value {
@@ -187,7 +215,7 @@ pub fn compare(dirs: &[&Path], turn: bool, seat: Option<usize>) -> Result<Value,
         .iter()
         .map(|a| {
             // Rates per hand, comparable across models that play different numbers of hands.
-            let mut row = json!({"arm":a.name,"model":a.model,"thinking":a.thinking,
+            let mut row = json!({"arm":a.name,"model":a.model,"thinking":a.thinking,"bots":a.bots,
                 "condition":a.condition,"directories":a.directories,"providers":a.providers.join(", "),
                 "complete_seeds":a.seeds.keys().collect::<Vec<_>>(),"seat_hands":a.hands,
                 "cost_per_hand_usd":a.rate(a.cost_usd),"vpip":a.rate(a.vpip_hands),
@@ -204,10 +232,12 @@ pub fn compare(dirs: &[&Path], turn: bool, seat: Option<usize>) -> Result<Value,
         .collect();
     let mut help = vec![];
     for a in all.iter().filter(|a| a.condition != "none") {
-        if let Some(base) = all
-            .iter()
-            .find(|b| b.condition == "none" && b.model == a.model && b.thinking == a.thinking)
-        {
+        if let Some(base) = all.iter().find(|b| {
+            b.condition == "none"
+                && b.model == a.model
+                && b.thinking == a.thinking
+                && b.bots == a.bots
+        }) {
             help.push(paired(a, base));
         }
     }
@@ -219,7 +249,10 @@ pub fn compare(dirs: &[&Path], turn: bool, seat: Option<usize>) -> Result<Value,
             .filter(|a| (a.model.clone(), a.thinking.clone()) != reference)
         {
             if let Some(base) = all.iter().find(|b| {
-                b.model == reference.0 && b.thinking == reference.1 && b.condition == a.condition
+                b.model == reference.0
+                    && b.thinking == reference.1
+                    && b.condition == a.condition
+                    && b.bots == a.bots
             }) {
                 model.push(paired(a, base));
             }
@@ -350,6 +383,7 @@ mod tests {
             model: model.into(),
             thinking: "think low".into(),
             condition: condition.into(),
+            bots: String::new(),
             directories: vec![],
             seeds: seeds
                 .iter()

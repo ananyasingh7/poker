@@ -54,6 +54,9 @@ pub struct Config {
     pub model_offset: usize,
     /// Scripted field for `opponents: "mixed"`; empty means the original five-style field.
     pub opponent_field: Vec<Style>,
+    /// Opt-in: less predictable bots (per-session personalities, per-decision mixing, a randomly
+    /// drawn field), all drawn from `seed`. Default: the fixed bots of every earlier run.
+    pub opponent_variation: crate::opponents::Variation,
     /// Every hand starts with 100 BB in every seat, so hands are closer to independent.
     pub reset_stacks: bool,
     pub notebook_style: NotebookStyle,
@@ -333,6 +336,7 @@ impl Default for Config {
             models: vec![],
             model_offset: 0,
             opponent_field: vec![],
+            opponent_variation: Default::default(),
             reset_stacks: false,
             notebook_style: NotebookStyle::Journal,
             normalize_call_amount: false,
@@ -379,14 +383,29 @@ impl Config {
     }
     /// Scripted style per seat (`None` for model and random seats).
     pub fn seat_styles(&self) -> Vec<Option<Style>> {
+        self.seat_bots()
+            .into_iter()
+            .map(|b| b.map(|b| b.style))
+            .collect()
+    }
+    /// Each scripted seat's bot as built for this session, with its drawn personality and
+    /// mixing (`opponent_variation`); plain bots when no variation is set.
+    pub fn seat_bots(&self) -> Vec<Option<crate::opponents::SeatBot>> {
         if self.all_models || !matches!(self.opponents, Opponents::Mixed) {
             return vec![None; self.seats];
         }
-        crate::opponents::styles(
+        let field: &[Style] = if self.opponent_variation.random_field {
+            &self.opponent_field
+        } else {
+            self.field()
+        };
+        crate::opponents::seat_bots(
             self.seats,
             self.model_seat,
             self.opponent_offset,
-            self.field(),
+            field,
+            &self.opponent_variation,
+            self.seed,
         )
     }
     /// One label per seat for reports and analysis: a model ID, a style name, or "random".
@@ -404,9 +423,11 @@ impl Config {
     }
     /// Accurate descriptions of the scripted opponents, for the labelled oracle condition.
     pub fn oracle_notes(&self) -> String {
-        let mut text = String::from(
-            "Opponent profiles supplied by the experimenter (accurate descriptions of fixed policies):",
-        );
+        let mut text = String::from(if self.opponent_variation.is_active() {
+            "Opponent profiles supplied by the experimenter (each opponent's type is accurate, but this session's version varies its exact thresholds and sometimes deviates from its usual play):"
+        } else {
+            "Opponent profiles supplied by the experimenter (accurate descriptions of fixed policies):"
+        });
         for (seat, style) in self.seat_styles().into_iter().enumerate() {
             if let Some(style) = style {
                 text.push_str(&format!("\nSeat {seat}: {}", style.describe()));
@@ -494,6 +515,13 @@ impl Config {
         if self.notes_thinking_off && !self.memory.updates() {
             return Err(
                 "notes_thinking_off needs a condition in which the model writes notes".into(),
+            );
+        }
+        self.opponent_variation.validate()?;
+        if self.opponent_variation.is_active() && self.execution == Execution::Subprocess {
+            return Err(
+                "opponent_variation runs in-process only (worker processes take plain styles)"
+                    .into(),
             );
         }
         if self.sizing_hint && self.sharp_sizing {

@@ -106,6 +106,6 @@
   ],
   "max_requests": 20000,
   "spend_limit_usd": 0.75,
-  "parallel": 10,
+  "parallel": 6,
   "unknown_cost_allowance": 5
 }

@@ -6,7 +6,10 @@ Arms (bb/100; chips and luck-adjusted with 95% intervals over complete seeds; co
 | glm-5.3-flash · think low · none+features · varied (personalities, mix 0.1, random field) bots | 20 | +173 [+11, +334] | +131 [+3, +259] | 369 | 24 | 167 | 40% | 0.00007 | 0.0 | 0 | Wafer/Darkbloom |
 | glm-5.3-flash · think low · oracle · varied (personalities, mix 0.1, random field) bots | 20 | +98 [-26, +223] | +84 [-47, +215] | 316 | 24 | 267 | 41% | 0.00011 | 0.3 | 0 | Wafer/Darkbloom |
 | glm-5.3-flash · think low · stats+sharp · varied (personalities, mix 0.1, random field) bots | 20 | +98 [-76, +271] | +158 [-21, +336] | 301 | 28 | 253 | 48% | 0.00015 | 0.6 | 0 | Wafer/Darkbloom |
+| glm-5.3-flash · think low · stats+hint · varied (personalities, mix 0.1, random field) bots | 20 | +228 [+76, +379] | +236 [+89, +384] | 379 | 26 | 219 | 45% | 0.00014 | 0.8 | 0 | Wafer/Darkbloom |
+| glm-5.3-flash · think low · stats+features+sharp · varied (personalities, mix 0.1, random field) bots | 20 | +244 [+89, +399] | +213 [+77, +349] | 292 | 26 | 203 | 41% | 0.00015 | 0.1 | 0 | Wafer/Darkbloom |
 | glm-5.3-flash · think low · notes-every5 · varied (personalities, mix 0.1, random field) bots | 20 | +104 [-35, +243] | +111 [-28, +250] | 489 | 31 | 247 | 48% | 0.00015 | 0.3 | 0 | Wafer/Darkbloom |
+| glm-5.3-flash · think low · both-every5 · varied (personalities, mix 0.1, random field) bots | 20 | +206 [+44, +368] | +188 [+27, +348] | 355 | 27 | 241 | 50% | 0.00021 | 1.4 | 0 | Wafer/Darkbloom |
 | deepseek-v4.1-flash-1017 · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +148 [+51, +245] | +137 [+42, +231] | 401 | 24 | 181 | 36% | 0.00032 | 1.7 | 20 | DeepInfra/InferenceNet/Baidu |
 
 Costs are per 100 hands played, so a model that reaches the river less often shows a lower river cost: read them beside the river decisions and VPIP columns.
@@ -19,7 +22,10 @@ Learning within a session: last 20 hands minus first 20, per seed (chips up and 
 | glm-5.3-flash · think low · none+features · varied (personalities, mix 0.1, random field) bots | 20 | -37 [-423, +350] | +24 [-187, +235] | +0 [-150, +151] |
 | glm-5.3-flash · think low · oracle · varied (personalities, mix 0.1, random field) bots | 20 | -75 [-501, +351] | -6 [-218, +205] | -102 [-268, +63] |
 | glm-5.3-flash · think low · stats+sharp · varied (personalities, mix 0.1, random field) bots | 20 | +32 [-380, +445] | +78 [-183, +339] | +7 [-95, +109] |
+| glm-5.3-flash · think low · stats+hint · varied (personalities, mix 0.1, random field) bots | 20 | +260 [-239, +759] | +113 [-102, +328] | +18 [-103, +139] |
+| glm-5.3-flash · think low · stats+features+sharp · varied (personalities, mix 0.1, random field) bots | 20 | +35 [-486, +557] | -62 [-248, +125] | -23 [-130, +84] |
 | glm-5.3-flash · think low · notes-every5 · varied (personalities, mix 0.1, random field) bots | 20 | +318 [-68, +704] | +128 [-192, +448] | -25 [-119, +70] |
+| glm-5.3-flash · think low · both-every5 · varied (personalities, mix 0.1, random field) bots | 20 | +156 [-266, +578] | +119 [-115, +354] | -81 [-210, +48] |
 | deepseek-v4.1-flash-1017 · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | -7 [-297, +283] | +331 [+84, +578] | -26 [-156, +103] |
 
 Learning relative to no help: (late minus early) minus the no-help arm's (late minus early), paired on shared seeds
@@ -29,7 +35,10 @@ Learning relative to no help: (late minus early) minus the no-help arm's (late m
 | glm-5.3-flash · think low · none+features · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | -95 [-418, +228] | -312 [-532, -92] | +45 [-80, +169] |
 | glm-5.3-flash · think low · oracle · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | -133 [-431, +164] | -342 [-580, -105] | -58 [-222, +107] |
 | glm-5.3-flash · think low · stats+sharp · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | -26 [-404, +352] | -258 [-512, -3] | +51 [-89, +192] |
+| glm-5.3-flash · think low · stats+hint · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +202 [-193, +596] | -223 [-566, +120] | +63 [-62, +187] |
+| glm-5.3-flash · think low · stats+features+sharp · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | -23 [-481, +435] | -398 [-647, -148] | +22 [-116, +160] |
 | glm-5.3-flash · think low · notes-every5 · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +259 [-52, +570] | -208 [-503, +88] | +20 [-83, +123] |
+| glm-5.3-flash · think low · both-every5 · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +98 [-340, +536] | -217 [-466, +33] | -36 [-221, +149] |
 
 Help effects: each arm minus the same model's no-help arm, paired on shared seeds
 
@@ -38,7 +47,10 @@ Help effects: each arm minus the same model's no-help arm, paired on shared seed
 | glm-5.3-flash · think low · none+features · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +151 [+0, +301] | +101 [-16, +219] | -69 [-174, +35] | -76 [-137, -16] |
 | glm-5.3-flash · think low · oracle · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +76 [-105, +258] | +54 [-106, +214] | -122 [-249, +5] | +24 [-35, +83] |
 | glm-5.3-flash · think low · stats+sharp · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +76 [-68, +219] | +127 [-6, +261] | -137 [-228, -46] | +10 [-41, +60] |
+| glm-5.3-flash · think low · stats+hint · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +206 [+53, +359] | +206 [+78, +334] | -59 [-194, +76] | -24 [-78, +30] |
+| glm-5.3-flash · think low · stats+features+sharp · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +222 [+30, +415] | +183 [+22, +344] | -146 [-238, -54] | -40 [-130, +50] |
 | glm-5.3-flash · think low · notes-every5 · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +82 [-90, +254] | +81 [-73, +234] | +51 [-66, +168] | +4 [-59, +67] |
+| glm-5.3-flash · think low · both-every5 · varied (personalities, mix 0.1, random field) bots | glm-5.3-flash · think low · none · varied (personalities, mix 0.1, random field) bots | 20 | +184 [+1, +367] | +157 [-9, +324] | -83 [-224, +59] | -2 [-68, +64] |
 
 Model differences: each arm minus the first model in the same condition, paired on shared seeds
 

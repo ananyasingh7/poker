@@ -172,6 +172,17 @@ const TYPING_CHARS_PER_SECOND: u128 = 400;
 type LabRow = (&'static str, &'static str, &'static str);
 const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [
     (
+        "GLM, varied bots (11-19)",
+        "chips vs no help, bb/100",
+        &[
+            ("facts sheet", "+151", "[+0, +301]"),
+            ("cheat sheet", "+76", "[-105, +258]"),
+            ("tracker + sharp rule", "+76", "[-68, +219]"),
+            ("own notes, every 5", "+82", "[-90, +254]"),
+            ("DeepSeek instead", "+126", "[+23, +228]"),
+        ],
+    ),
+    (
         "DeepSeek, thinking on (11-17)",
         "river mistakes vs no help, bb/100",
         &[
@@ -191,16 +202,6 @@ const LAB_REFERENCE: [(&str, &str, &[LabRow]); 3] = [
             ("DeepSeek, think off", "+15", "[-63, +93]"),
             ("Gemma 4 26B, off", "-10", "[-64, +44]"),
             ("gpt-oss-20b, on", "-744", "[-984, -504]"),
-        ],
-    ),
-    (
-        "Older: DeepSeek, think off (11-14)",
-        "chips won, bb/100, luck removed",
-        &[
-            ("baseline", "+50", "[+27, +73]"),
-            ("facts sheet adds", "+102", "[+17, +186]"),
-            ("cheat sheet adds", "+28", "[-2, +60]"),
-            ("own notes add", "+13", "[-12, +38]"),
         ],
     ),
 ];
@@ -1885,7 +1886,7 @@ impl App {
                 doc.pair(label, format!("{value:>5} {range:>12}"), theme::INK);
             }
         }
-        doc.para("Lower river mistakes is better. Each block is its own setup: do not compare numbers across blocks. Model rows are 60-hand sessions against the same five bots, 10-20 deals each.", theme::FAINT);
+        doc.para("Lower river mistakes is better. Each block is its own setup: do not compare numbers across blocks. 60-hand sessions, 10-20 deals each; the GLM block faced varied bots, the others the fixed five.", theme::FAINT);
     }
 
     /// What the watched seat knows about its opponents: the cheat sheet, its own notes and how

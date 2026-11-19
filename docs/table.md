@@ -21,7 +21,7 @@ Keys: `space` pause, `c` settings, `h` show all hole cards, `tab` or `1`-`5` pan
 
 - **MIND**: what the model was sent, its reasoning, its move, latency, cost and provider (from the audit stream, so it is exact).
 - **HAND**: result, luck-adjusted result, each decision with equity, the call/fold grade, the reference rule's choice, and river and turn grades (`turn ~` marks the approximate turn grade). Click a decision to jump to it.
-- **SESSION**: the lab's `analyze` row per seat, river and turn cost, LEAKS, spend, totals per help setting, and WHAT THE LAB MEASURED (three labelled blocks: DeepSeek thinking on, the model lineup, the older thinking-off results).
+- **SESSION**: the lab's `analyze` row per seat, river and turn cost, LEAKS, spend, totals per help setting, and WHAT THE LAB MEASURED (three labelled blocks: GLM against varied bots, DeepSeek thinking on, the model lineup).
 - **HANDS**: every finished hand; click to replay.
 - **NOTES**: the cheat sheet, the model's own profiles and their history, or the tracker table.
 

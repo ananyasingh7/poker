@@ -1,8 +1,8 @@
 # Results
 
-Every experiment so far, oldest first, grouped by the same six topics as `runs/`, `examples/` and `results/`. The model is DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash-1017`) unless a section says otherwise. How the numbers are made is in [methods](methods.md).
+Every experiment so far, oldest first, grouped by the same seven topics as `runs/`, `examples/` and `results/`. The model is DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash-1017`) in sections 1-6 unless a section says otherwise; from section 7 it is GLM-5.3 Flash against varied bots. How the numbers are made is in [methods](methods.md).
 
-**Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix.
+**Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix, except `memory-budget-v1.txt` (re-run 2026-11-19 with learning curves).
 
 **Reading the numbers.** bb/100 = big blinds won per 100 hands. `[a, b]` is a 95% interval over seeds (one seed = one set of deals, the unit of replication). "Paired" means two arms on the same deals, differenced seed by seed. "Luck-adjusted" removes all-in luck. "River cost" and "turn cost" are chips per 100 hands given up against the best choice for a player who knows how the bots play (lower is better). Unless noted the field is the five bots `station, overfolder, solid, adaptive, tight`, stacks reset to 100 BB every hand, 60-hand sessions.
 
@@ -20,8 +20,11 @@ Every experiment so far, oldest first, grouped by the same six topics as `runs/`
 | 8 | Helper wins tuned on seeds 1-10 shrink on fresh seeds | plain rule −200 → −85 [−206, +35] | Solid warning |
 | 9 | Thinking (low effort) is the largest lever; with thinking off the helpers do nothing | thinking off −238 [−434, −43] | Solid (10 seeds) |
 | 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +48 [+15, +82] | Two thinking models, one field |
+| 11 | Against varied bots, DeepSeek beats GLM on chips; GLM costs a fifth as much | DeepSeek minus GLM +126 [+23, +228] chips | 20 fresh seeds |
+| 12 | For GLM against varied bots, the facts sheet is the best help (chips and turn), and tracker + sharp rule the best river fix; GLM's own notes do nothing measurable | facts chips +151 [+0, +301], turn −76 [−137, −16]; tracker + sharp river −137 [−228, −46]; notes river +51 [−66, +168] | 20 fresh seeds |
+| 13 | No arm measurably gets better over a session than no help does, on any model; the one hint (GLM notes closing on the cheat sheet in chips) needs a replication | notes vs cheat sheet, late minus early +393 [+112, +673] chips, river +134 [−136, +405] | One positive among many tests |
 
-**To date:** 85,755 hands, $16.64 reported by the runs (see [Spend](#spend)).
+**To date:** 92,967 hands, $17.67 reported by the runs (see [Spend](#spend)).
 
 ---
 
@@ -46,6 +49,9 @@ Findings that shaped later work: notebooks were used as hand transcripts (fixed 
 | --- | --- | --- |
 | Original (tight, loose, aggressive, tight, loose) | +360 [+315, +405] | +152 [+123, +181] |
 | Current (station, overfolder, solid, adaptive, tight) | +288 [+252, +325] | +109 [+84, +135] |
+| Current, varied bots (`results/7-glm-varied/ceiling-varied-v1.json`, 2026-11-18) | +313 [+253, +374] | +174 [+121, +227] |
+
+Varied bots are slightly *easier* to beat: their deviations are mostly loose calls and stray bets, which a value-heavy policy punishes (the best setting moves from value 0.50 to 0.75). On the exact deals and seat of the GLM batch (seeds 21-40, seat 0) the tuned policy wins +271 [+146, +396] and default `solid` +130 [+42, +219]; on the fixed field the same seeds give +296 and +105. `poker-lab ceiling default` is the *original* field; use `current` for this one.
 
 **Subprocess overhead** (`results/1-pilots/bench-subprocess-v1.json`, 100 × 10-hand scripted sessions): 29 µs median per decision round trip (in-process < 1 µs); six workers start in 10 ms. Irrelevant next to model latency; keep large scripted simulations in-process.
 
@@ -193,9 +199,48 @@ Help effect (tracker + rule minus none, paired): DeepSeek low +99 chips / −136
 - **Gemma 4** ignores effort settings (too dear with thinking), so it ran with thinking off; it ties DeepSeek thinking off. Its tracker arm has 5 seeds only.
 - Not testable: Qwen 3.7 Flash and Meta Muse (blocked by the account's privacy settings); Qwen 3.6, Nemotron, Seed, Mistral ignore low effort and cost more than DeepSeek; Llama 4 Scout cannot think.
 
-## 7. GLM against varied bots (planned, 2026-11-18)
+## 7. GLM against varied bots (2026-11-18 to 11-19)
 
-From here on the workhorse is GLM-5.3 Flash (thinking low), against less predictable bots (`opponent_variation`: per-session personalities, 10% mixing, a field drawn per seed from the five current styles), on fresh seeds 21-40, with one DeepSeek anchor arm on the same deals. Configs: `examples/7-glm-varied/`. Results will not be comparable one-to-one with sections 1-6 (different opponents); the anchor arm links them.
+From here on the workhorse is GLM-5.3 Flash (thinking low), against less predictable bots (`opponent_variation`: per-session personalities, 10% mixing, a field drawn per seed from the five current styles), on fresh seeds 21-40, seat 0, with one DeepSeek anchor arm on the same deals. Configs `examples/7-glm-varied/`; comparison `results/7-glm-varied/comparison.{md,json}` (`poker-lab compare ... --seat 0 --turn`). 7,212 hands, $1.03 reported ($1.08 on the account, smoke test included). Every batch completed 20 of 20 sessions; GLM had 0-0.6 fallbacks per 100 hands and no truncations, DeepSeek 20 truncated answers in 1,200 hands.
+
+### 7a. Ceiling for the varied field (free)
+
+`results/7-glm-varied/ceiling-{varied,fixed}-v1.json`. The tuned policy wins +313 [+253, +374] against varied bots (fixed: +288), default `solid` +174 (fixed: +109): the varied field is slightly *softer*, because most deviations are loose calls and stray bets. On the batch's exact deals and seat (seeds 21-40, seat 0) the tuned policy wins +271 [+146, +396]. The best model arm below (+173) reaches about two thirds of that.
+
+### 7b. Arms (GLM unless named, seat 0, 20 seeds, bb/100)
+
+| Arm | Chips | Luck-adjusted | River cost | Turn cost | VPIP | $/hand |
+| --- | --- | --- | --- | --- | --- | --- |
+| No help | +22 [−111, +155] | +30 [−64, +125] | 438 | 243 | 44% | 0.00007 |
+| Facts sheet | +173 [+11, +334] | +131 [+3, +259] | 369 | 167 | 40% | 0.00007 |
+| Cheat sheet | +98 [−26, +223] | +84 [−47, +215] | 316 | 267 | 41% | 0.00011 |
+| Tracker + sharp rule | +98 [−76, +271] | +158 [−21, +336] | 301 | 253 | 48% | 0.00015 |
+| Own notes every 5 hands | +104 [−35, +243] | +111 [−28, +250] | 489 | 247 | 48% | 0.00015 |
+| DeepSeek, no help (anchor) | +148 [+51, +245] | +137 [+42, +231] | 401 | 181 | 36% | 0.00032 |
+
+Paired against GLM with no help (same deals):
+
+| Help | Chips | Luck-adjusted | River cost | Turn cost |
+| --- | --- | --- | --- | --- |
+| Facts sheet | +151 [+0, +301] | +101 [−16, +219] | −69 [−174, +35] | **−76 [−137, −16]** |
+| Cheat sheet | +76 [−105, +258] | +54 [−106, +214] | −122 [−249, +5] | +24 [−35, +83] |
+| Tracker + sharp rule | +76 [−68, +219] | +127 [−6, +261] | **−137 [−228, −46]** | +10 [−41, +60] |
+| Own notes every 5 | +82 [−90, +254] | +81 [−73, +234] | +51 [−66, +168] | +4 [−59, +67] |
+| *DeepSeek instead of GLM* | **+126 [+23, +228]** | **+106 [+23, +190]** | −37 [−159, +85] | −62 [−145, +20] |
+
+- **On varied bots DeepSeek is clearly the stronger player** (+126 chips), unlike the fixed field where they tied (+4 [−85, +94]). GLM costs 4.6x less per hand. GLM has more room to improve, which was the point of choosing it.
+- **The facts sheet is GLM's best help**, as it was DeepSeek's with thinking off: it lifts chips about to DeepSeek's level and is the only help that cuts turn mistakes.
+- **Tracker + sharp rule is the clearest river fix** (−137), as for DeepSeek on fresh cards (−142). The cheat sheet's river effect is similar but not resolved.
+- **GLM's own notes do nothing measurable** (river +51, the wrong direction), where DeepSeek's notes cut river mistakes. Its notebooks are tentative and thin: after 60 hands each seat's profile rests on "2 hands" or "4 hands" of evidence, because the model rewrites counts from recent hands instead of accumulating them. Fixable (host-kept counts beside the notes, or more frequent updates); a concrete target for "improve the weaker model".
+
+### 7c. Learning within a session (new measure, free on old runs too)
+
+`analyze` and `compare` now split each session into 20-hand segments and report the last minus the first, paired by seed ([methods](methods.md#measuring)). Because the cards differ by hand number, an arm is compared with another arm on the same deals.
+
+- **No arm, on any model, measurably improves over a session relative to no help on chips.** Old runs agree: DeepSeek thinking off with notes over 120-hand sessions, (late minus early) minus no help's: +8 [−87, +103] chips, river +30 [−38, +100] (`results/2-thinking-off/memory-budget-v1.txt`); thinking low, seeds 1-10 and 11-20: every chip interval includes zero (`results/5-thinking-low`, `results/6-lineup`).
+- **No help is the wrong control for learning.** On seeds 21-40 the costly river spots cluster late, so every help that fixes river mistakes, including ones that cannot learn (facts, cheat sheet), shows a "learning" signal against no help (−312, −342 river). The right control for notes is the cheat sheet: same knowledge, from hand 1. If notes learn, their gap to the cheat sheet should close.
+- **Against that control, GLM's notes close the gap on chips** (late minus early, notes minus cheat sheet: +393 [+112, +673]) **but not on the river** (+134 [−136, +405]); over the whole session they stay 173 [+77, +269] river cost behind the cheat sheet. One positive among many intervals examined: a hypothesis to replicate on fresh seeds, not a finding.
+- **A 20-hand slice is very noisy on chips** (±300 bb/100 at 20 seeds). Learning claims need more seeds (cheap with GLM), longer sessions, or grades rather than chips.
 
 ## Spend
 
@@ -209,4 +254,5 @@ From `results/runs.csv` (`poker-lab catalog runs`): cost as reported by each run
 | 4. Table sessions | 4 | 648 | $0.39 |
 | 5. Thinking low | 8 | 5,730 | $3.25 |
 | 6. New cards and lineup | 20 | 8,981 | $1.58 |
-| **Total** | **60** | **85,755** | **$16.64** |
+| 7. GLM against varied bots | 7 | 7,212 | $1.03 |
+| **Total** | **67** | **92,967** | **$17.67** |

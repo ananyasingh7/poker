@@ -19,7 +19,7 @@ Principles that follow from it:
 **Hypotheses** (from the original plan; status in [results](results.md)):
 
 - H1. A model wins more against leaky scripted opponents than against a balanced one. *Supported (station and overfolder are where its money comes from).*
-- H2. Notes raise winnings against fixed opponents over sessions of 100+ hands. *Unresolved: notes cut river mistakes but no chip gain is resolved.*
+- H2. Notes raise winnings against fixed opponents over sessions of 100+ hands. *Unresolved: DeepSeek's notes cut river mistakes but no chip gain is resolved, GLM's do nothing measurable, and no model plays measurably better late in a session than early (learning curves, 2026-11-19).*
 - H3. A model with notes identifies an opponent archetype more often than chance. *Supported informally: profiles name the station within 1-4 hands.*
 - Extra: correct reads (cheat sheet) are worth more than the model's own (yes), and the model misreads facts it could compute (yes: the facts sheet is the largest thinking-off gain).
 
@@ -66,9 +66,9 @@ All are deterministic (their randomness is seeded from the spot), which is what 
 - `mixing` (0 to 0.5): on any decision, a seeded chance that the bot deviates (bets instead of checking, calls instead of folding, raises instead of calling, checks instead of betting). The roll ignores card order, as a hand is a set.
 - `random_field`: the five opponents are drawn per seed, with replacement, from `opponent_field` (all seven styles if empty).
 
-A model can no longer carry a fixed profile from earlier runs; it has to learn each session's bots, which is the question the lab now cares most about. In-process only (worker processes take plain styles). The original `tight / loose / aggressive` and `random` fixtures remain for older runs. **Ceiling** (`poker-lab ceiling`): the best of 162 settings of a tunable policy, selected on training seeds, measured on held-out seeds; a lower bound on what a competent exploiter wins (+288 bb/100 against this field).
+A model can no longer carry a fixed profile from earlier runs; it has to learn each session's bots, which is the question the lab now cares most about. In-process only (worker processes take plain styles). The original `tight / loose / aggressive` and `random` fixtures remain for older runs. **Ceiling** (`poker-lab ceiling`): the best of 162 settings of a tunable policy, selected on training seeds, measured on held-out seeds; a lower bound on what a competent exploiter wins (+288 bb/100 against this field; +313 against its varied version, which is slightly softer).
 
-**Weakness:** the bots are still simple (varied, not strong), and the ceiling has only been measured for the fixed field. No result yet is about play against strong players or people.
+**Weakness:** the bots are still simple (varied, not strong, and in fact slightly easier to exploit than the fixed field). No result yet is about play against strong players or people.
 
 ## Treatments the model can be given
 

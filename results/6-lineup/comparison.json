@@ -20,6 +20,7 @@
         "mean": 175.45833333333334,
         "se": 42.501568383513565
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -49,125 +50,212 @@
         "runs/5-thinking-low/thinking-low-none-v1"
       ],
       "fallbacks_per_100_hands": 1.3333333333333333,
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -334.72868730875837,
+          242.97868730875837
+        ],
+        "mean": -45.875,
+        "se": 138.00940626314303
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -379.31623012180694,
+          204.33650164231358
+        ],
+        "mean": -87.4898642397467,
+        "se": 139.42970180700442
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -103.6952648207713,
+          5.12280105265539
+        ],
+        "mean": -49.286231884057955,
+        "se": 25.99571568882625
+      },
       "model": "deepseek-v4.1-flash-1017",
       "per_seed": {
         "1": {
           "adjusted": 171.25,
           "bb_per_100": -113.33333333333333,
+          "learn_adjusted": 126.25,
+          "learn_river_cost": -591.8375000000001,
+          "learn_turn_cost": -312.58152173913027,
           "river_cost": 402.6395833333334,
           "turn_cost": 261.79196859903385
         },
         "10": {
           "adjusted": -85.0,
           "bb_per_100": -85.0,
+          "learn_adjusted": 370.0,
+          "learn_river_cost": -29.418750000000173,
+          "learn_turn_cost": 128.9130434782611,
           "river_cost": 312.12291666666664,
           "turn_cost": 200.7427536231884
         },
         "11": {
           "adjusted": 585.8333333333334,
           "bb_per_100": 585.8333333333334,
+          "learn_adjusted": 10.0,
+          "learn_river_cost": 65.15000000000008,
+          "learn_turn_cost": -174.84148550724615,
           "river_cost": 52.84166666666662,
           "turn_cost": 138.40579710144925
         },
         "12": {
           "adjusted": 191.66666666666669,
           "bb_per_100": 191.66666666666669,
+          "learn_adjusted": -715.0,
+          "learn_river_cost": -19.949999999999974,
+          "learn_turn_cost": -64.91394927536227,
           "river_cost": 104.99375000000006,
           "turn_cost": 119.65730676328508
         },
         "13": {
           "adjusted": 29.166666666666668,
           "bb_per_100": 29.166666666666668,
+          "learn_adjusted": -375.0,
+          "learn_river_cost": -972.5134373923362,
+          "learn_turn_cost": -110.81521739130437,
           "river_cost": 422.8419791307788,
           "turn_cost": 128.95833333333334
         },
         "14": {
           "adjusted": 567.5,
           "bb_per_100": 567.5,
+          "learn_adjusted": -1800.0,
+          "learn_river_cost": -1213.0875,
+          "learn_turn_cost": -88.47373188405811,
           "river_cost": 568.4536458333332,
           "turn_cost": 145.74124396135267
         },
         "15": {
           "adjusted": 3.3333333333333335,
           "bb_per_100": 3.3333333333333335,
+          "learn_adjusted": -52.5,
+          "learn_river_cost": 344.31250000000017,
+          "learn_turn_cost": -114.43840579710135,
           "river_cost": 381.68333333333334,
           "turn_cost": 233.30917874396135
         },
         "16": {
           "adjusted": 360.0,
           "bb_per_100": 360.0,
+          "learn_adjusted": -955.0,
+          "learn_river_cost": -173.87499999999994,
+          "learn_turn_cost": -64.33423913043484,
           "river_cost": 281.17083333333335,
           "turn_cost": 116.87952898550722
         },
         "17": {
           "adjusted": 356.6666666666667,
           "bb_per_100": 356.6666666666667,
+          "learn_adjusted": 1167.5,
+          "learn_river_cost": 120.05000000000003,
+          "learn_turn_cost": 193.22010869565196,
           "river_cost": 96.36250000000004,
           "turn_cost": 75.91636473429948
         },
         "18": {
           "adjusted": 91.66666666666666,
           "bb_per_100": 91.66666666666666,
+          "learn_adjusted": 17.5,
+          "learn_river_cost": -344.23125,
+          "learn_turn_cost": 68.96286231884056,
           "river_cost": 336.68750000000006,
           "turn_cost": 142.37167874396138
         },
         "19": {
           "adjusted": 348.3333333333333,
           "bb_per_100": 348.3333333333333,
+          "learn_adjusted": -215.00000000000006,
+          "learn_river_cost": -247.3750000000001,
+          "learn_turn_cost": -84.42934782608683,
           "river_cost": 388.3104166666667,
           "turn_cost": 126.76630434782604
         },
         "2": {
           "adjusted": 542.9166666666666,
           "bb_per_100": 199.16666666666666,
+          "learn_adjusted": 583.75,
+          "learn_river_cost": -589.1375,
+          "learn_turn_cost": 50.670289855072284,
           "river_cost": 383.83750000000003,
           "turn_cost": 140.97373188405794
         },
         "20": {
           "adjusted": -2.5,
           "bb_per_100": -2.5,
+          "learn_adjusted": 197.5,
+          "learn_river_cost": 844.7124999999999,
+          "learn_turn_cost": -20.32155797101437,
           "river_cost": 293.53125,
           "turn_cost": 80.60084541062804
         },
         "3": {
           "adjusted": 75.0,
           "bb_per_100": 75.0,
+          "learn_adjusted": 240.00000000000003,
+          "learn_river_cost": -376.59999999999997,
+          "learn_turn_cost": 15.697463768115938,
           "river_cost": 279.0645833333335,
           "turn_cost": 58.78019323671499
         },
         "4": {
           "adjusted": 125.0,
           "bb_per_100": 125.0,
+          "learn_adjusted": 150.0,
+          "learn_river_cost": 1661.51875,
+          "learn_turn_cost": -156.7346014492755,
           "river_cost": 859.0729166666666,
           "turn_cost": 146.1337560386474
         },
         "5": {
           "adjusted": 174.16666666666666,
           "bb_per_100": 174.16666666666666,
+          "learn_adjusted": 40.0,
+          "learn_river_cost": -491.08920454545444,
+          "learn_turn_cost": -58.52807971014505,
           "river_cost": 176.50890151515148,
           "turn_cost": 124.4157608695652
         },
         "6": {
           "adjusted": 121.66666666666666,
           "bb_per_100": 121.66666666666666,
+          "learn_adjusted": -247.5,
+          "learn_river_cost": -237.86875000000003,
+          "learn_turn_cost": 12.572463768116009,
           "river_cost": 285.6708333333334,
           "turn_cost": 101.59722222222219
         },
         "7": {
           "adjusted": 121.66666666666666,
           "bb_per_100": 121.66666666666666,
+          "learn_adjusted": -27.5,
+          "learn_river_cost": 167.68035714285708,
+          "learn_turn_cost": -20.960144927536163,
           "river_cost": 537.4059523809524,
           "turn_cost": 129.326690821256
         },
         "8": {
           "adjusted": 240.0,
           "bb_per_100": 240.0,
+          "learn_adjusted": -52.5,
+          "learn_river_cost": -32.92500000000007,
+          "learn_turn_cost": -194.40217391304367,
           "river_cost": 656.4166666666667,
           "turn_cost": 157.87892512077292
         },
         "9": {
           "adjusted": 119.16666666666667,
           "bb_per_100": 119.16666666666667,
+          "learn_adjusted": 620.0,
+          "learn_river_cost": 366.6874999999998,
+          "learn_turn_cost": 10.013586956521806,
           "river_cost": 465.7437499999999,
           "turn_cost": 217.0304951690822
         }
@@ -218,6 +306,7 @@
         "mean": 292.17592592592587,
         "se": 65.41319353313227
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -245,113 +334,194 @@
         "runs/5-thinking-low/thinking-low-stats-hint-v1"
       ],
       "fallbacks_per_100_hands": 2.095557418273261,
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -605.2179760977366,
+          217.36350078909462
+        ],
+        "mean": -193.92723765432098,
+        "se": 194.9245205892965
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -243.97885344087726,
+          154.73424284101358
+        ],
+        "mean": -44.622305299931845,
+        "se": 94.48177637011632
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -117.49645590786089,
+          8.199455102707859
+        ],
+        "mean": -54.648500402576516,
+        "se": 29.785760902978378
+      },
       "model": "deepseek-v4.1-flash-1017",
       "per_seed": {
         "1": {
           "adjusted": 88.37962962962962,
           "bb_per_100": -211.66666666666666,
+          "learn_adjusted": -278.75,
+          "learn_river_cost": -247.3812499999999,
+          "learn_turn_cost": 140.9329710144928,
           "river_cost": 202.89583333333331,
           "turn_cost": 194.3115942028985
         },
         "11": {
           "adjusted": 648.3333333333334,
           "bb_per_100": 648.3333333333334,
+          "learn_adjusted": 32.5,
+          "learn_river_cost": -340.48125,
+          "learn_turn_cost": 36.906702898550776,
           "river_cost": 185.42708333333331,
           "turn_cost": 145.1358695652174
         },
         "12": {
           "adjusted": 81.875,
           "bb_per_100": 175.83333333333334,
+          "learn_adjusted": -243.125,
+          "learn_river_cost": -95.9749999999999,
+          "learn_turn_cost": -198.70923913043475,
           "river_cost": 178.96875,
           "turn_cost": 165.57669082125602
         },
         "13": {
           "adjusted": 165.0,
           "bb_per_100": 165.0,
+          "learn_adjusted": -917.4999999999999,
+          "learn_river_cost": -137.676495398773,
+          "learn_turn_cost": -15.942028985507264,
           "river_cost": 396.24216513292436,
           "turn_cost": 163.57789855072465
         },
         "14": {
           "adjusted": 835.8333333333333,
           "bb_per_100": 855.0000000000001,
+          "learn_adjusted": -2487.5,
+          "learn_river_cost": -116.4625,
+          "learn_turn_cost": -57.73097826086969,
           "river_cost": 155.8161458333333,
           "turn_cost": 102.8879830917875
         },
         "15": {
           "adjusted": 565.0,
           "bb_per_100": 565.0,
+          "learn_adjusted": -1560.0,
+          "learn_river_cost": -3.556250000000091,
+          "learn_turn_cost": -328.3288043478261,
           "river_cost": 233.4125000000001,
           "turn_cost": 205.2702294685989
         },
         "16": {
           "adjusted": 313.3333333333333,
           "bb_per_100": 313.3333333333333,
+          "learn_adjusted": -300.0,
+          "learn_river_cost": -188.575,
+          "learn_turn_cost": -45.480072463768266,
           "river_cost": 311.78125000000006,
           "turn_cost": 67.10748792270526
         },
         "17": {
           "adjusted": 270.0,
           "bb_per_100": 270.0,
+          "learn_adjusted": 1102.5,
+          "learn_river_cost": 124.41250000000004,
+          "learn_turn_cost": 206.49909420289845,
           "river_cost": 102.50416666666666,
           "turn_cost": 105.43327294685984
         },
         "18": {
           "adjusted": 110.00000000000001,
           "bb_per_100": 110.00000000000001,
+          "learn_adjusted": 185.0,
+          "learn_river_cost": -445.61249999999995,
+          "learn_turn_cost": 22.69474637681165,
           "river_cost": 295.25625,
           "turn_cost": 119.69655797101446
         },
         "19": {
           "adjusted": 599.0791666666667,
           "bb_per_100": 610.8333333333334,
+          "learn_adjusted": -200.0,
+          "learn_river_cost": -156.72499999999997,
+          "learn_turn_cost": -173.16123188405788,
           "river_cost": 150.44166666666666,
           "turn_cost": 128.14311594202897
         },
         "2": {
           "adjusted": 820.5671296296297,
           "bb_per_100": 649.1666666666666,
+          "learn_adjusted": -723.5763888888889,
+          "learn_river_cost": -317.3437500000001,
+          "learn_turn_cost": -221.48097826086976,
           "river_cost": 230.5895833333333,
           "turn_cost": 133.3710748792271
         },
         "20": {
           "adjusted": 123.33333333333334,
           "bb_per_100": 123.33333333333334,
+          "learn_adjusted": 570.0,
+          "learn_river_cost": 190.59375,
+          "learn_turn_cost": -56.74818840579711,
           "river_cost": 65.05624999999999,
           "turn_cost": 32.65851449275362
         },
         "3": {
           "adjusted": 19.166666666666668,
           "bb_per_100": 19.166666666666668,
+          "learn_adjusted": 245.0,
+          "learn_river_cost": -340.01250000000005,
+          "learn_turn_cost": -17.391304347826093,
           "river_cost": 157.36250000000004,
           "turn_cost": 50.29287439613529
         },
         "4": {
           "adjusted": 112.5,
           "bb_per_100": 112.5,
+          "learn_adjusted": 350.0,
+          "learn_river_cost": 1412.9499999999998,
+          "learn_turn_cost": -17.468297101449366,
           "river_cost": 690.2125,
           "turn_cost": 48.29408212560386
         },
         "5": {
           "adjusted": 169.16666666666666,
           "bb_per_100": 169.16666666666666,
+          "learn_adjusted": 467.50000000000006,
+          "learn_river_cost": -108.20625,
+          "learn_turn_cost": -100.30797101449289,
           "river_cost": 141.26250000000005,
           "turn_cost": 145.87409420289853
         },
         "6": {
           "adjusted": 30.833333333333336,
           "bb_per_100": 30.833333333333336,
+          "learn_adjusted": -87.5,
+          "learn_river_cost": -87.01249999999987,
+          "learn_turn_cost": 12.536231884057905,
           "river_cost": 71.03958333333334,
           "turn_cost": 127.5256642512077
         },
         "7": {
           "adjusted": 218.33333333333331,
           "bb_per_100": 218.33333333333331,
+          "learn_adjusted": 140.0,
+          "learn_river_cost": 74.91250000000002,
+          "learn_turn_cost": -73.08876811594189,
           "river_cost": 112.42708333333336,
           "turn_cost": 50.307971014492736
         },
         "8": {
           "adjusted": 673.2537037037038,
           "bb_per_100": 434.99999999999994,
+          "learn_adjusted": 214.76111111111118,
+          "learn_river_cost": -21.050000000000068,
+          "learn_turn_cost": -97.40489130434774,
           "river_cost": 374.43125,
           "turn_cost": 89.71467391304341
         }
@@ -402,6 +572,7 @@
         "mean": 485.58333333333337,
         "se": 76.78252618376459
       },
+      "bots": "",
       "complete_seeds": [
         11,
         12,
@@ -420,65 +591,122 @@
         "runs/6-lineup/fresh-deepseek-stats-sharp-v1"
       ],
       "fallbacks_per_100_hands": 1.1666666666666667,
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -801.8788778750882,
+          541.2538778750882
+        ],
+        "mean": -130.3125,
+        "se": 296.89052956458363
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -385.4164224097182,
+          -14.929333336288835
+        ],
+        "mean": -200.17287787300353,
+        "se": 81.89369785000649
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -129.63030085156407,
+          57.780663170404495
+        ],
+        "mean": -35.92481884057979,
+        "se": 41.42594253359164
+      },
       "model": "deepseek-v4.1-flash-1017",
       "per_seed": {
         "11": {
           "adjusted": 479.1666666666667,
           "bb_per_100": 479.1666666666667,
+          "learn_adjusted": -7.500000000000114,
+          "learn_river_cost": -470.72500000000014,
+          "learn_turn_cost": 154.63315217391312,
           "river_cost": 254.02500000000003,
           "turn_cost": 165.26117149758454
         },
         "12": {
           "adjusted": 207.70833333333334,
           "bb_per_100": 299.1666666666667,
+          "learn_adjusted": -583.125,
+          "learn_river_cost": -79.09999999999981,
+          "learn_turn_cost": -107.09692028985538,
           "river_cost": 141.16458333333335,
           "turn_cost": 125.20682367149767
         },
         "13": {
           "adjusted": 720.8333333333333,
           "bb_per_100": 720.8333333333333,
+          "learn_adjusted": 492.5,
+          "learn_river_cost": -543.853778730035,
+          "learn_turn_cost": -76.92934782608717,
           "river_cost": 191.55125957667835,
           "turn_cost": 81.53532608695654
         },
         "14": {
           "adjusted": 955.8333333333334,
           "bb_per_100": 955.8333333333334,
+          "learn_adjusted": -2282.5,
+          "learn_river_cost": 5.387499999999903,
+          "learn_turn_cost": 88.20652173913024,
           "river_cost": 133.78124999999997,
           "turn_cost": 76.00694444444446
         },
         "15": {
           "adjusted": 345.0,
           "bb_per_100": 345.0,
+          "learn_adjusted": -130.0,
+          "learn_river_cost": -446.01874999999995,
+          "learn_turn_cost": -187.59057971014488,
           "river_cost": 239.71041666666667,
           "turn_cost": 113.56280193236717
         },
         "16": {
           "adjusted": 342.5,
           "bb_per_100": 342.5,
+          "learn_adjusted": -757.5,
+          "learn_river_cost": 0.7187500000001705,
+          "learn_turn_cost": -199.4701086956522,
           "river_cost": 178.00416666666666,
           "turn_cost": 143.53562801932358
         },
         "17": {
           "adjusted": 153.33333333333334,
           "bb_per_100": 153.33333333333334,
+          "learn_adjusted": 1102.5,
+          "learn_river_cost": 13.843750000000057,
+          "learn_turn_cost": 103.3242753623189,
           "river_cost": 18.341666666666683,
           "turn_cost": 44.63013285024154
         },
         "18": {
           "adjusted": 590.0,
           "bb_per_100": 590.0,
+          "learn_adjusted": 700.0,
+          "learn_river_cost": -220.70625000000015,
+          "learn_turn_cost": 26.07336956521722,
           "river_cost": 123.47916666666666,
           "turn_cost": 83.47071256038646
         },
         "19": {
           "adjusted": 655.0,
           "bb_per_100": 655.0,
+          "learn_adjusted": 102.5,
+          "learn_river_cost": -445.8125,
+          "learn_turn_cost": -177.866847826087,
           "river_cost": 165.23750000000004,
           "turn_cost": 88.02687198067632
         },
         "20": {
           "adjusted": 315.0,
           "bb_per_100": 315.0,
+          "learn_adjusted": 59.99999999999994,
+          "learn_river_cost": 184.53749999999997,
+          "learn_turn_cost": 17.468297101449224,
           "river_cost": 63.03749999999998,
           "turn_cost": 7.3777173913043725
         }
@@ -529,6 +757,7 @@
         "mean": 14.666666666666666,
         "se": 34.47001738852814
       },
+      "bots": "",
       "complete_seeds": [
         11,
         12,
@@ -547,65 +776,122 @@
         "runs/6-lineup/lineup-deepseek-off-none-v1"
       ],
       "fallbacks_per_100_hands": 0.0,
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -208.67240457119925,
+          11.672404571199237
+        ],
+        "mean": -98.5,
+        "se": 48.70574914730293
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -893.7056832419621,
+          374.9699619157971
+        ],
+        "mean": -259.36786066308247,
+        "se": 280.432282307197
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -309.03628903080585,
+          -40.31063125904927
+        ],
+        "mean": -174.67346014492756,
+        "se": 59.40001277006114
+      },
       "model": "deepseek-v4.1-flash-1017",
       "per_seed": {
         "11": {
           "adjusted": -132.00833333333333,
           "bb_per_100": -173.33333333333334,
+          "learn_adjusted": -222.5,
+          "learn_river_cost": 872.5062500000001,
+          "learn_turn_cost": -236.02355072463774,
           "river_cost": 991.9895833333334,
           "turn_cost": 131.72554347826087
         },
         "12": {
           "adjusted": 31.666666666666664,
           "bb_per_100": 31.666666666666664,
+          "learn_adjusted": -150.0,
+          "learn_river_cost": -388.5584677419354,
+          "learn_turn_cost": -212.05615942028976,
           "river_cost": 317.3069892473119,
           "turn_cost": 145.78351449275357
         },
         "13": {
           "adjusted": -80.83333333333333,
           "bb_per_100": -80.83333333333333,
+          "learn_adjusted": -57.5,
+          "learn_river_cost": -793.6875000000002,
+          "learn_turn_cost": -310.33061594202894,
           "river_cost": 647.3416666666666,
           "turn_cost": 171.56551932367145
         },
         "14": {
           "adjusted": -46.666666666666664,
           "bb_per_100": -46.666666666666664,
+          "learn_adjusted": -110.0,
+          "learn_river_cost": -1960.175,
+          "learn_turn_cost": 46.73007246376791,
           "river_cost": 893.6583333333333,
           "turn_cost": 53.2412439613527
         },
         "15": {
           "adjusted": 122.50000000000001,
           "bb_per_100": 122.50000000000001,
+          "learn_adjusted": -455.0,
+          "learn_river_cost": 49.711111111110995,
+          "learn_turn_cost": -375.36231884057963,
           "river_cost": 750.8349537037038,
           "turn_cost": 269.2768719806762
         },
         "16": {
           "adjusted": 75.83333333333333,
           "bb_per_100": 75.83333333333333,
+          "learn_adjusted": -95.0,
+          "learn_river_cost": -564.5812499999997,
+          "learn_turn_cost": -59.34782608695657,
           "river_cost": 496.48749999999984,
           "turn_cost": 96.62892512077289
         },
         "17": {
           "adjusted": -5.833333333333333,
           "bb_per_100": -5.833333333333333,
+          "learn_adjusted": 37.5,
+          "learn_river_cost": 907.075,
+          "learn_turn_cost": -5.416666666666643,
           "river_cost": 490.2895833333332,
           "turn_cost": 41.47795893719805
         },
         "18": {
           "adjusted": 40.833333333333336,
           "bb_per_100": 40.833333333333336,
+          "learn_adjusted": 47.5,
+          "learn_river_cost": 425.2187500000002,
+          "learn_turn_cost": -14.859601449275345,
           "river_cost": 551.4625000000001,
           "turn_cost": 147.824577294686
         },
         "19": {
           "adjusted": 214.16666666666666,
           "bb_per_100": 214.16666666666666,
+          "learn_adjusted": -30.0,
+          "learn_river_cost": -1012.2250000000001,
+          "learn_turn_cost": -525.1811594202899,
           "river_cost": 456.7104166666667,
           "turn_cost": 395.37892512077303
         },
         "20": {
           "adjusted": -31.666666666666664,
           "bb_per_100": -31.666666666666664,
+          "learn_adjusted": 50.0,
+          "learn_river_cost": -128.96249999999998,
+          "learn_turn_cost": -54.8867753623189,
           "river_cost": 171.72083333333333,
           "turn_cost": 32.20712560386476
         }
@@ -656,6 +942,7 @@
         "mean": -7.66666666666667,
         "se": 50.32744630767443
       },
+      "bots": "",
       "complete_seeds": [
         11,
         12,
@@ -674,65 +961,122 @@
         "runs/6-lineup/lineup-deepseek-off-stats-hint-v1"
       ],
       "fallbacks_per_100_hands": 0.0,
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -326.18403458035164,
+          92.76903458035162
+        ],
+        "mean": -116.70750000000001,
+        "se": 92.60677921324121
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -1009.345808318292,
+          592.0667805405142
+        ],
+        "mean": -208.6395138888889,
+        "se": 353.9815625240509
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -267.7153756541912,
+          39.51610029187219
+        ],
+        "mean": -114.09963768115949,
+        "se": 67.91146683157899
+      },
       "model": "deepseek-v4.1-flash-1017",
       "per_seed": {
         "11": {
           "adjusted": -63.67499999999999,
           "bb_per_100": -105.0,
+          "learn_adjusted": -430.0,
+          "learn_river_cost": 1205.0624999999998,
+          "learn_turn_cost": -437.1331521739131,
           "river_cost": 902.3333333333335,
           "turn_cost": 223.20350241545896
         },
         "12": {
           "adjusted": 272.5,
           "bb_per_100": 272.5,
+          "learn_adjusted": -815.0000000000001,
+          "learn_river_cost": -29.51875000000001,
+          "learn_turn_cost": 48.07518115942031,
           "river_cost": 208.93125000000006,
           "turn_cost": 134.62862318840573
         },
         "13": {
           "adjusted": -156.20416666666665,
           "bb_per_100": -351.6666666666667,
+          "learn_adjusted": 107.92499999999997,
+          "learn_river_cost": -435.89374999999995,
+          "learn_turn_cost": 99.93206521739131,
           "river_cost": 538.8354166666667,
           "turn_cost": 104.17572463768114
         },
         "14": {
           "adjusted": -9.166666666666666,
           "bb_per_100": -9.166666666666666,
+          "learn_adjusted": -40.0,
+          "learn_river_cost": -2693.25625,
+          "learn_turn_cost": 58.81793478260846,
           "river_cost": 1004.9088541666666,
           "turn_cost": 89.67844202898554
         },
         "15": {
           "adjusted": 22.69166666666667,
           "bb_per_100": -53.333333333333336,
+          "learn_adjusted": 0.0,
+          "learn_river_cost": 566.7048611111112,
+          "learn_turn_cost": -146.58061594202889,
           "river_cost": 733.0932870370372,
           "turn_cost": 232.44414251207726
         },
         "16": {
           "adjusted": 58.333333333333336,
           "bb_per_100": 58.333333333333336,
+          "learn_adjusted": -100.0,
+          "learn_river_cost": -648.2437500000001,
+          "learn_turn_cost": -76.10054347826095,
           "river_cost": 464.3541666666666,
           "turn_cost": 84.40519323671492
         },
         "17": {
           "adjusted": 19.166666666666668,
           "bb_per_100": 19.166666666666668,
+          "learn_adjusted": 37.5,
+          "learn_river_cost": 931.36875,
+          "learn_turn_cost": 86.11865942028992,
           "river_cost": 489.31666666666666,
           "turn_cost": 68.97342995169082
         },
         "18": {
           "adjusted": 21.666666666666668,
           "bb_per_100": 21.666666666666668,
+          "learn_adjusted": 152.5,
+          "learn_river_cost": 327.1250000000001,
+          "learn_turn_cost": -214.59692028985523,
           "river_cost": 571.1437500000001,
           "turn_cost": 86.72252415458935
         },
         "19": {
           "adjusted": 105.83333333333333,
           "bb_per_100": 105.83333333333333,
+          "learn_adjusted": -102.5,
+          "learn_river_cost": -1002.9687500000001,
+          "learn_turn_cost": -504.64221014492784,
           "river_cost": 606.9708333333333,
           "turn_cost": 287.2524154589372
         },
         "20": {
           "adjusted": -35.0,
           "bb_per_100": -35.0,
+          "learn_adjusted": 22.5,
+          "learn_river_cost": -306.77500000000003,
+          "learn_turn_cost": -54.8867753623189,
           "river_cost": 111.35416666666664,
           "turn_cost": 32.20712560386476
         }
@@ -783,6 +1127,7 @@
         "mean": 179.83333333333331,
         "se": 48.04536872728058
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -811,125 +1156,212 @@
         "runs/6-lineup/lineup-glm-none-v1"
       ],
       "fallbacks_per_100_hands": 0.6666666666666666,
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -429.8889957157512,
+          122.15288460464004
+        ],
+        "mean": -153.86805555555557,
+        "se": 131.8781367225015
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -250.526617571551,
+          313.2565217655799
+        ],
+        "mean": 31.364952097014474,
+        "se": 134.6830242085836
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -87.74225329071093,
+          77.59913734868188
+        ],
+        "mean": -5.0715579710145295,
+        "se": 39.49865997118796
+      },
       "model": "glm-5.3-flash",
       "per_seed": {
         "1": {
           "adjusted": 242.40740740740745,
           "bb_per_100": 190.0,
+          "learn_adjusted": -1212.7777777777778,
+          "learn_river_cost": -246.93124999999992,
+          "learn_turn_cost": 29.846014492753795,
           "river_cost": 424.6979166666666,
           "turn_cost": 396.4885265700484
         },
         "10": {
           "adjusted": -102.22222222222221,
           "bb_per_100": -130.0,
+          "learn_adjusted": 303.33333333333337,
+          "learn_river_cost": -191.26874999999998,
+          "learn_turn_cost": 438.08876811594183,
           "river_cost": 201.75624999999994,
           "turn_cost": 334.5184178743961
         },
         "11": {
           "adjusted": 297.5,
           "bb_per_100": 297.5,
+          "learn_adjusted": -310.0,
+          "learn_river_cost": 1818.55625,
+          "learn_turn_cost": -54.45652173913052,
           "river_cost": 857.6968413978495,
           "turn_cost": 185.64311594202906
         },
         "12": {
           "adjusted": -175.0,
           "bb_per_100": -175.0,
+          "learn_adjusted": 25.0,
+          "learn_river_cost": -217.5708776595746,
+          "learn_turn_cost": -140.97826086956547,
           "river_cost": 361.35345744680853,
           "turn_cost": 202.58605072463766
         },
         "13": {
           "adjusted": 232.50000000000003,
           "bb_per_100": 232.50000000000003,
+          "learn_adjusted": -1090.0,
+          "learn_river_cost": -713.1155688622755,
+          "learn_turn_cost": -242.94384057971024,
           "river_cost": 312.47810628742513,
           "turn_cost": 181.24547101449275
         },
         "14": {
           "adjusted": 179.30555555555557,
           "bb_per_100": 596.6666666666666,
+          "learn_adjusted": -432.91666666666674,
+          "learn_river_cost": -1415.0875,
+          "learn_turn_cost": -119.65579710144937,
           "river_cost": 634.2833333333332,
           "turn_cost": 91.65307971014492
         },
         "15": {
           "adjusted": 33.402777777777786,
           "bb_per_100": 1.6666666666666667,
+          "learn_adjusted": -975.0,
+          "learn_river_cost": 397.6875000000001,
+          "learn_turn_cost": -4.5606884057970944,
           "river_cost": 540.5500000000001,
           "turn_cost": 188.24426328502406
         },
         "16": {
           "adjusted": 286.6666666666667,
           "bb_per_100": 286.6666666666667,
+          "learn_adjusted": -675.0,
+          "learn_river_cost": 294.1250000000002,
+          "learn_turn_cost": -86.3586956521739,
           "river_cost": 230.1666666666667,
           "turn_cost": 153.82850241545884
         },
         "17": {
           "adjusted": 226.66666666666666,
           "bb_per_100": 226.66666666666666,
+          "learn_adjusted": 890.0000000000001,
+          "learn_river_cost": 265.5228950777201,
+          "learn_turn_cost": 190.61141304347814,
           "river_cost": 263.1222150259067,
           "turn_cost": 115.78502415458934
         },
         "18": {
           "adjusted": 145.83333333333331,
           "bb_per_100": 145.83333333333331,
+          "learn_adjusted": 312.50000000000006,
+          "learn_river_cost": 128.73124999999993,
+          "learn_turn_cost": -191.6711956521736,
           "river_cost": 351.26666666666665,
           "turn_cost": 145.62198067632858
         },
         "19": {
           "adjusted": 440.00000000000006,
           "bb_per_100": 440.00000000000006,
+          "learn_adjusted": -435.0,
+          "learn_river_cost": 4.106249999999989,
+          "learn_turn_cost": -329.16666666666686,
           "river_cost": 292.2354166666667,
           "turn_cost": 154.59390096618358
         },
         "2": {
           "adjusted": 601.6666666666666,
           "bb_per_100": 82.5,
+          "learn_adjusted": -570.0,
+          "learn_river_cost": -41.975000000000136,
+          "learn_turn_cost": 271.4402173913041,
           "river_cost": 537.1541666666667,
           "turn_cost": 285.7321859903381
         },
         "20": {
           "adjusted": -2.5,
           "bb_per_100": -2.5,
+          "learn_adjusted": 287.5,
+          "learn_river_cost": 282.0250000000001,
+          "learn_turn_cost": -7.0697463768117075,
           "river_cost": 273.70303242469515,
           "turn_cost": 97.73852657004831
         },
         "3": {
           "adjusted": 164.16666666666666,
           "bb_per_100": 164.16666666666666,
+          "learn_adjusted": 675.0,
+          "learn_river_cost": -111.73125000000016,
+          "learn_turn_cost": 14.692028985507363,
           "river_cost": 456.20208333333335,
           "turn_cost": 206.14130434782604
         },
         "4": {
           "adjusted": 275.0,
           "bb_per_100": 275.0,
+          "learn_adjusted": 125.00000000000003,
+          "learn_river_cost": 426.4312499999999,
+          "learn_turn_cost": 116.93387681159415,
           "river_cost": 492.7666666666666,
           "turn_cost": 142.16032608695656
         },
         "5": {
           "adjusted": -18.333333333333332,
           "bb_per_100": -18.333333333333332,
+          "learn_adjusted": -570.0,
+          "learn_river_cost": -510.3155551118212,
+          "learn_turn_cost": 122.64945652173913,
           "river_cost": 460.251018370607,
           "turn_cost": 231.41908212560392
         },
         "6": {
           "adjusted": 65.0,
           "bb_per_100": 65.0,
+          "learn_adjusted": 34.99999999999999,
+          "learn_river_cost": -10.326315789473668,
+          "learn_turn_cost": 11.897644927536241,
           "river_cost": 178.36831140350876,
           "turn_cost": 254.58333333333334
         },
         "7": {
           "adjusted": 450.0,
           "bb_per_100": 450.0,
+          "learn_adjusted": 590.0,
+          "learn_river_cost": 104.82321428571431,
+          "learn_turn_cost": 3.9085144927537385,
           "river_cost": 413.89752304147464,
           "turn_cost": 53.891908212560324
         },
         "8": {
           "adjusted": 523.3333333333334,
           "bb_per_100": 523.3333333333334,
+          "learn_adjusted": -87.5,
+          "learn_river_cost": 133.66250000000002,
+          "learn_turn_cost": -111.77083333333336,
           "river_cost": 793.80625,
           "turn_cost": 199.4746376811594
         },
         "9": {
           "adjusted": -55.00000000000001,
           "bb_per_100": -55.00000000000001,
+          "learn_adjusted": 37.5,
+          "learn_river_cost": 229.94999999999996,
+          "learn_turn_cost": -12.866847826086953,
           "river_cost": 593.273717948718,
           "turn_cost": 191.586654589372
         }
@@ -980,6 +1412,7 @@
         "mean": 333.75,
         "se": 80.93914895360174
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -1008,125 +1441,212 @@
         "runs/6-lineup/lineup-glm-stats-hint-v1"
       ],
       "fallbacks_per_100_hands": 0.6666666666666666,
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -674.2439487482848,
+          283.45436541495144
+        ],
+        "mean": -195.3947916666667,
+        "se": 228.78602822819786
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -312.4981894216822,
+          69.2551297613774
+        ],
+        "mean": -121.6215298301524,
+        "se": 91.19763955639264
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -71.91414066176503,
+          112.59303558930117
+        ],
+        "mean": 20.339447463768074,
+        "se": 44.07720407335552
+      },
       "model": "glm-5.3-flash",
       "per_seed": {
         "1": {
           "adjusted": 481.25,
           "bb_per_100": 196.66666666666666,
+          "learn_adjusted": -196.25,
+          "learn_river_cost": -265.23749999999995,
+          "learn_turn_cost": 528.4465579710143,
           "river_cost": 286.57291666666663,
           "turn_cost": 421.6953502415459
         },
         "10": {
           "adjusted": -324.1666666666667,
           "bb_per_100": -324.1666666666667,
+          "learn_adjusted": 294.99999999999994,
+          "learn_river_cost": -406.6124999999999,
+          "learn_turn_cost": 53.57336956521726,
           "river_cost": 237.71785714285718,
           "turn_cost": 237.22826086956513
         },
         "11": {
           "adjusted": 586.6666666666666,
           "bb_per_100": 586.6666666666666,
+          "learn_adjusted": 105.00000000000011,
+          "learn_river_cost": -127.65624999999986,
+          "learn_turn_cost": -71.74818840579718,
           "river_cost": 94.05934139784942,
           "turn_cost": 212.49698067632852
         },
         "12": {
           "adjusted": 239.25925925925924,
           "bb_per_100": -18.333333333333332,
+          "learn_adjusted": -572.5,
+          "learn_river_cost": -242.08125000000007,
+          "learn_turn_cost": -223.68659420289848,
           "river_cost": 388.7270833333333,
           "turn_cost": 323.31974637681157
         },
         "13": {
           "adjusted": 362.5,
           "bb_per_100": 362.5,
+          "learn_adjusted": -335.0,
+          "learn_river_cost": -390.52352941176457,
+          "learn_turn_cost": -186.82971014492747,
           "river_cost": 619.9265931372548,
           "turn_cost": 214.71014492753628
         },
         "14": {
           "adjusted": 825.0,
           "bb_per_100": 844.1666666666666,
+          "learn_adjusted": -2009.9999999999998,
+          "learn_river_cost": -378.7972457627119,
+          "learn_turn_cost": -291.8478260869568,
           "river_cost": 193.81675603890884,
           "turn_cost": 264.03532608695656
         },
         "15": {
           "adjusted": 1001.8750000000001,
           "bb_per_100": 972.5,
+          "learn_adjusted": -2665.0,
+          "learn_river_cost": 237.66874999999987,
+          "learn_turn_cost": -242.78985507246364,
           "river_cost": 350.9187500000001,
           "turn_cost": 309.3704710144927
         },
         "16": {
           "adjusted": 685.0,
           "bb_per_100": 685.0,
+          "learn_adjusted": 1295.0,
+          "learn_river_cost": -620.75625,
+          "learn_turn_cost": 149.94565217391326,
           "river_cost": 245.55208333333334,
           "turn_cost": 286.24245169082127
         },
         "17": {
           "adjusted": 138.17129629629628,
           "bb_per_100": 90.0,
+          "learn_adjusted": 1164.375,
+          "learn_river_cost": 89.63125000000018,
+          "learn_turn_cost": 135.67934782608677,
           "river_cost": 138.18750000000003,
           "turn_cost": 342.6086956521738
         },
         "18": {
           "adjusted": 213.33333333333334,
           "bb_per_100": 213.33333333333334,
+          "learn_adjusted": -27.50000000000003,
+          "learn_river_cost": -424.42500000000007,
+          "learn_turn_cost": 64.34329710144908,
           "river_cost": 305.39370210727975,
           "turn_cost": 128.97192028985503
         },
         "19": {
           "adjusted": 730.0,
           "bb_per_100": 730.0,
+          "learn_adjusted": -267.4999999999999,
+          "learn_river_cost": -194.4125,
+          "learn_turn_cost": 142.8125,
           "river_cost": 111.6946509009009,
           "turn_cost": 153.0464975845411
         },
         "2": {
           "adjusted": 813.9416666666667,
           "bb_per_100": 489.1666666666667,
+          "learn_adjusted": -294.32500000000005,
+          "learn_river_cost": 539.375,
+          "learn_turn_cost": 141.71195652173893,
           "river_cost": 534.1895833333333,
           "turn_cost": 145.27324879227055
         },
         "20": {
           "adjusted": 25.833333333333336,
           "bb_per_100": 25.833333333333336,
+          "learn_adjusted": 477.50000000000006,
+          "learn_river_cost": -294.61249999999995,
+          "learn_turn_cost": -132.57699275362336,
           "river_cost": 255.66249999999994,
           "turn_cost": 98.07820048309182
         },
         "3": {
           "adjusted": 239.07407407407408,
           "bb_per_100": 322.5,
+          "learn_adjusted": -769.7222222222223,
+          "learn_river_cost": -397.2866071428572,
+          "learn_turn_cost": 112.80797101449274,
           "river_cost": 312.3502976190477,
           "turn_cost": 241.76630434782592
         },
         "4": {
           "adjusted": 580.0,
           "bb_per_100": 580.0,
+          "learn_adjusted": 452.5,
+          "learn_river_cost": 552.8249999999999,
+          "learn_turn_cost": 187.08786231884045,
           "river_cost": 390.8666666666667,
           "turn_cost": 188.4601449275362
         },
         "5": {
           "adjusted": 359.56018518518516,
           "bb_per_100": 406.66666666666663,
+          "learn_adjusted": -956.1805555555555,
+          "learn_river_cost": 817.8374999999999,
+          "learn_turn_cost": 187.51358695652164,
           "river_cost": 352.26041666666674,
           "turn_cost": 292.9725241545894
         },
         "6": {
           "adjusted": 348.2041666666667,
           "bb_per_100": -75.0,
+          "learn_adjusted": -1367.1125000000002,
+          "learn_river_cost": -183.825,
+          "learn_turn_cost": -59.085144927536106,
           "river_cost": 92.34374999999999,
           "turn_cost": 239.62107487922708
         },
         "7": {
           "adjusted": 50.717592592592574,
           "bb_per_100": 395.83333333333337,
+          "learn_adjusted": 832.5694444444445,
+          "learn_river_cost": 189.12678571428572,
+          "learn_turn_cost": 58.50543478260886,
           "river_cost": 459.98214285714295,
           "turn_cost": 189.1440217391304
         },
         "8": {
           "adjusted": 518.3333333333334,
           "bb_per_100": 518.3333333333334,
+          "learn_adjusted": -170.0,
+          "learn_river_cost": -755.6437500000002,
+          "learn_turn_cost": -188.63677536231904,
           "river_cost": 814.4916666666667,
           "turn_cost": 208.02536231884054
         },
         "9": {
           "adjusted": -412.08333333333337,
           "bb_per_100": -326.6666666666667,
+          "learn_adjusted": 1101.25,
+          "learn_river_cost": -177.02500000000003,
+          "learn_turn_cost": 41.56250000000006,
           "river_cost": 662.6039231601732,
           "turn_cost": 239.34027777777786
         }
@@ -1177,6 +1697,7 @@
         "mean": -744.0277777777777,
         "se": 113.67214450380072
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -1203,113 +1724,194 @@
         "runs/6-lineup/lineup-gptoss-none-v1"
       ],
       "fallbacks_per_100_hands": 14.888123924268502,
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -718.4516907434047,
+          431.8827092619233
+        ],
+        "mean": -143.2844907407407,
+        "se": 272.59109004865593
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -262.7955546920038,
+          360.82477632898036
+        ],
+        "mean": 49.014610818488265,
+        "se": 147.77732962582564
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -147.11860689202663,
+          174.24651119384387
+        ],
+        "mean": 13.56395215090862,
+        "se": 76.1528715843295
+      },
       "model": "gpt-oss-20b",
       "per_seed": {
         "1": {
           "adjusted": -571.6902777777777,
           "bb_per_100": -604.1666666666667,
+          "learn_adjusted": -271.2375,
+          "learn_river_cost": 32.35782157246126,
+          "learn_turn_cost": 91.19565217391323,
           "river_cost": 1237.7007617512986,
           "turn_cost": 414.98037439613523
         },
         "10": {
           "adjusted": -416.70509259259256,
           "bb_per_100": -771.6666666666666,
+          "learn_adjusted": 1722.8930555555555,
+          "learn_river_cost": -316.71849710982633,
+          "learn_turn_cost": -74.36594202898556,
           "river_cost": 966.9334176300579,
           "turn_cost": 521.2454710144926
         },
         "11": {
           "adjusted": -837.3527777777778,
           "bb_per_100": -856.6666666666666,
+          "learn_adjusted": -172.10833333333346,
+          "learn_river_cost": 231.97092391304318,
+          "learn_turn_cost": 482.17650103519674,
           "river_cost": 1174.1555253623192,
           "turn_cost": 470.54434092477584
         },
         "12": {
           "adjusted": -1318.2881944444443,
           "bb_per_100": -1416.6666666666665,
+          "learn_adjusted": -1581.5729166666665,
+          "learn_river_cost": -437.2687499999997,
+          "learn_turn_cost": -481.820652173913,
           "river_cost": 1187.5916666666665,
           "turn_cost": 336.3375603864734
         },
         "13": {
           "adjusted": -96.26875000000003,
           "bb_per_100": 478.3333333333333,
+          "learn_adjusted": -1828.0187499999997,
+          "learn_river_cost": -1269.5913025695843,
+          "learn_turn_cost": 272.6132246376809,
           "river_cost": 1570.003350856528,
           "turn_cost": 392.8577898550725
         },
         "15": {
           "adjusted": -971.3164351851851,
           "bb_per_100": -603.3333333333334,
+          "learn_adjusted": -1096.60625,
+          "learn_river_cost": 916.361582727769,
+          "learn_turn_cost": -73.77264492753602,
           "river_cost": 1884.4266209343186,
           "turn_cost": 515.5978260869563
         },
         "16": {
           "adjusted": -792.3041666666667,
           "bb_per_100": -902.5,
+          "learn_adjusted": -1685.0124999999998,
+          "learn_river_cost": 391.5437499999998,
+          "learn_turn_cost": 480.5434782608694,
           "river_cost": 884.625562072336,
           "turn_cost": 657.9423309178745
         },
         "17": {
           "adjusted": -300.48125,
           "bb_per_100": -309.1666666666667,
+          "learn_adjusted": 2105.7125,
+          "learn_river_cost": 655.0312499999997,
+          "learn_turn_cost": 134.20289855072457,
           "river_cost": 929.7374999999998,
           "turn_cost": 221.57759661835752
         },
         "18": {
           "adjusted": -705.625,
           "bb_per_100": -579.1666666666667,
+          "learn_adjusted": 1294.4250000000002,
+          "learn_river_cost": -113.5999999999998,
+          "learn_turn_cost": 378.899456521739,
           "river_cost": 1107.547426470588,
           "turn_cost": 395.30495169082116
         },
         "19": {
           "adjusted": -538.0770833333333,
           "bb_per_100": -487.5,
+          "learn_adjusted": 430.31875000000014,
+          "learn_river_cost": -91.81875000000005,
+          "learn_turn_cost": -170.679347826087,
           "river_cost": 837.6395833333333,
           "turn_cost": 261.62288647343007
         },
         "2": {
           "adjusted": -204.05277777777778,
           "bb_per_100": -676.6666666666666,
+          "learn_adjusted": 287.6388888888888,
+          "learn_river_cost": -685.6360832848,
+          "learn_turn_cost": -242.39130434782646,
           "river_cost": 854.0514228226114,
           "turn_cost": 573.653381642512
         },
         "20": {
           "adjusted": -466.64189814814813,
           "bb_per_100": -627.5,
+          "learn_adjusted": -1558.7680555555555,
+          "learn_river_cost": -178.42499999999984,
+          "learn_turn_cost": -368.0615942028986,
           "river_cost": 1084.5418859649121,
           "turn_cost": 297.818538647343
         },
         "3": {
           "adjusted": -648.0775462962963,
           "bb_per_100": -392.5,
+          "learn_adjusted": 3.3333333333333712,
+          "learn_river_cost": 165.44610849056585,
+          "learn_turn_cost": -462.1875000000003,
           "river_cost": 909.2382861635223,
           "turn_cost": 479.22101449275357
         },
         "4": {
           "adjusted": -1138.858101851852,
           "bb_per_100": -892.5000000000001,
+          "learn_adjusted": 900.6993055555555,
+          "learn_river_cost": 709.6624999999999,
+          "learn_turn_cost": -28.07971014492739,
           "river_cost": 2304.5208333333335,
           "turn_cost": 682.19806763285
         },
         "5": {
           "adjusted": -1432.50625,
           "bb_per_100": -1689.1666666666665,
+          "learn_adjusted": -234.13749999999982,
+          "learn_river_cost": 908.7133403361344,
+          "learn_turn_cost": -396.2862318840582,
           "river_cost": 1260.2601365546218,
           "turn_cost": 679.9547101449277
         },
         "6": {
           "adjusted": -842.3687500000002,
           "bb_per_100": -1035.8333333333333,
+          "learn_adjusted": -313.1125,
+          "learn_river_cost": -814.5174342105262,
+          "learn_turn_cost": 23.392210144927617,
           "river_cost": 596.1219174697306,
           "turn_cost": 612.6117149758453
         },
         "8": {
           "adjusted": -625.049537037037,
           "bb_per_100": -588.3333333333334,
+          "learn_adjusted": -615.148611111111,
+          "learn_river_cost": -109.97499999999968,
+          "learn_turn_cost": 366.0235507246377,
           "river_cost": 1273.3229166666667,
           "turn_cost": 481.7013888888889
         },
         "9": {
           "adjusted": -1149.05625,
           "bb_per_100": -1437.5,
+          "learn_adjusted": 31.581249999999955,
+          "learn_river_cost": 888.7265348675517,
+          "learn_turn_cost": 312.7490942028984,
           "river_cost": 1544.8219985400845,
           "turn_cost": 616.1881038647346
         }
@@ -1360,6 +1962,7 @@
         "mean": -221.12500000000006,
         "se": 112.29574171559732
       },
+      "bots": "",
       "complete_seeds": [
         1,
         2,
@@ -1388,125 +1991,212 @@
         "runs/6-lineup/lineup-gptoss-stats-hint-v1"
       ],
       "fallbacks_per_100_hands": 11.333333333333334,
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -151.43529912970848,
+          474.4666185741529
+        ],
+        "mean": 161.5156597222222,
+        "se": 149.5226750367562
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -90.626020358504,
+          83.9215064696151
+        ],
+        "mean": -3.3522569444444485,
+        "se": 41.69792805258459
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -97.06210156066939,
+          145.90721025632158
+        ],
+        "mean": 24.422554347826086,
+        "se": 58.04331385976851
+      },
       "model": "gpt-oss-20b",
       "per_seed": {
         "1": {
           "adjusted": 136.96666666666667,
           "bb_per_100": -180.0,
+          "learn_adjusted": 245.64374999999995,
+          "learn_river_cost": -132.5,
+          "learn_turn_cost": -276.81159420289856,
           "river_cost": 44.166666666666664,
           "turn_cost": 92.27053140096618
         },
         "10": {
           "adjusted": 378.74791666666664,
           "bb_per_100": -359.1666666666667,
+          "learn_adjusted": 156.9062500000001,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -91.60778985507247,
           "river_cost": 0.6874999999999906,
           "turn_cost": 100.39855072463769
         },
         "11": {
           "adjusted": -250.50625000000002,
           "bb_per_100": -272.5,
+          "learn_adjusted": -495.12499999999994,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": 947.8125,
           "river_cost": 2.947916666666662,
           "turn_cost": 315.9375
         },
         "12": {
           "adjusted": -332.86249999999995,
           "bb_per_100": 36.666666666666664,
+          "learn_adjusted": 282.54374999999993,
+          "learn_river_cost": -16.525000000000034,
+          "learn_turn_cost": -30.03623188405797,
           "river_cost": 5.508333333333345,
           "turn_cost": 10.012077294685989
         },
         "13": {
           "adjusted": -87.4090277777778,
           "bb_per_100": -747.5,
+          "learn_adjusted": -411.63958333333335,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": 173.9673913043478,
           "river_cost": 0.0,
           "turn_cost": 57.98913043478261
         },
         "14": {
           "adjusted": -423.94444444444457,
           "bb_per_100": -345.83333333333337,
+          "learn_adjusted": 638.1333333333333,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -382.6766304347826,
           "river_cost": 0.0,
           "turn_cost": 146.604770531401
         },
         "15": {
           "adjusted": 191.87569444444443,
           "bb_per_100": 529.1666666666667,
+          "learn_adjusted": -125.44999999999989,
+          "learn_river_cost": 0.07500000000000284,
+          "learn_turn_cost": 0.0,
           "river_cost": 0.02500000000000095,
           "turn_cost": 92.72644927536233
         },
         "16": {
           "adjusted": -154.3083333333334,
           "bb_per_100": -158.33333333333331,
+          "learn_adjusted": -491.42499999999995,
+          "learn_river_cost": 505.675,
+          "learn_turn_cost": 32.15126811594196,
           "river_cost": 324.1583333333333,
           "turn_cost": 10.717089371980654
         },
         "17": {
           "adjusted": -312.9354166666666,
           "bb_per_100": -825.0,
+          "learn_adjusted": 1619.0624999999998,
+          "learn_river_cost": -470.0,
+          "learn_turn_cost": 15.421195652173907,
           "river_cost": 156.66666666666666,
           "turn_cost": 9.464070048309168
         },
         "18": {
           "adjusted": -113.4833333333334,
           "bb_per_100": -181.66666666666666,
+          "learn_adjusted": 1150.53125,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": 178.49184782608697,
           "river_cost": 0.0,
           "turn_cost": 59.497282608695656
         },
         "19": {
           "adjusted": 21.362499999999944,
           "bb_per_100": 508.3333333333333,
+          "learn_adjusted": -172.16874999999993,
+          "learn_river_cost": 0.33749999999997726,
+          "learn_turn_cost": -15.235507246376798,
           "river_cost": 0.11249999999999243,
           "turn_cost": 17.02898550724638
         },
         "2": {
           "adjusted": -25.65416666666671,
           "bb_per_100": -455.0,
+          "learn_adjusted": -358.85625000000005,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -152.52264492753625,
           "river_cost": 0.0,
           "turn_cost": 50.84088164251208
         },
         "20": {
           "adjusted": 71.80208333333337,
           "bb_per_100": -508.3333333333333,
+          "learn_adjusted": 155.49374999999986,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -55.31250000000001,
           "river_cost": 0.0,
           "turn_cost": 59.1681763285024
         },
         "3": {
           "adjusted": -149.36875,
           "bb_per_100": -352.5,
+          "learn_adjusted": -800.0375000000001,
+          "learn_river_cost": 190.18124999999998,
+          "learn_turn_cost": 46.716485507246404,
           "river_cost": 64.32708333333333,
           "turn_cost": 22.76419082125604
         },
         "4": {
           "adjusted": -87.21898148148149,
           "bb_per_100": 728.3333333333334,
+          "learn_adjusted": 509.69444444444434,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -97.68568840579704,
           "river_cost": 35.67083333333334,
           "turn_cost": 55.27324879227052
         },
         "5": {
           "adjusted": 44.70208333333332,
           "bb_per_100": -994.9999999999999,
+          "learn_adjusted": 611.40625,
+          "learn_river_cost": -317.01388888888886,
+          "learn_turn_cost": -39.26630434782609,
           "river_cost": 105.67129629629628,
           "turn_cost": 16.42814009661838
         },
         "6": {
           "adjusted": -178.06041666666664,
           "bb_per_100": -1031.6666666666667,
+          "learn_adjusted": -604.14375,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": -11.490036231884133,
           "river_cost": 0.3125,
           "turn_cost": 22.02445652173914
         },
         "7": {
           "adjusted": 312.43935185185177,
           "bb_per_100": -349.1666666666667,
+          "learn_adjusted": 165.34999999999997,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": 240.97826086956525,
           "river_cost": 0.0,
           "turn_cost": 147.61926328502418
         },
         "8": {
           "adjusted": 533.9520833333332,
           "bb_per_100": 530.0,
+          "learn_adjusted": 1387.6249999999998,
+          "learn_river_cost": 172.72499999999994,
+          "learn_turn_cost": 5.5570652173913295,
           "river_cost": 70.8875,
           "turn_cost": 29.01117149758451
         },
         "9": {
           "adjusted": -199.85833333333332,
           "bb_per_100": 6.666666666666667,
+          "learn_adjusted": -233.23125000000005,
+          "learn_river_cost": 0.0,
+          "learn_turn_cost": 0.0,
           "river_cost": 41.66666666666667,
           "turn_cost": 13.07518115942031
         }
@@ -1557,6 +2247,7 @@
         "mean": -10.083333333333332,
         "se": 23.72080726979721
       },
+      "bots": "",
       "complete_seeds": [
         11,
         12,
@@ -1575,65 +2266,122 @@
         "runs/6-lineup/lineup-gemma-off-none-v1"
       ],
       "fallbacks_per_100_hands": 0.3333333333333333,
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -287.41626784271875,
+          41.91626784271878
+        ],
+        "mean": -122.75,
+        "se": 72.79675855115772
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -997.5053525120736,
+          370.9534461948621
+        ],
+        "mean": -313.2759531586058,
+        "se": 302.4886822959628
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -354.70186392863855,
+          204.14208131994283
+        ],
+        "mean": -75.27989130434784,
+        "se": 123.5287235297483
+      },
       "model": "gemma-4-26b-a4b-it",
       "per_seed": {
         "11": {
           "adjusted": -20.833333333333336,
           "bb_per_100": -20.833333333333336,
+          "learn_adjusted": -52.5,
+          "learn_river_cost": -125.85625000000027,
+          "learn_turn_cost": 448.73641304347836,
           "river_cost": 674.0750000000002,
           "turn_cost": 555.6838768115941
         },
         "12": {
           "adjusted": 15.0,
           "bb_per_100": 15.0,
+          "learn_adjusted": -42.5,
+          "learn_river_cost": -458.93337765957443,
+          "learn_turn_cost": -44.538043478260846,
           "river_cost": 497.1763741134753,
           "turn_cost": 150.6099033816425
         },
         "13": {
           "adjusted": -11.666666666666666,
           "bb_per_100": -11.666666666666666,
+          "learn_adjusted": -35.0,
+          "learn_river_cost": -473.4375000000001,
+          "learn_turn_cost": -178.0163043478261,
           "river_cost": 670.2541666666666,
           "turn_cost": 141.99124396135264
         },
         "14": {
           "adjusted": 161.66666666666666,
           "bb_per_100": 161.66666666666666,
+          "learn_adjusted": -657.5,
+          "learn_river_cost": -2499.40625,
+          "learn_turn_cost": -244.28894927536246,
           "river_cost": 1073.7062500000002,
           "turn_cost": 131.81461352657007
         },
         "15": {
           "adjusted": 50.83333333333333,
           "bb_per_100": 50.83333333333333,
+          "learn_adjusted": -225.0,
+          "learn_river_cost": -186.95740392648304,
+          "learn_turn_cost": -843.1250000000002,
           "river_cost": 1016.4244587162351,
           "turn_cost": 588.2910628019325
         },
         "16": {
           "adjusted": -65.0,
           "bb_per_100": -65.0,
+          "learn_adjusted": 22.499999999999993,
+          "learn_river_cost": -812.00625,
+          "learn_turn_cost": -36.11413043478265,
           "river_cost": 414.1208333333334,
           "turn_cost": 99.97735507246371
         },
         "17": {
           "adjusted": -55.00000000000001,
           "bb_per_100": -55.00000000000001,
+          "learn_adjusted": -45.0,
+          "learn_river_cost": 1151.59375,
+          "learn_turn_cost": 26.91123188405797,
           "river_cost": 455.8041666666666,
           "turn_cost": 23.603562801932345
         },
         "18": {
           "adjusted": -87.5,
           "bb_per_100": -87.5,
+          "learn_adjusted": -342.5,
+          "learn_river_cost": 407.2187500000001,
+          "learn_turn_cost": 490.1675724637682,
           "river_cost": 614.6666666666665,
           "turn_cost": 199.37349033816426
         },
         "19": {
           "adjusted": -3.3333333333333335,
           "bb_per_100": -3.3333333333333335,
+          "learn_adjusted": 12.5,
+          "learn_river_cost": -469.55625000000003,
+          "learn_turn_cost": -423.7047101449276,
           "river_cost": 722.2833333333333,
           "turn_cost": 299.1847826086956
         },
         "20": {
           "adjusted": -85.0,
           "bb_per_100": -85.0,
+          "learn_adjusted": 137.5,
+          "learn_river_cost": 334.5812500000001,
+          "learn_turn_cost": 51.17300724637687,
           "river_cost": 483.85144230769237,
           "turn_cost": 118.00573671497585
         }
@@ -1684,6 +2432,7 @@
         "mean": -46.99999999999999,
         "se": 60.98303498150576
       },
+      "bots": "",
       "complete_seeds": [
         11,
         12,
@@ -1697,35 +2446,77 @@
         "runs/6-lineup/lineup-gemma-off-stats-hint-v1"
       ],
       "fallbacks_per_100_hands": 14.362657091561939,
+      "learn_adjusted": {
+        "blocks": 5,
+        "ci95": [
+          -553.2654820965226,
+          351.2654820965226
+        ],
+        "mean": -101.0,
+        "se": 162.91984225379056
+      },
+      "learn_river_cost": {
+        "blocks": 5,
+        "ci95": [
+          -1483.6066772015072,
+          992.019177201507
+        ],
+        "mean": -245.79375000000013,
+        "se": 445.8980285308023
+      },
+      "learn_turn_cost": {
+        "blocks": 5,
+        "ci95": [
+          -738.7932729197341,
+          379.0595772675601
+        ],
+        "mean": -179.86684782608705,
+        "se": 201.34237215189017
+      },
       "model": "gemma-4-26b-a4b-it",
       "per_seed": {
         "11": {
           "adjusted": -189.16666666666666,
           "bb_per_100": -189.16666666666666,
+          "learn_adjusted": -82.5,
+          "learn_river_cost": 1371.4749999999997,
+          "learn_turn_cost": -67.6992753623189,
           "river_cost": 1508.1937500000001,
           "turn_cost": 193.26539855072465
         },
         "12": {
           "adjusted": 13.333333333333334,
           "bb_per_100": 13.333333333333334,
+          "learn_adjusted": -5.0,
+          "learn_river_cost": -481.49375,
+          "learn_turn_cost": -41.213768115942116,
           "river_cost": 679.4062499999999,
           "turn_cost": 154.58937198067633
         },
         "13": {
           "adjusted": -32.5,
           "bb_per_100": -32.5,
+          "learn_adjusted": -59.99999999999999,
+          "learn_river_cost": -359.84375000000034,
+          "learn_turn_cost": -944.5380434782609,
           "river_cost": 620.45625,
           "turn_cost": 422.0516304347827
         },
         "14": {
           "adjusted": 141.66666666666669,
           "bb_per_100": 141.66666666666669,
+          "learn_adjusted": -682.5,
+          "learn_river_cost": -1374.0625000000002,
+          "learn_turn_cost": 253.44655797101422,
           "river_cost": 1525.2875000000001,
           "turn_cost": 378.10839371980677
         },
         "16": {
           "adjusted": -168.33333333333334,
           "bb_per_100": -168.33333333333334,
+          "learn_adjusted": 325.0,
+          "learn_river_cost": -385.04374999999976,
+          "learn_turn_cost": -99.32971014492765,
           "river_cost": 329.9791666666667,
           "turn_cost": 104.31763285024147
         }
@@ -1777,6 +2568,33 @@
         ],
         "mean": 99.12037037037037,
         "se": 44.63869276031676
+      },
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -382.04993840548815,
+          206.1399075412906
+        ],
+        "mean": -87.95501543209876,
+        "se": 139.38148008217507
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -136.88547588253277,
+          279.53709137099503
+        ],
+        "mean": 71.32580774423114,
+        "se": 98.67833347239996
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -72.47854127702247,
+          88.1427924847519
+        ],
+        "mean": 7.832125603864714,
+        "se": 38.06192743170009
       },
       "river_cost": {
         "blocks": 18,
@@ -1838,6 +2656,33 @@
         "mean": 232.41666666666669,
         "se": 89.04044804968632
       },
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -144.14340218827914,
+          427.51840218827914
+        ],
+        "mean": 141.6875,
+        "se": 126.36202572426134
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -460.2709953095372,
+          379.2866770419975
+        ],
+        "mean": -40.49215913376988,
+        "se": 185.57861899901297
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -92.54297032460241,
+          112.77032539706599
+        ],
+        "mean": 10.113677536231787,
+        "se": 45.38313344864465
+      },
       "river_cost": {
         "blocks": 10,
         "ci95": [
@@ -1890,6 +2735,33 @@
         "mean": -22.333333333333336,
         "se": 44.27220095926764
       },
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -223.08458340986613,
+          186.6695834098661
+        ],
+        "mean": -18.207500000000017,
+        "se": 90.57342325811942
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -209.9628868648319,
+          311.41958041321885
+        ],
+        "mean": 50.7283467741935,
+        "se": 115.24811389877338
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -78.7021162140503,
+          199.84976114158644
+        ],
+        "mean": 60.57382246376807,
+        "se": 61.572033014066484
+      },
       "river_cost": {
         "blocks": 10,
         "ci95": [
@@ -1941,6 +2813,33 @@
         ],
         "mean": 153.91666666666669,
         "se": 63.246365149930654
+      },
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -486.2990872168882,
+          403.2456149946661
+        ],
+        "mean": -41.526736111111084,
+        "se": 212.50470669172344
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -480.5848908045913,
+          174.61192695025747
+        ],
+        "mean": -152.98648192716692,
+        "se": 156.52097891897964
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -76.19991626975535,
+          127.02192713932054
+        ],
+        "mean": 25.411005434782595,
+        "se": 48.5479797919436
       },
       "river_cost": {
         "blocks": 20,
@@ -2004,6 +2903,33 @@
         "mean": 536.9444444444446,
         "se": 170.34111297993164
       },
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -246.78998666669423,
+          803.0067304938545
+        ],
+        "mean": 278.10837191358013,
+        "se": 248.76699458780774
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -396.06539414381643,
+          290.5867126302967
+        ],
+        "mean": -52.73934075675987,
+        "se": 162.71376937775193
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -129.65363372802017,
+          172.54233570639616
+        ],
+        "mean": 21.444350989187996,
+        "se": 71.61041929725506
+      },
       "river_cost": {
         "blocks": 18,
         "ci95": [
@@ -2064,6 +2990,33 @@
         "mean": -62.83333333333333,
         "se": 31.71005799076655
       },
+      "learn_adjusted": {
+        "blocks": 5,
+        "ci95": [
+          -125.25417575899303,
+          229.25417575899303
+        ],
+        "mean": 52.0,
+        "se": 63.85236878926263
+      },
+      "learn_river_cost": {
+        "blocks": 5,
+        "ci95": [
+          -188.62951588911324,
+          1444.8978669529426
+        ],
+        "mean": 628.1341755319147,
+        "se": 294.2232317799092
+      },
+      "learn_turn_cost": {
+        "blocks": 5,
+        "ci95": [
+          -778.2158353850909,
+          440.1705455300183
+        ],
+        "mean": -169.0226449275363,
+        "se": 219.4499965625197
+      },
       "river_cost": {
         "blocks": 5,
         "ci95": [
@@ -2112,6 +3065,33 @@
         ],
         "mean": -238.5,
         "se": 86.29441064542928
+      },
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -373.5815596499301,
+          720.5815596499301
+        ],
+        "mean": 173.5,
+        "se": 241.8574534261406
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -591.9504675087943,
+          392.5761836610967
+        ],
+        "mean": -99.68714192384878,
+        "se": 217.62304402517483
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -242.5006575057803,
+          -14.769270030451622
+        ],
+        "mean": -128.63496376811597,
+        "se": 50.33850297863145
       },
       "river_cost": {
         "blocks": 10,
@@ -2165,6 +3145,33 @@
         "mean": -391.33333333333337,
         "se": 97.60134018003171
       },
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -518.4035737874458,
+          1048.6135737874458
+        ],
+        "mean": 265.105,
+        "se": 346.3786798352988
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -910.2101485577942,
+          726.9426698597712
+        ],
+        "mean": -91.63373934901158,
+        "se": 361.88170168381197
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -221.54448294169774,
+          115.34520757937881
+        ],
+        "mean": -53.09963768115947,
+        "se": 74.46721717972514
+      },
       "river_cost": {
         "blocks": 10,
         "ci95": [
@@ -2216,6 +3223,33 @@
         ],
         "mean": 4.375000000000004,
         "se": 42.60559958770761
+      },
+      "learn_adjusted": {
+        "blocks": 20,
+        "ci95": [
+          -419.898513610981,
+          203.9124024998699
+        ],
+        "mean": -107.99305555555557,
+        "se": 149.02315243928595
+      },
+      "learn_river_cost": {
+        "blocks": 20,
+        "ci95": [
+          -142.5679023127463,
+          380.2775349862687
+        ],
+        "mean": 118.85481633676117,
+        "se": 124.90335339202461
+      },
+      "learn_turn_cost": {
+        "blocks": 20,
+        "ci95": [
+          -33.02014941792772,
+          121.4494972440146
+        ],
+        "mean": 44.214673913043434,
+        "se": 36.901492274711494
       },
       "river_cost": {
         "blocks": 20,
@@ -2279,6 +3313,33 @@
         "mean": 114.81481481481481,
         "se": 51.86966216841658
       },
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -479.28704720721333,
+          277.79198547881816
+        ],
+        "mean": -100.74753086419757,
+        "se": 179.40261438057618
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -284.36437563165265,
+          168.18753105339985
+        ],
+        "mean": -58.088422289126406,
+        "se": 107.2397883139935
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -22.673390190519484,
+          166.59851096346628
+        ],
+        "mean": 71.9625603864734,
+        "se": 44.851161410897106
+      },
       "river_cost": {
         "blocks": 18,
         "ci95": [
@@ -2338,6 +3399,33 @@
         ],
         "mean": -900.6944444444446,
         "se": 126.10127171457057
+      },
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -633.5952734262148,
+          245.9151808336224
+        ],
+        "mean": -193.84004629629624,
+        "se": 208.41479958763918
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -218.415965494947,
+          394.71075845834474
+        ],
+        "mean": 88.14739648169888,
+        "se": 145.29069287992695
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -119.25834906197719,
+          243.75189346041276
+        ],
+        "mean": 62.24677219921778,
+        "se": 86.02138448397866
       },
       "river_cost": {
         "blocks": 18,
@@ -2399,6 +3487,33 @@
         "mean": -518.287037037037,
         "se": 124.94409556381278
       },
+      "learn_adjusted": {
+        "blocks": 18,
+        "ci95": [
+          -84.35057605303035,
+          839.6092951888327
+        ],
+        "mean": 377.62935956790113,
+        "se": 218.94783678717133
+      },
+      "learn_river_cost": {
+        "blocks": 18,
+        "ci95": [
+          -191.28731659666866,
+          273.0824673199891
+        ],
+        "mean": 40.89757536166022,
+        "se": 110.0402331556061
+      },
+      "learn_turn_cost": {
+        "blocks": 18,
+        "ci95": [
+          -54.14973730711705,
+          227.89772442466938
+        ],
+        "mean": 86.87399355877616,
+        "se": 66.8358914056366
+      },
       "river_cost": {
         "blocks": 18,
         "ci95": [
@@ -2459,6 +3574,33 @@
         "mean": -263.25,
         "se": 65.62054805592905
       },
+      "learn_adjusted": {
+        "blocks": 10,
+        "ci95": [
+          -344.87538025004346,
+          643.3753802500435
+        ],
+        "mean": 149.25,
+        "se": 218.44623353229153
+      },
+      "learn_river_cost": {
+        "blocks": 10,
+        "ci95": [
+          -660.7847981224872,
+          353.594329283743
+        ],
+        "mean": -153.59523441937216,
+        "se": 224.22173461676178
+      },
+      "learn_turn_cost": {
+        "blocks": 10,
+        "ci95": [
+          -297.58279922372503,
+          239.10000936865245
+        ],
+        "mean": -29.241394927536277,
+        "se": 118.63015220874833
+      },
       "river_cost": {
         "blocks": 10,
         "ci95": [
@@ -2510,6 +3652,33 @@
         ],
         "mean": -478.5,
         "se": 134.69497433501783
+      },
+      "learn_adjusted": {
+        "blocks": 5,
+        "ci95": [
+          -223.2537257667367,
+          1587.5037257667368
+        ],
+        "mean": 682.125,
+        "se": 326.14507412346427
+      },
+      "learn_river_cost": {
+        "blocks": 5,
+        "ci95": [
+          -1419.173256546132,
+          1279.253854705641
+        ],
+        "mean": -69.95970092024554,
+        "se": 486.02793790557877
+      },
+      "learn_turn_cost": {
+        "blocks": 5,
+        "ci95": [
+          -719.478862890833,
+          472.1274136154706
+        ],
+        "mean": -123.67572463768124,
+        "se": 214.62649072519878
       },
       "river_cost": {
         "blocks": 5,

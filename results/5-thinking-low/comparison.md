@@ -13,6 +13,31 @@ Arms (bb/100; chips and luck-adjusted with 95% intervals over complete seeds; co
 
 Costs are per 100 hands played, so a model that reaches the river less often shows a lower river cost: read them beside the river decisions and VPIP columns.
 
+Learning within a session: last 20 hands minus first 20, per seed (chips up and costs down mean the arm improved; the cards differ by hand number, so compare an arm with the no-help arm below)
+
+| Arm | Seeds | Luck-adjusted | River cost | Turn cost |
+| --- | --- | --- | --- | --- |
+| deepseek-v4.1-flash-1017 · think low · none | 10 | +180 [-19, +380] | -15 [-496, +465] | -53 [-147, +42] |
+| deepseek-v4.1-flash-1017 · think low · stats | 10 | +122 [-46, +290] | -4 [-446, +439] | -52 [-145, +41] |
+| deepseek-v4.1-flash-1017 · think low · stats+hint | 8 | +41 [-285, +367] | +46 [-432, +523] | -47 [-134, +41] |
+| deepseek-v4.1-flash-1017 · think low · stats+menu | 9 | +102 [-131, +336] | +86 [-377, +548] | -16 [-74, +42] |
+| deepseek-v4.1-flash-1017 · think low · stats+hint+menu | 9 | +104 [-65, +273] | +92 [-354, +538] | +7 [-58, +72] |
+| deepseek-v4.1-flash-1017 · think low · notes | 5 | +172 [-401, +745] | +22 [-1084, +1127] | -86 [-234, +62] |
+| deepseek-v4.1-flash-1017 · think low · notes-every5 | 8 | +55 [-305, +414] | +48 [-568, +663] | -52 [-107, +4] |
+| deepseek-v4.1-flash-1017 · think low · oracle | 10 | +129 [-361, +618] | -137 [-289, +15] | -48 [-121, +26] |
+
+Learning relative to no help: (late minus early) minus the no-help arm's (late minus early), paired on shared seeds
+
+| Arm | minus | Seeds | Luck-adjusted | River cost | Turn cost |
+| --- | --- | --- | --- | --- | --- |
+| deepseek-v4.1-flash-1017 · think low · stats | deepseek-v4.1-flash-1017 · think low · none | 10 | -58 [-184, +68] | +12 [-97, +120] | +1 [-57, +58] |
+| deepseek-v4.1-flash-1017 · think low · stats+hint | deepseek-v4.1-flash-1017 · think low · none | 8 | -61 [-528, +407] | +107 [-78, +292] | +36 [-138, +210] |
+| deepseek-v4.1-flash-1017 · think low · stats+menu | deepseek-v4.1-flash-1017 · think low · none | 9 | -57 [-245, +132] | +99 [-109, +308] | +57 [-6, +120] |
+| deepseek-v4.1-flash-1017 · think low · stats+hint+menu | deepseek-v4.1-flash-1017 · think low · none | 9 | -27 [-252, +197] | +150 [+1, +299] | +66 [-19, +152] |
+| deepseek-v4.1-flash-1017 · think low · notes | deepseek-v4.1-flash-1017 · think low · none | 5 | -56 [-375, +263] | +99 [-187, +385] | +6 [-75, +87] |
+| deepseek-v4.1-flash-1017 · think low · notes-every5 | deepseek-v4.1-flash-1017 · think low · none | 8 | -47 [-349, +255] | +109 [-64, +282] | +31 [-70, +133] |
+| deepseek-v4.1-flash-1017 · think low · oracle | deepseek-v4.1-flash-1017 · think low · none | 10 | -52 [-587, +484] | -122 [-569, +325] | +5 [-81, +90] |
+
 Help effects: each arm minus the same model's no-help arm, paired on shared seeds
 
 | Arm | minus | Seeds | Chips | Luck-adjusted | River cost | Turn cost |

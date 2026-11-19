@@ -1,0 +1,82 @@
+{
+  "best_params": {
+    "bet": 1.2,
+    "bluff": 0.0,
+    "continue_pre": 30,
+    "discount": 0.12,
+    "margin": 0.15,
+    "open": 21,
+    "raise": 0.85,
+    "value": 0.5
+  },
+  "candidates": 162,
+  "check": {
+    "best_bb_per_100": {
+      "blocks": 20,
+      "ci95": [
+        149.6222245162348,
+        442.71110881709853
+      ],
+      "mean": 296.1666666666667,
+      "se": 70.01645587693831
+    },
+    "default_solid_bb_per_100": {
+      "blocks": 20,
+      "ci95": [
+        1.3209047563350254,
+        209.0957619103316
+      ],
+      "mean": 105.2083333333333,
+      "se": 49.635656271857755
+    },
+    "hero_seat": 0,
+    "seeds": [
+      21,
+      40
+    ]
+  },
+  "field": [
+    "station",
+    "overfolder",
+    "solid",
+    "adaptive",
+    "tight"
+  ],
+  "hands_per_session": 60,
+  "held_out": {
+    "best_bb_per_100": {
+      "blocks": 40,
+      "ci95": [
+        251.87748570141324,
+        324.66418096525354
+      ],
+      "mean": 288.27083333333337,
+      "se": 18.568034506081702
+    },
+    "default_solid_bb_per_100": {
+      "blocks": 40,
+      "ci95": [
+        83.5261723100998,
+        135.12660546767802
+      ],
+      "mean": 109.32638888888891,
+      "se": 13.163375805504653
+    },
+    "hands": 14400,
+    "seeds": 40
+  },
+  "hero_seats_rotated": 6,
+  "interpretation": "held_out.best_bb_per_100 is a lower bound on the true best response to this field: only this policy family was searched. Treat it as the exploitation ceiling reference for the field, not an optimum.",
+  "opponent_variation": {
+    "mixing": 0.0,
+    "personalities": false,
+    "random_field": false
+  },
+  "stacks": "reset to 100 BB every hand",
+  "training": {
+    "best_bb_per_100": 330.06944444444446,
+    "hands_per_candidate": 2880,
+    "seeds": 8,
+    "worst_bb_per_100": -22.70833333333333
+  }
+}

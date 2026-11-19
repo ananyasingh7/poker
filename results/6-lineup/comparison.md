@@ -16,6 +16,33 @@ Arms (bb/100; chips and luck-adjusted with 95% intervals over complete seeds; co
 
 Costs are per 100 hands played, so a model that reaches the river less often shows a lower river cost: read them beside the river decisions and VPIP columns.
 
+Learning within a session: last 20 hands minus first 20, per seed (chips up and costs down mean the arm improved; the cards differ by hand number, so compare an arm with the no-help arm below)
+
+| Arm | Seeds | Luck-adjusted | River cost | Turn cost |
+| --- | --- | --- | --- | --- |
+| deepseek-v4.1-flash-1017 · think low · none | 20 | -46 [-335, +243] | -87 [-379, +204] | -49 [-104, +5] |
+| deepseek-v4.1-flash-1017 · think low · stats+hint | 18 | -194 [-605, +217] | -45 [-244, +155] | -55 [-117, +8] |
+| deepseek-v4.1-flash-1017 · think low · stats+sharp | 10 | -130 [-802, +541] | -200 [-385, -15] | -36 [-130, +58] |
+| deepseek-v4.1-flash-1017 · think off · none | 10 | -98 [-209, +12] | -259 [-894, +375] | -175 [-309, -40] |
+| deepseek-v4.1-flash-1017 · think off · stats+hint | 10 | -117 [-326, +93] | -209 [-1009, +592] | -114 [-268, +40] |
+| glm-5.3-flash · think low · none | 20 | -154 [-430, +122] | +31 [-251, +313] | -5 [-88, +78] |
+| glm-5.3-flash · think low · stats+hint | 20 | -195 [-674, +283] | -122 [-312, +69] | +20 [-72, +113] |
+| gpt-oss-20b · think low · none | 18 | -143 [-718, +432] | +49 [-263, +361] | +14 [-147, +174] |
+| gpt-oss-20b · think low · stats+hint | 20 | +162 [-151, +474] | -3 [-91, +84] | +24 [-97, +146] |
+| gemma-4-26b-a4b-it · think off · none | 10 | -123 [-287, +42] | -313 [-998, +371] | -75 [-355, +204] |
+| gemma-4-26b-a4b-it · think off · stats+hint | 5 | -101 [-553, +351] | -246 [-1484, +992] | -180 [-739, +379] |
+
+Learning relative to no help: (late minus early) minus the no-help arm's (late minus early), paired on shared seeds
+
+| Arm | minus | Seeds | Luck-adjusted | River cost | Turn cost |
+| --- | --- | --- | --- | --- | --- |
+| deepseek-v4.1-flash-1017 · think low · stats+hint | deepseek-v4.1-flash-1017 · think low · none | 18 | -88 [-382, +206] | +71 [-137, +280] | +8 [-72, +88] |
+| deepseek-v4.1-flash-1017 · think low · stats+sharp | deepseek-v4.1-flash-1017 · think low · none | 10 | +142 [-144, +428] | -40 [-460, +379] | +10 [-93, +113] |
+| deepseek-v4.1-flash-1017 · think off · stats+hint | deepseek-v4.1-flash-1017 · think off · none | 10 | -18 [-223, +187] | +51 [-210, +311] | +61 [-79, +200] |
+| glm-5.3-flash · think low · stats+hint | glm-5.3-flash · think low · none | 20 | -42 [-486, +403] | -153 [-481, +175] | +25 [-76, +127] |
+| gpt-oss-20b · think low · stats+hint | gpt-oss-20b · think low · none | 18 | +278 [-247, +803] | -53 [-396, +291] | +21 [-130, +173] |
+| gemma-4-26b-a4b-it · think off · stats+hint | gemma-4-26b-a4b-it · think off · none | 5 | +52 [-125, +229] | +628 [-189, +1445] | -169 [-778, +440] |
+
 Help effects: each arm minus the same model's no-help arm, paired on shared seeds
 
 | Arm | minus | Seeds | Chips | Luck-adjusted | River cost | Turn cost |

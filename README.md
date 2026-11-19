@@ -16,7 +16,7 @@ Details: [design](docs/design.md).
 
 ## What we know so far
 
-92,967 hands, $17.67 ([full results](docs/results.md)):
+101,367 hands, $18.97 ([full results](docs/results.md)):
 
 - DeepSeek V4.1 Flash beats the bot field (+56 bb/100 thinking off) but wins only a fraction of what a simple tuned bot wins (+288).
 - The biggest helps, in order of certainty: **thinking** (low effort) on; **host-computed facts** (position, pot odds, hand strength); **accurate opponent profiles**; an explicit **bet-sizing rule** (the sharp rule held up on fresh cards). The model's own notes are accurate but their chip gain is unresolved.
@@ -24,7 +24,8 @@ Details: [design](docs/design.md).
 - GLM-5.3 Flash wins as many chips as DeepSeek (+180 vs +175 bb/100; the difference, +4 [−85, +94], cannot be told from zero) at a fifth of the cost, but makes more graded mistakes on the turn and river. gpt-oss-20b is unusable (empty answers).
 - **Going forward:** GLM-5.3 Flash is the workhorse (DeepSeek as an anchor arm), playing against **less predictable bots** whose personalities, occasional surprises and seating are drawn from each seed, so a model has to learn each session's opponents.
 - **First GLM results against varied bots:** DeepSeek is the stronger player there (+126 [+23, +228] bb/100), GLM costs a fifth as much; the facts sheet is GLM's best help; GLM's own notes do nothing measurable.
-- **Learning:** no model has yet been shown to play better late in a session than early (new learning-curve measure, applied to every run). One hint (GLM notes closing on the cheat sheet in chips) awaits replication.
+- **GLM's best setup** is facts sheet + tracker + sharp sizing rule (+222 bb/100 over no help). Tracker counts help it; its own notes don't.
+- **Learning:** no model has been shown to play better late in a session than early. The one hint failed a pre-registered replication on 40 new seeds.
 - Weaknesses: the bots are still simple (now varied, not strong), samples are 10-20 seeds per arm, and only two thinking models have been compared. See the [roadmap](ROADMAP.md).
 
 ## Quick start
@@ -58,4 +59,4 @@ Full command reference: [methods](docs/methods.md).
 | `docs/` | [design](docs/design.md), [methods](docs/methods.md), [results](docs/results.md), [model input](docs/model-input.md), [table](docs/table.md), [papers](docs/papers.md) |
 | `ROADMAP.md` | Done, open gaps, next experiments |
 
-Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md).
+Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md).

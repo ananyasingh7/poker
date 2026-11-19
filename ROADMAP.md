@@ -5,7 +5,7 @@ What has been built and measured, and what is left, most important first. Result
 ## Where the project stands (2026-11-19)
 
 - **Built:** a verified six-seat engine; model seats on OpenRouter in-process or as supervised worker processes; a five-bot field with known exploits, now also in a less predictable version drawn per seed, with tuned ceilings for both; memory, decision-aid, sizing and thinking treatments; parallel batches with one budget, retries and resume; analysis with luck removal, call/fold, river (exact) and turn (approximate) grades and learning curves by hand number; cross-run comparison and a run catalog; a spectator table.
-- **Measured:** 92,967 hands across 67 runs, $17.67 reported. DeepSeek V4.1 Flash beats the field but captures a fraction of what a tuned bot wins; computed facts, opponent information and an explicit sizing rule help in that order of certainty; thinking is the biggest lever. Against varied bots, GLM-5.3 Flash (the new workhorse) is weaker than DeepSeek, gains most from the facts sheet, and gets nothing measurable from its own notes. No model has yet been shown to get better over a session.
+- **Measured:** 101,367 hands across 71 runs, $18.97 reported. DeepSeek V4.1 Flash beats the field but captures a fraction of what a tuned bot wins; computed facts, opponent information and an explicit sizing rule help in that order of certainty; thinking is the biggest lever. Against varied bots, GLM-5.3 Flash (the new workhorse) is weaker than DeepSeek, gains most from facts + tracker + sharp rule together, and gets nothing measurable from its own notes (tracker counts help instead). No model has been shown to get better over a session; the one hint failed a pre-registered replication.
 
 ## Milestones
 
@@ -27,7 +27,7 @@ What has been built and measured, and what is left, most important first. Result
 
 The question the user cares most about is how each model *learns*: does it play better after more hands, and which mechanism gets it there? So far the lab measures mostly static help (facts, profiles handed to it, sizing rules); the learning arms (own notes, tracker) improve river decisions but show no resolved chip gain, and no model has yet faced an opponent that changes. The learning track, in order:
 
-1. **Learning curves.** *Done 2026-11-19* (`analyze`, `compare`: 20-hand segments, late minus early, paired). Result: no arm on any model measurably improves over a session; the right control for notes is the cheat sheet, not no help. Next: replicate the one hint (GLM notes closing on the cheat sheet in chips) on fresh seeds, with more seeds and longer sessions.
+1. **Learning curves.** *Done 2026-11-19* (`analyze`, `compare`: 20-hand segments, late minus early, paired). Result: no arm on any model measurably improves over a session; the right control for notes is the cheat sheet, not no help. The one hint (GLM notes closing on the cheat sheet) failed a pre-registered replication on 40 new seeds (−72 [−396, +253]).
 2. **Within-session learning against a changing opponent.** The `adaptive` bot switches style after it sees how it is treated. Does a model with notes notice the switch and adjust? (The original "induce a counter-adjustment" idea.)
 3. **Across-session learning.** Let notes persist from one session to the next (a defined identity per bot), and measure session 1 vs session 5 on fresh cards.
 4. **Learning through training.** Fine-tune a model on graded decisions (the river and turn grades supply labels: the best action per spot), then test it at the table against its base model on fresh seeds. Local first (MLX on the Mac Studio).
@@ -55,21 +55,18 @@ The question the user cares most about is how each model *learns*: does it play 
 
 ## Next experiments
 
-Done 2026-11-18/19: learning curves, varied-field ceiling, GLM smoke, first GLM batch on varied bots, GLM notes vs none ($1.08). See [results §7](docs/results.md#7-glm-against-varied-bots-2026-11-18-to-11-19).
+Done 2026-11-18/19: learning curves, varied-field ceiling, the first GLM batch on varied bots, sharp vs plain rule with GLM (not settled), notes + tracker counts (counts help, notes do not), facts + tracker + sharp rule (GLM's best arm), and the pre-registered notes learning test (**failed to replicate**). See [results §7-8](docs/results.md). OpenRouter credit is nearly used up (about $0.16 left on 2026-11-19): top up before the next live run, or go local.
 
 | Experiment | Why | Rough cost |
 | --- | --- | --- |
-| Sharp vs plain sizing rule on fresh seeds 21-30 | Leans better (river −60 [−126, +7]); settle it | $0.80 DeepSeek, about $0.15 with GLM |
-| **Better notes for GLM**: host-kept per-seat counts inside the notebook (notes + stats), or updates every 2-3 hands | GLM's notes rest on 2-4 hands of evidence after 60; the clearest "improve the weaker model" target | $0.20 |
-| **Pre-registered learning replication**: GLM notes vs cheat sheet, 40 fresh seeds (41-80), 60-hand sessions ([results §8](docs/results.md)) | Test the one learning hint (+393 chips late vs early) with the right control and enough power | $0.62 (running 2026-11-19) |
-| Facts sheet + tracker + sharp rule together for GLM | Facts fix the turn, tracker + rule the river: do they add up? | $0.10 |
-| Adaptive bot vs the model with notes | The counter-adjustment question from the original vision | $0.20 |
-| Across-session notes (learning track item 3) | Notes carried from session to session: does session 5 beat session 1? Needs a persistent bot identity per seed | $0.30 + build |
+| **Local model through Pi / MLX** (needs an `endpoint` option) | Free hands: makes 100+ seeds per arm possible, which learning questions need | $0 + build |
+| **Across-session notes** (learning track item 3) | Within-session learning has not shown up; carrying notes across sessions gives a model many more hands to learn from | $0.30 + build |
+| **Adaptive bot vs the model with notes** | A bot that changes mid-session is where in-session learning should matter most | $0.20 |
+| Fine-tuning on graded decisions (learning track item 4) | The other route to learning; river/turn grades provide labels | local |
 | Real mixed-model table (DeepSeek, GLM, ...) | Milestone 7's open item; needs per-seat request settings | $0.50 |
-| Per-feature ablation of the facts sheet | Which fact matters (position names and pot odds are suspects); cheap with GLM | $0.40 |
+| Per-feature ablation of the facts sheet | Which fact matters; cheap with GLM | $0.40 |
 | Strong-advice arm (tuned ceiling policy as advice) | Can the model recognise good advice? | $0.20 |
 | Quick (thinking-off) notes, live | Built, never run; would make notes cheap | $0.10 |
-| Qwen 3.6 with `repair_illegal` | Is Qwen's loss only its illegal-check fault? | $0.20 |
 
 ## Tooling and engineering
 

@@ -220,11 +220,8 @@ fn pilot(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     if config.execution == openrouter::Execution::Subprocess {
         poker_lab::supervisor::install_interrupt_cleanup();
     }
-    runner::session(
-        config,
-        Path::new(&args[1]),
-        &runner::Env::new(runner::load_key()?),
-    )?;
+    let env = runner::Env::for_config(&config)?;
+    runner::session(config, Path::new(&args[1]), &env)?;
     Ok(())
 }
 
@@ -243,7 +240,7 @@ fn batch(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     let result = run(
         &config,
         Path::new(&args[1]),
-        &runner::Env::new(runner::load_key()?),
+        &runner::Env::for_config(&config.pilot)?,
     )?;
     println!(
         "Batch complete: {} of {} sessions, {} requests, ${:.6}{}",

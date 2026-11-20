@@ -174,6 +174,8 @@ pub struct ModelSettings {
     /// Worker-local defensive limits. The host ledger remains the authority.
     pub max_requests: u64,
     pub spend_limit_usd: f64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub local_port: Option<std::num::NonZeroU16>,
     /// Test-only provider override; the CLI never sets it.
     pub endpoint: Option<String>,
 }

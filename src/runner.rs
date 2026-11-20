@@ -38,6 +38,14 @@ pub struct Env {
     pub global: GlobalBudget,
 }
 impl Env {
+    pub fn for_config(config: &Config) -> Result<Self, String> {
+        Ok(Self::new(if config.local_port.is_some() {
+            String::new()
+        } else {
+            load_key()?
+        }))
+    }
+
     pub fn new(key: String) -> Self {
         Self {
             key,

@@ -569,6 +569,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         notebook_chars: 400,
         max_requests: 1000,
         spend_limit_usd: 10.0,
+        local_port: None,
         endpoint: Some(endpoint.into()),
     }
 }

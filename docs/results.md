@@ -1,6 +1,6 @@
 # Results
 
-Every experiment so far, oldest first, grouped by the same eight topics as `runs/`, `examples/` and `results/`. The model is DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash-1017`) in sections 1-6 unless a section says otherwise; from section 7 it is GLM-5.3 Flash against varied bots. How the numbers are made is in [methods](methods.md).
+Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated otherwise, sections 7–8 cover GLM-5.3 Flash, and section 9 covers local Qwen/Pi. See [methods](methods.md) for scoring.
 
 **Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix, except `memory-budget-v1.txt` (re-run 2026-11-19 with learning curves).
 
@@ -21,11 +21,12 @@ Every experiment so far, oldest first, grouped by the same eight topics as `runs
 | 9 | Thinking (low effort) is the largest lever; with thinking off the helpers do nothing | thinking off −238 [−434, −43] | Solid (10 seeds) |
 | 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +48 [+15, +82] | Two thinking models, one field |
 | 11 | Against varied bots, DeepSeek beats GLM on chips; GLM costs a fifth as much | DeepSeek minus GLM +126 [+23, +228] chips | 20 fresh seeds |
-| 12 | For GLM against varied bots, every help except its own notes gains chips; facts + tracker + sharp rule is the best combination; tracker counts make notes work | facts + tracker + sharp: chips +222 [+30, +415], river −146 [−238, −54]; notes + counts +184 [+1, +367]; notes alone +82 [−90, +254] | 20 fresh seeds |
+| 12 | GLM’s highest-scoring setup combines facts, tracker and sharp sizing. Notes plus counts also beat no help | facts + tracker + sharp: chips +222 [+30, +415], river −146 [−238, −54]; notes + counts +184 [+1, +367]; notes alone +82 [−90, +254] | 20 fresh seeds |
 | 13 | No model gets measurably better over a session. The one hint (GLM notes closing on the cheat sheet) **failed a pre-registered replication** | original +393 [+112, +673]; replication −72 [−396, +253], 40 new seeds | Pre-registered |
 | 14 | The sharp sizing rule is not clearly better than the plain one for GLM (the plain rule even wins more chips) | sharp minus plain: chips −130 [−303, +42], river −78 [−197, +42] | 20 fresh seeds |
+| 15 | Local Qwen/Pi’s updated notes gave the same decisions as frozen notes after an opponent switched | 0 bb saved per decision in both directions | Two-session pilot |
 
-**To date:** 101,367 hands, $18.97 reported by the runs (see [Spend](#spend)).
+**To date:** 101,375 table hands and 32 separate river-drill hands, $18.97 reported by the runs (see [Spend](#spend)).
 
 ---
 
@@ -249,7 +250,7 @@ Three more GLM arms on the same deals, paired against the arms above (`results/7
 
 - **Sharp vs plain rule (the held-back item 6), with GLM:** not settled, and the plain rule even wins more chips. The sharp rule's advantage for DeepSeek on seeds 11-20 does not carry over to GLM against varied bots. Keep both as options; do not claim the sharp rule is better.
 - **Facts + tracker + sharp rule is GLM's best arm** (+222 chips, −146 river vs no help), about DeepSeek's level and above it. The pieces only partly add up: it keeps the river fix but loses the facts sheet's turn advantage.
-- **Tracker counts rescue GLM's notes** (+184 chips vs no help, where notes alone were +82, not resolved), but notes + counts are indistinguishable from the tracker alone: the gain is the counts, not better notes. Notebooks still cite only 2-5 hands per seat.
+- **Notes + counts beat no help** (+184 chips). The comparison with notes alone is too uncertain to isolate the counts' contribution. The tracker + plain rule arm also changes the sizing prompt, so this design does not isolate the contribution of notes on top of counts. Notebooks still cite only 2–5 hands per seat.
 
 ### 7c. Learning within a session (new measure, free on old runs too)
 
@@ -279,6 +280,23 @@ Written and committed before any of these hands were played, so the test cannot 
 - *Exploratory:* both arms do best in hands 1-20 and worst in 41-60 on these deals (cards again), and the notes arm is already ahead of the cheat sheet in hands 1-20 (+227 vs +120 adjusted). Whatever GLM's notes contribute arrives early or not at all.
 - **Reading:** the original +393 was most likely one of the many intervals examined in 7c coming out positive by chance. We still have no evidence of any model learning within a session at this table.
 
+## 9. Local Qwen/Pi (2026-11-19)
+
+Qwen3.8-27B Q4_K_M ran locally with the Pi F16 LoRA, thinking off and temperature 0. On seed 901 it made 13 legal decisions in six hands. Both structured notebook updates left the profiles empty. In a two-hand replay, its free-form note reached the next hand but called three eights a pair. Both runs cost $0 in API fees. [Smoke config](../examples/9-local-pi/smoke.json)
+
+### Hidden river policy switch (pilot, 2026-11-20)
+
+Two 16-hand river games, one switch in each direction. After eight hands the opponent switched from always calling to always folding, or vice versa. Qwen faced top pair and could check or bet the 10 bb pot. It wrote notes every four hands. At each checkpoint we tested two bluff hands and two value hands with four versions of the notebook. The two seeds varied suits and shared rank templates. Identical probe inputs reused the same response. [Runner](../experiments/river_switch.py)
+
+| Opponent after switch | Updated notes | Frozen notes | Blank | True profile |
+| --- | ---: | ---: | ---: | ---: |
+| Always folds | 5 | 5 | 5 | 0 |
+| Always calls | 0 | 0 | 0 | 0 |
+
+Values are bb lost per test decision. Qwen saw five folds after the first switch but still checked both profitable bluffs. Against the caller, its usual play was already optimal. Live winnings before and after the switch were +40 then +10 bb for call to fold, and 0 then +40 bb for fold to call. [Hands and notebook updates](../results/9-local-pi/river-switch-hands-v1.json)
+
+**Exploratory follow-up.** The full note advised checking weak hands. Given only its own first sentence about the opponent folding, Qwen bet both bluffs. We selected that sentence after seeing the result. The next test compares observation-only notes with notes that also give advice, on fresh deals. [Probe actions and scores](../results/9-local-pi/river-switch-v1.json)
+
 ## Spend
 
 From `results/runs.csv` (`poker-lab catalog runs`): cost as reported by each run's summary. Real OpenRouter usage is slightly higher, because sessions killed mid-way and later resumed are not in their batch's summary (the lineup cost $1.70 on the account against $1.58 reported; the 2026-11-19 runs $1.63 against about $1.30, because sessions interrupted by provider overloads were re-run).
@@ -293,4 +311,7 @@ From `results/runs.csv` (`poker-lab catalog runs`): cost as reported by each run
 | 6. New cards and lineup | 20 | 8,981 | $1.58 |
 | 7. GLM against varied bots | 10 | 10,812 | $1.72 |
 | 8. Pre-registered learning test | 1 | 4,800 | $0.61 |
-| **Total** | **71** | **101,367** | **$18.97** |
+| 9. Local Qwen/Pi table checks | 2 | 8 | $0.00 |
+| **Table total** | **73** | **101,375** | **$18.97** |
+
+The separate river drill added 32 hands at $0 API cost.

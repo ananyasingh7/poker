@@ -1,0 +1,205 @@
+{
+  "model": "qwen3.8-pi",
+  "probe_order": [
+    "K8642 air",
+    "K8642 set",
+    "Q9742 air",
+    "Q9742 set"
+  ],
+  "checkpoints": [
+    {
+      "seed": 92101,
+      "phase": 1,
+      "policy": "call",
+      "visible_responses": 4,
+      "live_net_bb": 40.0,
+      "notes": "Seat 1 calls river bets with top pair (9s, 8s) but folds/checks with air (J, Q). He is passive with weak hands. Bet 10bb to extract value from his top pair range. Check back only with absolute air to avoid losing 5bb. His calling range is tight; exploit by betting strong hands and checking weak ones.",
+      "scores": {
+        "updated": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "frozen": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "blank": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "oracle": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        }
+      }
+    },
+    {
+      "seed": 92101,
+      "phase": 2,
+      "policy": "fold",
+      "visible_responses": 5,
+      "live_net_bb": 10.0,
+      "notes": "Seat 1 folds river bets with top pair and air. He is extremely passive, folding to value bets. Bet 10bb with any pair or better to extract value. Check back only with absolute air to avoid losing 5bb. His calling range is non-existent; exploit by betting strong hands and checking weak ones. Prior strategy confirmed effective.",
+      "scores": {
+        "updated": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "frozen": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "blank": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "oracle": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ]
+        }
+      }
+    },
+    {
+      "seed": 92102,
+      "phase": 1,
+      "policy": "fold",
+      "visible_responses": 4,
+      "live_net_bb": 0.0,
+      "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength.",
+      "scores": {
+        "updated": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "frozen": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "blank": {
+          "mean_loss_bb": 5.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "oracle": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ]
+        }
+      }
+    },
+    {
+      "seed": 92102,
+      "phase": 2,
+      "policy": "call",
+      "visible_responses": 4,
+      "live_net_bb": 40.0,
+      "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength.",
+      "scores": {
+        "updated": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "frozen": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "blank": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        },
+        "oracle": {
+          "mean_loss_bb": 0.0,
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ]
+        }
+      }
+    }
+  ],
+  "exploratory_abbreviation": {
+    "seed": 92101,
+    "exploratory": true,
+    "selection": "First sentence only, selected after inspecting the full note and its probe results.",
+    "note_excerpt": "Seat 1 folds river bets with top pair and air.",
+    "bluff_probe_actions": [
+      "bet",
+      "bet"
+    ]
+  }
+}

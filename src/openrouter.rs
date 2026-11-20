@@ -28,6 +28,9 @@ const PROMPT: &str = "You play no-limit Texas hold'em cash poker. Choose one leg
 #[serde(default, deny_unknown_fields)]
 pub struct Config {
     pub model: String,
+    /// Use llama-server on this IPv4 loopback port. Omit for OpenRouter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub local_port: Option<std::num::NonZeroU16>,
     pub seats: usize,
     pub model_seat: usize,
     pub all_models: bool,
@@ -315,6 +318,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             model: String::new(),
+            local_port: None,
             seats: 6,
             model_seat: 0,
             all_models: false,
@@ -491,10 +495,16 @@ impl Config {
             notebook_chars: self.notebook_chars,
             max_requests: self.max_requests,
             spend_limit_usd: self.spend_limit_usd,
+            local_port: self.local_port,
             endpoint: None,
         }
     }
     pub fn validate(&self) -> Result<(), String> {
+        if self.local_port.is_some()
+            && (self.provider != ProviderPrefs::default() || self.reasoning_effort.is_some())
+        {
+            return Err("local llama-server does not support OpenRouter routing or effort".into());
+        }
         if self.model.trim().is_empty() || self.model == "provider/model" {
             return Err("set model to your chosen OpenRouter model ID".into());
         }
@@ -861,10 +871,20 @@ impl OpenRouterAgent {
         endpoint: String,
     ) -> Result<Self, String> {
         config.validate()?;
-        if key.trim().is_empty() {
+        let mut builder = Client::builder();
+        let (endpoint, key) = if let Some(port) = config.local_port {
+            builder = builder.no_proxy();
+            (
+                format!("http://127.0.0.1:{port}/v1/chat/completions"),
+                String::new(),
+            )
+        } else {
+            (endpoint, key)
+        };
+        if config.local_port.is_none() && key.trim().is_empty() {
             return Err("OPENROUTER_API_KEY is empty".into());
         }
-        let client = Client::builder()
+        let client = builder
             .timeout(Duration::from_millis(config.timeout_ms))
             .redirect(reqwest::redirect::Policy::none())
             .build()
@@ -983,7 +1003,10 @@ impl OpenRouterAgent {
     }
     fn log(&mut self, value: Value) -> Result<(), Failure> {
         // Never record auth headers; redact the credential even if a server echoes it.
-        let line = value.to_string().replace(&self.key, "[REDACTED]");
+        let mut line = value.to_string();
+        if !self.key.is_empty() {
+            line = line.replace(&self.key, "[REDACTED]");
+        }
         if writeln!(self.audit, "{line}")
             .and_then(|_| self.audit.flush())
             .is_err()
@@ -1072,10 +1095,21 @@ impl OpenRouterAgent {
     fn complete<T: Serialize>(
         &mut self,
         view: &PlayerView,
-        body: Value,
+        mut body: Value,
         purpose: &str,
         parse: impl Fn(&Value) -> Result<T, Failure>,
     ) -> Result<T, Failure> {
+        if self.config.local_port.is_some() {
+            let fields = body.as_object_mut().unwrap();
+            fields.remove("provider");
+            fields.remove("usage");
+            if let Some(reasoning) = fields.remove("reasoning") {
+                fields.insert(
+                    "chat_template_kwargs".into(),
+                    json!({"enable_thinking":reasoning["enabled"]}),
+                );
+            }
+        }
         self.decision += 1;
         let id = json!({"hand":self.hand,"decision":self.decision,"seat":view.seat});
         let max_attempts = self.config.max_attempts.max(1);
@@ -1161,10 +1195,11 @@ impl OpenRouterAgent {
             self.stats.borrow_mut().memory_requests += 1;
         }
         let started = Instant::now();
-        let response = self
-            .client
-            .post(&self.endpoint)
-            .bearer_auth(&self.key)
+        let mut request = self.client.post(&self.endpoint);
+        if !self.key.is_empty() {
+            request = request.bearer_auth(&self.key);
+        }
+        let response = request
             .header("Content-Type", "application/json")
             .body(bytes)
             .send();
@@ -1203,9 +1238,13 @@ impl OpenRouterAgent {
         })();
         let parsed: Value = serde_json::from_str(&raw).unwrap_or(Value::Null);
         let usage = &parsed["usage"];
-        let cost = usage["cost"]
-            .as_f64()
-            .filter(|v| v.is_finite() && *v >= 0.0);
+        let cost = if self.config.local_port.is_some() {
+            Some(0.0)
+        } else {
+            usage["cost"]
+                .as_f64()
+                .filter(|v| v.is_finite() && *v >= 0.0)
+        };
         // Infrastructure failures are retryable: the network, a timeout, 408/429/5xx, or an
         // upstream error body. Everything else that fails is the model's or a configuration fault.
         let infra = match &result {
@@ -1591,6 +1630,27 @@ mod tests {
         });
         (format!("http://{address}"), rx, task)
     }
+    #[test]
+    fn local_server_uses_its_template_and_needs_no_key_or_dollar_usage() {
+        let mut reply = response(r#"{"action":"call","amount":null}"#);
+        reply["usage"].as_object_mut().unwrap().remove("cost");
+        let (url, received, server) = server(200, reply.to_string(), Duration::ZERO);
+        let mut cfg = config();
+        cfg.local_port = url.rsplit_once(':').unwrap().1.parse().ok();
+        cfg.reasoning_enabled = Some(false);
+        let mut agent =
+            OpenRouterAgent::new(cfg, String::new(), Box::new(Audit::default())).unwrap();
+        assert_eq!(agent.decide(&view()).unwrap(), Action::Call);
+        let body = received.recv().unwrap();
+        assert_eq!(body["chat_template_kwargs"]["enable_thinking"], false);
+        assert!(body.get("provider").is_none() && body.get("usage").is_none());
+        assert_eq!(agent.stop_reason(), None);
+        let stats = agent.stats.borrow();
+        assert_eq!((stats.unknown_cost_requests, stats.prompt_tokens), (0, 100));
+        assert_eq!(stats.reported_cost_usd, 0.0);
+        server.join().unwrap();
+    }
+
     #[test]
     fn valid_response_audited_and_information_isolated() {
         let (url, rx, task) = server(

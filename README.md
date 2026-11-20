@@ -16,7 +16,7 @@ Details: [design](docs/design.md).
 
 ## What we know so far
 
-101,367 hands, $18.97 ([full results](docs/results.md)):
+101,375 table hands and 32 river-drill hands, $18.97 ([full results](docs/results.md)):
 
 - DeepSeek V4.1 Flash beats the bot field (+56 bb/100 thinking off) but wins only a fraction of what a simple tuned bot wins (+288).
 - The biggest helps, in order of certainty: **thinking** (low effort) on; **host-computed facts** (position, pot odds, hand strength); **accurate opponent profiles**; an explicit **bet-sizing rule** (the sharp rule held up on fresh cards). The model's own notes are accurate but their chip gain is unresolved.
@@ -24,13 +24,14 @@ Details: [design](docs/design.md).
 - GLM-5.3 Flash wins as many chips as DeepSeek (+180 vs +175 bb/100; the difference, +4 [−85, +94], cannot be told from zero) at a fifth of the cost, but makes more graded mistakes on the turn and river. gpt-oss-20b is unusable (empty answers).
 - **Going forward:** GLM-5.3 Flash is the workhorse (DeepSeek as an anchor arm), playing against **less predictable bots** whose personalities, occasional surprises and seating are drawn from each seed, so a model has to learn each session's opponents.
 - **First GLM results against varied bots:** DeepSeek is the stronger player there (+126 [+23, +228] bb/100), GLM costs a fifth as much; the facts sheet is GLM's best help; GLM's own notes do nothing measurable.
-- **GLM's best setup** is facts sheet + tracker + sharp sizing rule (+222 bb/100 over no help). Tracker counts help it; its own notes don't.
+- **GLM's best setup** is facts sheet + tracker + sharp sizing rule (+222 bb/100 over no help). Notes plus tracker counts also beat no help. The gain from notes alone remains uncertain.
 - **Learning:** no model has been shown to play better late in a session than early. The one hint failed a pre-registered replication on 40 new seeds.
+- **Local Qwen/Pi:** Updated notes changed none of its four test decisions in either switch direction. In a follow-up, one sentence from its notes prompted both profitable bluffs. [Pilot results](docs/results.md#hidden-river-policy-switch-pilot-2026-11-20)
 - Weaknesses: the bots are still simple (now varied, not strong), samples are 10-20 seeds per arm, and only two thinking models have been compared. See the [roadmap](ROADMAP.md).
 
 ## Quick start
 
-Rust only. Credentials from `OPENROUTER_API_KEY` or a git-ignored `.openrouter-api-key`.
+The lab uses Rust. OpenRouter reads credentials from `OPENROUTER_API_KEY` or a git-ignored `.openrouter-api-key`.
 
 ```sh
 cargo test                                                    # engine, protocol, analysis (no API calls)
@@ -42,6 +43,17 @@ cargo run --release -- compare runs/a runs/b --seat 0 --turn  # arms of several 
 cargo run --release -- catalog runs > results/runs.csv        # one row per run
 cargo run --release -p poker-table                            # watch a model play (add --mock for free)
 ```
+
+### Play with local Qwen/Pi
+
+With the Qwen GGUF and Pi LoRA loaded in `llama-server` on port 9931, run one six-hand orbit. The model writes notes after hands three and six.
+
+```sh
+cargo run --release -- openrouter examples/9-local-pi/smoke.json runs/my-pi-smoke
+python3 experiments/river_switch.py runs/my-river-switch       # two 16-hand river drills
+```
+
+The session CLI and batch pilot accept `local_port` and use the server's model alias. Local requests go directly to loopback without an API key. The lab sends temperature 0 for reproducibility and the example disables thinking. Token usage and request limits still apply. Each new session starts with empty notes.
 
 Full command reference: [methods](docs/methods.md).
 
@@ -59,4 +71,4 @@ Full command reference: [methods](docs/methods.md).
 | `docs/` | [design](docs/design.md), [methods](docs/methods.md), [results](docs/results.md), [model input](docs/model-input.md), [table](docs/table.md), [papers](docs/papers.md) |
 | `ROADMAP.md` | Done, open gaps, next experiments |
 
-Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md).
+Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md). Local Qwen/Pi is topic 9, `9-local-pi`.

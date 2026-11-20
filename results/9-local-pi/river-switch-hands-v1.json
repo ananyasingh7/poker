@@ -1,0 +1,658 @@
+[
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Kh",
+      "9s",
+      "7d",
+      "4c",
+      "2h"
+    ],
+    "hole": [
+      "9d",
+      "9c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Qd",
+      "9c",
+      "6s",
+      "3h",
+      "2d"
+    ],
+    "hole": [
+      "Js",
+      "4h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Jc",
+      "8d",
+      "5h",
+      "3s",
+      "2c"
+    ],
+    "hole": [
+      "8h",
+      "8s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "As",
+      "9d",
+      "7c",
+      "4h",
+      "3s"
+    ],
+    "hole": [
+      "Qc",
+      "2h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92101,
+    "phase": 1,
+    "notes": "Seat 1 calls river bets with top pair (9s, 8s) but folds/checks with air (J, Q). He is passive with weak hands. Bet 10bb to extract value from his top pair range. Check back only with absolute air to avoid losing 5bb. His calling range is tight; exploit by betting strong hands and checking weak ones."
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Kh",
+      "9d",
+      "7c",
+      "4s",
+      "2h"
+    ],
+    "hole": [
+      "9c",
+      "9s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Qc",
+      "9d",
+      "6h",
+      "3s",
+      "2c"
+    ],
+    "hole": [
+      "Jh",
+      "4s"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Jh",
+      "8c",
+      "5d",
+      "3s",
+      "2h"
+    ],
+    "hole": [
+      "8d",
+      "8s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 1,
+    "board": [
+      "Ad",
+      "9c",
+      "7s",
+      "4h",
+      "3d"
+    ],
+    "hole": [
+      "Qs",
+      "2h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92101,
+    "phase": 1,
+    "notes": "Seat 1 calls river bets with top pair (9s, 8s) but folds/checks with air (J, Q). He is passive with weak hands. Bet 10bb to extract value from his top pair range. Check back only with absolute air to avoid losing 5bb. His calling range is tight; exploit by betting strong hands and checking weak ones."
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Kh",
+      "9s",
+      "7c",
+      "4d",
+      "2h"
+    ],
+    "hole": [
+      "9c",
+      "9d"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Qc",
+      "9d",
+      "6s",
+      "3h",
+      "2c"
+    ],
+    "hole": [
+      "Js",
+      "4h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Jh",
+      "8d",
+      "5s",
+      "3c",
+      "2h"
+    ],
+    "hole": [
+      "8s",
+      "8c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "As",
+      "9h",
+      "7d",
+      "4c",
+      "3s"
+    ],
+    "hole": [
+      "Qd",
+      "2c"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92101,
+    "phase": 2,
+    "notes": "Seat 1 folds river bets with top pair (9s, 8s) and air. He is extremely passive, folding to value bets. Bet 10bb with any pair or better to extract value. Check back only with absolute air to avoid losing 5bb. His calling range is non-existent; exploit by betting strong hands and checking weak ones. Prior strategy confirmed effective."
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Kh",
+      "9d",
+      "7c",
+      "4s",
+      "2h"
+    ],
+    "hole": [
+      "9c",
+      "9s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Qc",
+      "9d",
+      "6s",
+      "3h",
+      "2c"
+    ],
+    "hole": [
+      "Js",
+      "4h"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Jh",
+      "8c",
+      "5s",
+      "3d",
+      "2h"
+    ],
+    "hole": [
+      "8s",
+      "8d"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92101,
+    "phase": 2,
+    "board": [
+      "Ah",
+      "9s",
+      "7d",
+      "4c",
+      "3h"
+    ],
+    "hole": [
+      "Qd",
+      "2c"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92101,
+    "phase": 2,
+    "notes": "Seat 1 folds river bets with top pair and air. He is extremely passive, folding to value bets. Bet 10bb with any pair or better to extract value. Check back only with absolute air to avoid losing 5bb. His calling range is non-existent; exploit by betting strong hands and checking weak ones. Prior strategy confirmed effective."
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Ks",
+      "9d",
+      "7h",
+      "4c",
+      "2s"
+    ],
+    "hole": [
+      "9h",
+      "9c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Qd",
+      "9c",
+      "6s",
+      "3h",
+      "2d"
+    ],
+    "hole": [
+      "Js",
+      "4h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Jh",
+      "8d",
+      "5s",
+      "3c",
+      "2h"
+    ],
+    "hole": [
+      "8s",
+      "8c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "As",
+      "9c",
+      "7d",
+      "4h",
+      "3s"
+    ],
+    "hole": [
+      "Qd",
+      "2h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92102,
+    "phase": 1,
+    "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength."
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Kh",
+      "9c",
+      "7d",
+      "4s",
+      "2h"
+    ],
+    "hole": [
+      "9d",
+      "9s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Qc",
+      "9s",
+      "6h",
+      "3d",
+      "2c"
+    ],
+    "hole": [
+      "Jh",
+      "4d"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Jc",
+      "8h",
+      "5d",
+      "3s",
+      "2c"
+    ],
+    "hole": [
+      "8d",
+      "8s"
+    ],
+    "your_action": "bet",
+    "opponent_response": "fold",
+    "your_net_bb": 5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 1,
+    "board": [
+      "Ad",
+      "9h",
+      "7c",
+      "4s",
+      "3d"
+    ],
+    "hole": [
+      "Qc",
+      "2s"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92102,
+    "phase": 1,
+    "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength."
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Ks",
+      "9c",
+      "7h",
+      "4d",
+      "2s"
+    ],
+    "hole": [
+      "9h",
+      "9d"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Qc",
+      "9d",
+      "6h",
+      "3s",
+      "2c"
+    ],
+    "hole": [
+      "Jh",
+      "4s"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Jd",
+      "8h",
+      "5s",
+      "3c",
+      "2d"
+    ],
+    "hole": [
+      "8s",
+      "8c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "As",
+      "9d",
+      "7c",
+      "4h",
+      "3s"
+    ],
+    "hole": [
+      "Qc",
+      "2h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92102,
+    "phase": 2,
+    "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength."
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Ks",
+      "9c",
+      "7d",
+      "4h",
+      "2s"
+    ],
+    "hole": [
+      "9d",
+      "9h"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Qd",
+      "9c",
+      "6s",
+      "3h",
+      "2d"
+    ],
+    "hole": [
+      "Js",
+      "4h"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Jd",
+      "8s",
+      "5h",
+      "3c",
+      "2d"
+    ],
+    "hole": [
+      "8h",
+      "8c"
+    ],
+    "your_action": "bet",
+    "opponent_response": "call",
+    "your_net_bb": 15.0
+  },
+  {
+    "kind": "hand",
+    "seed": 92102,
+    "phase": 2,
+    "board": [
+      "Ah",
+      "9c",
+      "7s",
+      "4d",
+      "3h"
+    ],
+    "hole": [
+      "Qs",
+      "2d"
+    ],
+    "your_action": "check",
+    "opponent_response": "showdown",
+    "your_net_bb": -5.0
+  },
+  {
+    "kind": "notebook",
+    "seed": 92102,
+    "phase": 2,
+    "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength."
+  }
+]

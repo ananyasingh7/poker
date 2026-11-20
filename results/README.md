@@ -12,5 +12,7 @@ Small, readable outputs of the runs in `runs/` (which is git-ignored and private
 | `7-glm-varied/comparison.{md,json}` | `poker-lab compare runs/7-glm-varied/{none,facts,oracle,stats-sharp,stats-hint,facts-stats-sharp,notes-every5,both-every5,deepseek-anchor-none}-v1 --seat 0 --turn --save ...` |
 | `8-glm-learning/notes-vs-oracle-v1.txt` | `poker-lab analyze runs/8-glm-learning/notes-vs-oracle-v1 --turn` (the pre-registered test, results §8) |
 | `7-glm-varied/ceiling-{varied,fixed}-v1.json` | `poker-lab ceiling current 8 40 OUT [--varied] --check-seeds 21-40 --check-seat 0` |
+| [9-local-pi/river-switch-v1.json](9-local-pi/river-switch-v1.json) | Two river-switch sessions, checkpoint notes, probe actions and scores, plus the exploratory excerpt test |
+| [9-local-pi/river-switch-hands-v1.json](9-local-pi/river-switch-hands-v1.json) | The 32 synthetic river hands and all eight notebook updates, in play order |
 
-These files hold no hole cards or hand records, only aggregates (seed numbers appear, as they do in every config).
+Full table histories and private model traces stay under `runs/`.

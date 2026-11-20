@@ -58,12 +58,17 @@ struct Active {
 }
 
 fn model(settings: ModelSettings) -> Result<OpenRouterAgent, String> {
-    let key = std::env::var(KEY_VARIABLE).map_err(|_| "model worker received no credential")?;
+    let key = if settings.local_port.is_some() {
+        String::new()
+    } else {
+        std::env::var(KEY_VARIABLE).map_err(|_| "model worker received no credential")?
+    };
     let trace = private_fs::create_file(MODEL_TRACE)
         .map_err(|e| format!("could not create private model trace: {e}"))?;
     // Table shape, seeds and opponents are not known here; the remaining Config fields keep
     // their defaults and are not used by the adapter.
     let config = Config {
+        local_port: settings.local_port,
         model: settings.model,
         timeout_ms: settings.timeout_ms,
         max_tokens: settings.max_tokens,
@@ -555,6 +560,7 @@ mod tests {
             notebook_chars: 100,
             max_requests: 1,
             spend_limit_usd: 1.0,
+            local_port: None,
             endpoint: None,
         };
         // Unit tests never hold a real key; the variable is absent in the test environment.

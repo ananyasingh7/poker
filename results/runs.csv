@@ -70,3 +70,5 @@ runs/7-glm-varied/smoke-v1,2026-11-18,run,z-ai/glm-5.3-flash,low,"varied (person
 runs/7-glm-varied/stats-hint-v1,2026-11-19,batch,z-ai/glm-5.3-flash,low,"varied (personalities, mix 0.1, random field)",stats,none,hint,21-40,0,60,20,20,1200,2627,0.1671,
 runs/7-glm-varied/stats-sharp-v1,2026-11-18,batch,z-ai/glm-5.3-flash,low,"varied (personalities, mix 0.1, random field)",stats,none,sharp,21-40,0,60,20,20,1200,2717,0.1784,
 runs/8-glm-learning/notes-vs-oracle-v1,2026-11-19,batch,z-ai/glm-5.3-flash,low,"varied (personalities, mix 0.1, random field)",oracle notes,none,,41-80,0,60,80,80,4800,10900,0.6091,
+runs/pi-journal-901,2026-11-19,run,qwen3.8-pi,off,fixed,notes,none,,901,0,2,1,1,2,8,0.0000,
+runs/pi-smoke-901,2026-11-19,run,qwen3.8-pi,off,fixed,notes,none,,901,0,6,1,1,6,15,0.0000,

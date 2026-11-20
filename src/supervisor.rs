@@ -458,6 +458,7 @@ fn serve(mut commands: mpsc::Receiver<Command>, reap: Duration) {
 }
 
 struct Seat {
+    local_model: bool,
     policy: &'static str,
     is_model: bool,
     notes: bool,
@@ -661,12 +662,16 @@ impl Shared {
         if allowance == 0 {
             return;
         }
-        self.stats.borrow_mut().unknown_cost_requests += 1;
-        self.stats.borrow().global.settle(None);
         let state = self.seats.get_mut(&seat).expect("known seat");
         // Every granted slot stays charged: how many attempts the lost worker made is unknown.
         state.usage.requests += u64::from(allowance);
-        state.usage.unknown_cost_requests += 1;
+        if state.local_model {
+            self.stats.borrow().global.settle(Some(0.0));
+        } else {
+            self.stats.borrow_mut().unknown_cost_requests += 1;
+            self.stats.borrow().global.settle(None);
+            state.usage.unknown_cost_requests += 1;
+        }
     }
     /// Applies a worker's reported usage to the table ledger before any further grant.
     fn reconcile(
@@ -967,8 +972,10 @@ impl Supervisor {
         let mut notes = false;
         let mut attempts = 0;
         if let Policy::OpenRouter(settings) = &policy {
-            let key = self.key.clone().ok_or("no credential for model worker")?;
-            env.push((KEY_VARIABLE.to_owned(), key));
+            if settings.local_port.is_none() {
+                let key = self.key.clone().ok_or("no credential for model worker")?;
+                env.push((KEY_VARIABLE.to_owned(), key));
+            }
             for name in NETWORK_VARIABLES {
                 if let Ok(value) = std::env::var(name) {
                     env.push((name.to_owned(), value));
@@ -1002,6 +1009,7 @@ impl Supervisor {
             Seat {
                 policy: policy.name(),
                 is_model: policy.is_model(),
+                local_model: matches!(&policy, Policy::OpenRouter(settings) if settings.local_port.is_some()),
                 notes,
                 operation_deadline,
                 attempts,

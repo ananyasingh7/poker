@@ -570,6 +570,7 @@ fn settings(endpoint: &str, memory: Mode) -> ModelSettings {
         max_requests: 1000,
         spend_limit_usd: 10.0,
         local_port: None,
+        local_json_prefill: false,
         endpoint: Some(endpoint.into()),
     }
 }

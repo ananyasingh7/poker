@@ -176,6 +176,8 @@ pub struct ModelSettings {
     pub spend_limit_usd: f64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub local_port: Option<std::num::NonZeroU16>,
+    #[serde(default)]
+    pub local_json_prefill: bool,
     /// Test-only provider override; the CLI never sets it.
     pub endpoint: Option<String>,
 }

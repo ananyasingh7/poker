@@ -1,0 +1,1511 @@
+{
+  "pi-read-then-bet-controls-v1": {
+    "design": {
+      "exploratory": true,
+      "trigger": "The first three main checkpoints ignored numeric 80% fold rates.",
+      "seed": 93101,
+      "fold_probabilities": [
+        0.2,
+        0.8
+      ],
+      "variants": [
+        "numeric",
+        "plain_language",
+        "calculated_payoffs"
+      ],
+      "probes": [
+        [
+          "A9632",
+          "Q4",
+          "66"
+        ],
+        [
+          "KT852",
+          "Q3",
+          "88"
+        ]
+      ],
+      "rules": "Heads-up hold'em river drill. You are Seat 0. Seat 1 is the same opponent throughout the session. Each deal starts on the river with 10 bb in the pot, 5 bb contributed by each player. Seat 1 has checked. In this drill Seat 1 is dealt exactly one pair of the board's highest rank. You may check or bet 10 bb. Seat 1 may call or fold. Maximize expected chips. ",
+      "payoff_units": "Net bb, including the five bb already contributed."
+    },
+    "results": [
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 20 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20,
+          "expected_net_bb": {
+            "check": -5.0,
+            "bet": -11.0
+          }
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 20 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20,
+          "expected_net_bb": {
+            "check": 5.0,
+            "bet": 13.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 20 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20,
+          "expected_net_bb": {
+            "check": -5.0,
+            "bet": -11.0
+          }
+        },
+        "action": "check",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 20 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 20,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 20,
+          "expected_net_bb": {
+            "check": 5.0,
+            "bet": 13.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80
+        },
+        "action": "check",
+        "loss_bb": 6.000000000000001
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 80 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "check",
+        "loss_bb": 6.000000000000001
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "4d"
+          ]
+        },
+        "strong": false,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80,
+          "expected_net_bb": {
+            "check": -5.0,
+            "bet": 1.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 80 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Ah",
+            "9s",
+            "6c",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "6h",
+            "6d"
+          ]
+        },
+        "strong": true,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80,
+          "expected_net_bb": {
+            "check": 5.0,
+            "bet": 7.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80
+        },
+        "action": "check",
+        "loss_bb": 6.000000000000001
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 80 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "check",
+        "loss_bb": 6.000000000000001
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ]
+        },
+        "strong": false,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80,
+          "expected_net_bb": {
+            "check": -5.0,
+            "bet": 1.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "numeric",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "plain_language",
+        "evidence": {
+          "opponent_information": "Seat 1 folds to 80 percent of pot-sized river bets. This is their current policy and is independent of your cards."
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      },
+      {
+        "true_fold_percent": 80,
+        "cards": {
+          "board": [
+            "Kh",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ]
+        },
+        "strong": true,
+        "variant": "calculated_payoffs",
+        "evidence": {
+          "estimated_opponent_fold_percent": 80,
+          "expected_net_bb": {
+            "check": 5.0,
+            "bet": 7.0
+          }
+        },
+        "action": "bet",
+        "loss_bb": 0.0
+      }
+    ]
+  },
+  "pi-read-controls-v1": {
+    "design": {
+      "exploratory": true,
+      "source": "runs/pi-read-then-bet-v1",
+      "seed": 93103,
+      "trigger": "Qwen estimated 80 percent folds from 22 calls and 2 folds.",
+      "read_prompt": "Estimate the probability that Seat 1 folds to the next pot-sized river bet, using only the supplied observations. Every listed bet gave Seat 1 a choice of call or fold. A probability of 80 means 80 percent of such bets get folded. Give your best estimate of current behavior. Return only the requested JSON object.",
+      "cases": {
+        "raw_history": {
+          "completed_hands": [
+            {
+              "hand": 1,
+              "board": [
+                "As",
+                "Th",
+                "8c",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 2,
+              "board": [
+                "Kc",
+                "Th",
+                "6d",
+                "3s",
+                "2c"
+              ],
+              "hole": [
+                "Jd",
+                "9s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "fold"
+            },
+            {
+              "hand": 3,
+              "board": [
+                "Qd",
+                "Th",
+                "7c",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 4,
+              "board": [
+                "Js",
+                "Td",
+                "9c",
+                "5h",
+                "2s"
+              ],
+              "hole": [
+                "Qc",
+                "3h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "fold"
+            },
+            {
+              "hand": 5,
+              "board": [
+                "Ad",
+                "Th",
+                "8s",
+                "5c",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 6,
+              "board": [
+                "Kc",
+                "Td",
+                "6s",
+                "3h",
+                "2c"
+              ],
+              "hole": [
+                "Js",
+                "9h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 7,
+              "board": [
+                "Qc",
+                "Th",
+                "7s",
+                "4d",
+                "2c"
+              ],
+              "hole": [
+                "7c",
+                "7d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 8,
+              "board": [
+                "Jh",
+                "Tc",
+                "9s",
+                "5d",
+                "2h"
+              ],
+              "hole": [
+                "Qs",
+                "3d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 9,
+              "board": [
+                "Ad",
+                "Th",
+                "8c",
+                "5s",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 10,
+              "board": [
+                "Kd",
+                "Th",
+                "6s",
+                "3c",
+                "2d"
+              ],
+              "hole": [
+                "Js",
+                "9c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 11,
+              "board": [
+                "Qh",
+                "Ts",
+                "7c",
+                "4d",
+                "2h"
+              ],
+              "hole": [
+                "7h",
+                "7d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 12,
+              "board": [
+                "Jh",
+                "Td",
+                "9s",
+                "5c",
+                "2h"
+              ],
+              "hole": [
+                "Qs",
+                "3c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 13,
+              "board": [
+                "As",
+                "Td",
+                "8c",
+                "5h",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 14,
+              "board": [
+                "Kc",
+                "Th",
+                "6s",
+                "3d",
+                "2c"
+              ],
+              "hole": [
+                "Js",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 15,
+              "board": [
+                "Qd",
+                "Th",
+                "7c",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 16,
+              "board": [
+                "Jd",
+                "Ts",
+                "9c",
+                "5h",
+                "2d"
+              ],
+              "hole": [
+                "Qc",
+                "3h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 17,
+              "board": [
+                "Ad",
+                "Ts",
+                "8h",
+                "5c",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 18,
+              "board": [
+                "Ks",
+                "Th",
+                "6c",
+                "3d",
+                "2s"
+              ],
+              "hole": [
+                "Jc",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 19,
+              "board": [
+                "Qh",
+                "Td",
+                "7s",
+                "4c",
+                "2h"
+              ],
+              "hole": [
+                "7h",
+                "7c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 20,
+              "board": [
+                "Js",
+                "Tc",
+                "9h",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "Qh",
+                "3d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 21,
+              "board": [
+                "As",
+                "Th",
+                "8c",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 22,
+              "board": [
+                "Kh",
+                "Tc",
+                "6s",
+                "3d",
+                "2h"
+              ],
+              "hole": [
+                "Js",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 23,
+              "board": [
+                "Qd",
+                "Tc",
+                "7h",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 24,
+              "board": [
+                "Jh",
+                "Tc",
+                "9d",
+                "5s",
+                "2h"
+              ],
+              "hole": [
+                "Qd",
+                "3s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            }
+          ]
+        },
+        "counts_only": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22
+        },
+        "counts_and_rate": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22,
+          "observed_fold_percent": 8.333333333333334
+        },
+        "mirror_counts": {
+          "bets_faced": 24,
+          "folds": 22,
+          "calls": 2
+        }
+      }
+    },
+    "results": [
+      {
+        "variant": "raw_history",
+        "evidence": {
+          "completed_hands": [
+            {
+              "hand": 1,
+              "board": [
+                "As",
+                "Th",
+                "8c",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 2,
+              "board": [
+                "Kc",
+                "Th",
+                "6d",
+                "3s",
+                "2c"
+              ],
+              "hole": [
+                "Jd",
+                "9s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "fold"
+            },
+            {
+              "hand": 3,
+              "board": [
+                "Qd",
+                "Th",
+                "7c",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 4,
+              "board": [
+                "Js",
+                "Td",
+                "9c",
+                "5h",
+                "2s"
+              ],
+              "hole": [
+                "Qc",
+                "3h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "fold"
+            },
+            {
+              "hand": 5,
+              "board": [
+                "Ad",
+                "Th",
+                "8s",
+                "5c",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 6,
+              "board": [
+                "Kc",
+                "Td",
+                "6s",
+                "3h",
+                "2c"
+              ],
+              "hole": [
+                "Js",
+                "9h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 7,
+              "board": [
+                "Qc",
+                "Th",
+                "7s",
+                "4d",
+                "2c"
+              ],
+              "hole": [
+                "7c",
+                "7d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 8,
+              "board": [
+                "Jh",
+                "Tc",
+                "9s",
+                "5d",
+                "2h"
+              ],
+              "hole": [
+                "Qs",
+                "3d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 9,
+              "board": [
+                "Ad",
+                "Th",
+                "8c",
+                "5s",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 10,
+              "board": [
+                "Kd",
+                "Th",
+                "6s",
+                "3c",
+                "2d"
+              ],
+              "hole": [
+                "Js",
+                "9c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 11,
+              "board": [
+                "Qh",
+                "Ts",
+                "7c",
+                "4d",
+                "2h"
+              ],
+              "hole": [
+                "7h",
+                "7d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 12,
+              "board": [
+                "Jh",
+                "Td",
+                "9s",
+                "5c",
+                "2h"
+              ],
+              "hole": [
+                "Qs",
+                "3c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 13,
+              "board": [
+                "As",
+                "Td",
+                "8c",
+                "5h",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 14,
+              "board": [
+                "Kc",
+                "Th",
+                "6s",
+                "3d",
+                "2c"
+              ],
+              "hole": [
+                "Js",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 15,
+              "board": [
+                "Qd",
+                "Th",
+                "7c",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 16,
+              "board": [
+                "Jd",
+                "Ts",
+                "9c",
+                "5h",
+                "2d"
+              ],
+              "hole": [
+                "Qc",
+                "3h"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 17,
+              "board": [
+                "Ad",
+                "Ts",
+                "8h",
+                "5c",
+                "2d"
+              ],
+              "hole": [
+                "8d",
+                "8c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 18,
+              "board": [
+                "Ks",
+                "Th",
+                "6c",
+                "3d",
+                "2s"
+              ],
+              "hole": [
+                "Jc",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 19,
+              "board": [
+                "Qh",
+                "Td",
+                "7s",
+                "4c",
+                "2h"
+              ],
+              "hole": [
+                "7h",
+                "7c"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 20,
+              "board": [
+                "Js",
+                "Tc",
+                "9h",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "Qh",
+                "3d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 21,
+              "board": [
+                "As",
+                "Th",
+                "8c",
+                "5d",
+                "2s"
+              ],
+              "hole": [
+                "8s",
+                "8d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 22,
+              "board": [
+                "Kh",
+                "Tc",
+                "6s",
+                "3d",
+                "2h"
+              ],
+              "hole": [
+                "Js",
+                "9d"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 23,
+              "board": [
+                "Qd",
+                "Tc",
+                "7h",
+                "4s",
+                "2d"
+              ],
+              "hole": [
+                "7d",
+                "7s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            },
+            {
+              "hand": 24,
+              "board": [
+                "Jh",
+                "Tc",
+                "9d",
+                "5s",
+                "2h"
+              ],
+              "hole": [
+                "Qd",
+                "3s"
+              ],
+              "your_action": "bet",
+              "opponent_response": "call"
+            }
+          ]
+        },
+        "fold_percent": 80
+      },
+      {
+        "variant": "counts_only",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22
+        },
+        "fold_percent": 80
+      },
+      {
+        "variant": "counts_and_rate",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22,
+          "observed_fold_percent": 8.333333333333334
+        },
+        "fold_percent": 80
+      },
+      {
+        "variant": "mirror_counts",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 22,
+          "calls": 2
+        },
+        "fold_percent": 90
+      }
+    ]
+  },
+  "pi-read-prompt-controls-v1": {
+    "design": {
+      "exploratory": true,
+      "trigger": "Counts-only output repeated the example percentage in the reading prompt.",
+      "prompt": "Estimate the probability that Seat 1 folds to the next pot-sized river bet, using only the supplied observations. Every listed bet gave Seat 1 a choice of call or fold. Report a percentage from zero to one hundred. Give your best estimate of current behavior. Return only the requested JSON object.",
+      "cases": {
+        "counts_only": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22
+        },
+        "counts_and_rate": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22,
+          "observed_fold_percent": 8.333333333333334
+        },
+        "mirror_counts": {
+          "bets_faced": 24,
+          "folds": 22,
+          "calls": 2
+        }
+      }
+    },
+    "results": [
+      {
+        "variant": "counts_only",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22
+        },
+        "fold_percent": 80
+      },
+      {
+        "variant": "counts_and_rate",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 2,
+          "calls": 22,
+          "observed_fold_percent": 8.333333333333334
+        },
+        "fold_percent": 80
+      },
+      {
+        "variant": "mirror_counts",
+        "evidence": {
+          "bets_faced": 24,
+          "folds": 22,
+          "calls": 2
+        },
+        "fold_percent": 90
+      }
+    ]
+  },
+  "measurement_caveat": "The legacy reader restricts percentage strings to five-point buckets without a rounding instruction. This can distort answers such as 8.3 into 80 or 85. These reader outputs do not establish a reading failure. Betting actions are preserved, but read-then-bet scores depend on this encoding. See the numeric replay runner."
+}

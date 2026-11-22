@@ -69,6 +69,7 @@ fn model(settings: ModelSettings) -> Result<OpenRouterAgent, String> {
     // their defaults and are not used by the adapter.
     let config = Config {
         local_port: settings.local_port,
+        local_json_prefill: settings.local_json_prefill,
         model: settings.model,
         timeout_ms: settings.timeout_ms,
         max_tokens: settings.max_tokens,
@@ -561,6 +562,7 @@ mod tests {
             max_requests: 1,
             spend_limit_usd: 1.0,
             local_port: None,
+            local_json_prefill: false,
             endpoint: None,
         };
         // Unit tests never hold a real key; the variable is absent in the test environment.

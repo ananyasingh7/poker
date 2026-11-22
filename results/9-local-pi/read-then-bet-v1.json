@@ -1,0 +1,2899 @@
+{
+  "design": {
+    "model": "qwen3.8-pi",
+    "endpoint": "http://127.0.0.1:9931/v1/chat/completions",
+    "temperature": 0,
+    "thinking": false,
+    "games": [
+      [
+        93101,
+        0.2,
+        0.8
+      ],
+      [
+        93102,
+        0.8,
+        0.2
+      ],
+      [
+        93103,
+        0.2,
+        0.2
+      ],
+      [
+        93104,
+        0.8,
+        0.8
+      ]
+    ],
+    "phase_hands": 12,
+    "update_every": 6,
+    "training_templates": [
+      [
+        "AT852",
+        "Q4",
+        "88"
+      ],
+      [
+        "KT632",
+        "J9",
+        "66"
+      ],
+      [
+        "QT742",
+        "J3",
+        "77"
+      ],
+      [
+        "JT952",
+        "Q3",
+        "99"
+      ]
+    ],
+    "probe_templates": [
+      [
+        "A9632",
+        "Q4",
+        "66"
+      ],
+      [
+        "KT852",
+        "Q3",
+        "88"
+      ]
+    ],
+    "rules": "Heads-up hold'em river drill. You are Seat 0. Seat 1 is the same opponent throughout the session. Each deal starts on the river with 10 bb in the pot, 5 bb contributed by each player. Seat 1 has checked. In this drill Seat 1 is dealt exactly one pair of the board's highest rank. You may check or bet 10 bb. Seat 1 may call or fold. Maximize expected chips. ",
+    "read_prompt": "Estimate the probability that Seat 1 folds to the next pot-sized river bet, using only the supplied observations. Every listed bet gave Seat 1 a choice of call or fold. A probability of 80 means 80 percent of such bets get folded. Give your best estimate of current behavior. Return only the requested JSON object.",
+    "note_prompts": {
+      "observations": "Record observed calls and folds by Seat 1, with counts and when they occurred. Keep observations only. Write at most 80 words.",
+      "advice": "Record observed calls and folds by Seat 1, with counts and when they occurred. Recommend how to play against Seat 1. Write at most 80 words."
+    },
+    "primary": "Post-phase-2 probe loss for direct versus read-then-bet, by notebook format.",
+    "unit": "One observed tape per condition; descriptive pilot only.",
+    "exposure": "Predetermined pot bets, same responses for both notebook writers.",
+    "host_baseline": "Recent six bets, (folds+1)/(bets+2), rounded to nearest 5 percent.",
+    "controls": "Frozen notes and predictions, blank, true current fold probability.",
+    "cache": "Identical requests reuse their first answer at temperature zero."
+  },
+  "checkpoints": [
+    {
+      "seed": 93101,
+      "phase": 1,
+      "true_fold_percent": 20,
+      "observed_folds": 3,
+      "recent_folds": 2,
+      "notes": {
+        "observations": "Seat 1 called 9 times (Hands 1, 3, 4, 5, 6, 7, 8, 9, 10) and folded 3 times (Hands 2, 11, 12). All calls followed my 10bb river bets. Folds occurred on Hands 2, 11, and 12. No checks observed. Opponent calls frequently with one pair of board's highest rank, but has started folding more recently.",
+        "advice": "Seat 1 called 4/6 bets. Folds on Hands 11 & 12 (Q-high, J-high boards). Pattern: Calls with any pair, folds air. Recommendation: Bet 10bb with any pair or better. Check back with air to avoid losing 10bb. Exploit their tendency to call with weak pairs by value betting frequently. Do not bluff; they rarely fold pairs. Maximize EV by betting value hands and checking weak hands."
+      },
+      "estimates": {
+        "observations": 25,
+        "advice": 30,
+        "raw": 25,
+        "counts": 40
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        }
+      }
+    },
+    {
+      "seed": 93101,
+      "phase": 2,
+      "true_fold_percent": 80,
+      "observed_folds": 9,
+      "recent_folds": 3,
+      "notes": {
+        "observations": "Seat 1 called hands 20, 23, 24 after folds on 19, 21, 22. Recent trend: 3 calls, 3 folds. Opponent calls with one pair of board's highest rank (e.g., J on J-high board, 7 on 7-high board). No checks observed. Maintain aggressive betting strategy to exploit current folding tendency.",
+        "advice": "Seat 1 called 3/6 recent bets (Hands 20, 23, 24), folding 3/6. Calls occurred with pairs (Q, 7) or air. Folds happened with pairs (8, J) or air. Pattern: Calls ~50% of the time, seemingly random or based on specific board textures. Recommendation: Continue betting 10bb. With a 50% call rate, betting air yields +5bb EV (0.5*20 - 0.5*10) vs 0 for checking. Betting value hands yields +15bb EV. Exploit their inconsistent folding tendency by betting relentlessly to maximize EV from both folds and calls."
+      },
+      "estimates": {
+        "observations": 50,
+        "advice": 50,
+        "raw": 50,
+        "counts": 50
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        }
+      }
+    },
+    {
+      "seed": 93102,
+      "phase": 1,
+      "true_fold_percent": 80,
+      "observed_folds": 10,
+      "recent_folds": 6,
+      "notes": {
+        "observations": "Seat 1 folds 10/12 bets (Hands 1, 2, 4, 6, 7, 8, 9, 10, 11, 12). Calls 2/12 bets (Hands 3, 5). Calls occurred with top pair (7s, 8s). Folds occurred with air or lower pairs. Opponent calls only with top pair or better. Continue betting value; expect folds from bluffs or weak pairs.",
+        "advice": "Seat 1 folds 10/10 bets. Calls 0/10. Never calls with air or lower pairs. Strategy: Bet 10bb with any hand. If you hold the board's highest pair, expect a call (+10bb). Otherwise, expect a fold (+5bb). This maximizes EV by exploiting their passive, predictable range. Continue betting every river."
+      },
+      "estimates": {
+        "observations": 80,
+        "advice": 100,
+        "raw": 80,
+        "counts": 90
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        }
+      }
+    },
+    {
+      "seed": 93102,
+      "phase": 2,
+      "true_fold_percent": 20,
+      "observed_folds": 2,
+      "recent_folds": 1,
+      "notes": {
+        "observations": "Seat 1 called 6/6 recent bets (Hands 19-24). Calls occurred with top pair (Q, J, K) or air (Q3). Folds 10/12 prior. Opponent calls top pair or better; folds air/low pairs. Continue betting value; expect folds from bluffs or weak pairs.",
+        "advice": "Seat 1 called 5/6 recent bets, folding only Hand 21 (A-high board). They call with any pair, including lower pairs. Range is wide and passive. Strategy: Bet 10bb with any hand. Expect calls from their entire range. This maximizes EV by extracting value from their passive, wide calling tendency. Continue betting every river to exploit their lack of folds. The single fold on A-high suggests they may fold to top-pair blockers, but overall calling frequency is high enough to justify constant value betting."
+      },
+      "estimates": {
+        "observations": 100,
+        "advice": 10,
+        "raw": 45,
+        "counts": 25
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 1.5
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        }
+      }
+    },
+    {
+      "seed": 93103,
+      "phase": 1,
+      "true_fold_percent": 20,
+      "observed_folds": 2,
+      "recent_folds": 0,
+      "notes": {
+        "observations": "Seat 1 called 10 times (Hands 1, 3, 5, 6, 7, 8, 9, 10, 11, 12) and folded 2 times (Hands 2, 4). Calls occurred with top pair (8s, 7s, 8s, 6s, 7s, 8s) or air (J9, Q3, J9, Q3). Folds occurred with air (J9, Q3). Seat 1 calls frequently regardless of hand strength, showing no clear folding tendency against bets.",
+        "advice": "Seat 1 called 10/10 bets (100%). Calls occurred on hands 7-12. No folds observed. Seat 1 holds one pair of board's highest rank. They call with weak pairs (7s, 8s) but fold air. Bet 10bb to extract value from their weak pair range; they rarely fold one pair. Check only if you suspect they have the nut pair, but betting is +EV against their calling station tendencies with low pairs."
+      },
+      "estimates": {
+        "observations": 20,
+        "advice": 0,
+        "raw": 15,
+        "counts": 10
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "check",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 2.0
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "check",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 2.0
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        }
+      }
+    },
+    {
+      "seed": 93103,
+      "phase": 2,
+      "true_fold_percent": 20,
+      "observed_folds": 0,
+      "recent_folds": 0,
+      "notes": {
+        "observations": "Seat 1 called 22 times (Hands 1-18, 19-24) and folded 2 times (Hands 2, 4). Recent calls (Hands 19-24) occurred with top pair (7s, 8s, 7s) or air (Q3, J9, Q3). Folds remain limited to air (J9, Q3). Seat 1 continues to call bets frequently regardless of hand strength, showing no clear folding tendency against value or bluffs.",
+        "advice": "Seat 1 called 22/22 bets (100%). Zero folds observed. They consistently call with one pair of the board's highest rank, even with weak kickers or air. Their range is extremely tight to folding. Continue betting 10bb to maximize value extraction. They are a calling station with a narrow, predictable range. Check only if you hold the absolute nuts and fear a bluff, but betting is +EV against their tendency to call with any pair. Exploit their lack of folds by betting for value constantly."
+      },
+      "estimates": {
+        "observations": 90,
+        "advice": 0,
+        "raw": 80,
+        "counts": 10
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "check",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 2.0
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "check",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 2.0
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        }
+      }
+    },
+    {
+      "seed": 93104,
+      "phase": 1,
+      "true_fold_percent": 80,
+      "observed_folds": 7,
+      "recent_folds": 3,
+      "notes": {
+        "observations": "Seat 1 folds 6 times (Hands 1, 2, 3, 5, 9, 11, 12) and calls 4 times (Hands 4, 6, 7, 8, 10). Folds on A, Q, J high boards. Calls on K, J, Q high boards. No checks observed. Opponent calls with one pair on higher boards, folds on lower.",
+        "advice": "Seat 1 called 4/6 bets (Hands 7, 8, 10, 12) and folded 2/6 (Hands 9, 11). Calls occurred with top pair (J, Q) or air (K-high). Folds occurred with mid-pair (8) or low pair (7). Strategy: Bet 10bb constantly. Exploit their tendency to call with top pair and fold with weaker pairs/air. Value bet top pair; bluff with air. Expect folds from non-top-pair hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+      },
+      "estimates": {
+        "observations": 60,
+        "advice": 30,
+        "raw": 50,
+        "counts": 50
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        }
+      }
+    },
+    {
+      "seed": 93104,
+      "phase": 2,
+      "true_fold_percent": 80,
+      "observed_folds": 11,
+      "recent_folds": 6,
+      "notes": {
+        "observations": "Seat 1 folds 16 times (Hands 1, 2, 3, 5, 9, 11, 12, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24) and calls 5 times (Hands 4, 6, 7, 8, 10, 16). Folds on A, Q, J, K high boards. Calls on J, Q high boards. No checks observed. Opponent calls with one pair on J/Q boards, folds on A/K/Q boards.",
+        "advice": "Seat 1 folded 6/6 recent bets (Hands 19-24). Total: 13 folds, 5 calls. Calls only with top pair (J, Q) or air (K-high). Folds with mid/low pairs or air. Strategy: Bet 10bb constantly. Exploit passive folding with non-top-pair hands. Value bet top pair; bluff with air. Expect folds from non-top-pair hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+      },
+      "estimates": {
+        "observations": 75,
+        "advice": 80,
+        "raw": 80,
+        "counts": 90
+      },
+      "scores": {
+        "direct_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "direct_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "direct_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "direct_frozen_advice": {
+          "actions": [
+            "bet",
+            "bet",
+            "bet",
+            "bet"
+          ],
+          "mean_loss_bb": 0.0
+        },
+        "read_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_raw": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_counts": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_observations": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "read_frozen_advice": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "oracle": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        },
+        "blank": {
+          "actions": [
+            "check",
+            "bet",
+            "check",
+            "bet"
+          ],
+          "mean_loss_bb": 3.0000000000000004
+        }
+      }
+    }
+  ],
+  "post_phase_2_mean_loss_bb": {
+    "direct_observations": 1.875,
+    "direct_advice": 1.5,
+    "direct_frozen_observations": 3.0,
+    "direct_frozen_advice": 2.25,
+    "read_observations": 1.5,
+    "read_advice": 2.0,
+    "read_raw": 1.5,
+    "read_counts": 1.5,
+    "read_frozen_observations": 1.5,
+    "read_frozen_advice": 2.0,
+    "oracle": 1.5,
+    "blank": 1.5
+  },
+  "observed_hands": [
+    {
+      "kind": "tape",
+      "seed": 93101,
+      "phase": 1,
+      "hands": [
+        {
+          "hand": 1,
+          "board": [
+            "Ad",
+            "Ts",
+            "8c",
+            "5h",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 2,
+          "board": [
+            "Kh",
+            "Td",
+            "6s",
+            "3c",
+            "2h"
+          ],
+          "hole": [
+            "Js",
+            "9c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 3,
+          "board": [
+            "Qh",
+            "Ts",
+            "7c",
+            "4d",
+            "2h"
+          ],
+          "hole": [
+            "7h",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 4,
+          "board": [
+            "Jc",
+            "Td",
+            "9h",
+            "5s",
+            "2c"
+          ],
+          "hole": [
+            "Qh",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 5,
+          "board": [
+            "Ac",
+            "Td",
+            "8h",
+            "5s",
+            "2c"
+          ],
+          "hole": [
+            "8c",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 6,
+          "board": [
+            "Kc",
+            "Th",
+            "6s",
+            "3d",
+            "2c"
+          ],
+          "hole": [
+            "Js",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 7,
+          "board": [
+            "Qs",
+            "Td",
+            "7c",
+            "4h",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 8,
+          "board": [
+            "Jd",
+            "Ts",
+            "9c",
+            "5h",
+            "2d"
+          ],
+          "hole": [
+            "Qc",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 9,
+          "board": [
+            "Ah",
+            "Ts",
+            "8d",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 10,
+          "board": [
+            "Ks",
+            "Tc",
+            "6h",
+            "3d",
+            "2s"
+          ],
+          "hole": [
+            "Jh",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 11,
+          "board": [
+            "Qc",
+            "Th",
+            "7s",
+            "4d",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 12,
+          "board": [
+            "Js",
+            "Td",
+            "9h",
+            "5c",
+            "2s"
+          ],
+          "hole": [
+            "Qh",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93101,
+      "phase": 2,
+      "hands": [
+        {
+          "hand": 13,
+          "board": [
+            "Ah",
+            "Tc",
+            "8d",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 14,
+          "board": [
+            "Kc",
+            "Ts",
+            "6h",
+            "3d",
+            "2c"
+          ],
+          "hole": [
+            "Jh",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 15,
+          "board": [
+            "Qc",
+            "Ts",
+            "7d",
+            "4h",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 16,
+          "board": [
+            "Jd",
+            "Ts",
+            "9h",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "Qh",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 17,
+          "board": [
+            "Ah",
+            "Tc",
+            "8d",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 18,
+          "board": [
+            "Kd",
+            "Th",
+            "6s",
+            "3c",
+            "2d"
+          ],
+          "hole": [
+            "Js",
+            "9c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 19,
+          "board": [
+            "Qh",
+            "Ts",
+            "7d",
+            "4c",
+            "2h"
+          ],
+          "hole": [
+            "7h",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 20,
+          "board": [
+            "Jh",
+            "Tc",
+            "9d",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "Qd",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 21,
+          "board": [
+            "Ah",
+            "Td",
+            "8c",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 22,
+          "board": [
+            "Kd",
+            "Tc",
+            "6h",
+            "3s",
+            "2d"
+          ],
+          "hole": [
+            "Jh",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 23,
+          "board": [
+            "Qc",
+            "Td",
+            "7s",
+            "4h",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 24,
+          "board": [
+            "Js",
+            "Td",
+            "9h",
+            "5c",
+            "2s"
+          ],
+          "hole": [
+            "Qh",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93102,
+      "phase": 1,
+      "hands": [
+        {
+          "hand": 1,
+          "board": [
+            "Ah",
+            "Ts",
+            "8c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 2,
+          "board": [
+            "Ks",
+            "Th",
+            "6c",
+            "3d",
+            "2s"
+          ],
+          "hole": [
+            "Jc",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 3,
+          "board": [
+            "Qs",
+            "Tc",
+            "7d",
+            "4h",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 4,
+          "board": [
+            "Js",
+            "Td",
+            "9c",
+            "5h",
+            "2s"
+          ],
+          "hole": [
+            "Qc",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 5,
+          "board": [
+            "As",
+            "Td",
+            "8h",
+            "5c",
+            "2s"
+          ],
+          "hole": [
+            "8s",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 6,
+          "board": [
+            "Kh",
+            "Td",
+            "6c",
+            "3s",
+            "2h"
+          ],
+          "hole": [
+            "Jc",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 7,
+          "board": [
+            "Qc",
+            "Th",
+            "7d",
+            "4s",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 8,
+          "board": [
+            "Jh",
+            "Tc",
+            "9d",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "Qd",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 9,
+          "board": [
+            "Ah",
+            "Ts",
+            "8d",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 10,
+          "board": [
+            "Kd",
+            "Tc",
+            "6s",
+            "3h",
+            "2d"
+          ],
+          "hole": [
+            "Js",
+            "9h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 11,
+          "board": [
+            "Qd",
+            "Tc",
+            "7s",
+            "4h",
+            "2d"
+          ],
+          "hole": [
+            "7d",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 12,
+          "board": [
+            "Jh",
+            "Td",
+            "9c",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93102,
+      "phase": 2,
+      "hands": [
+        {
+          "hand": 13,
+          "board": [
+            "Ah",
+            "Ts",
+            "8d",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 14,
+          "board": [
+            "Ks",
+            "Th",
+            "6d",
+            "3c",
+            "2s"
+          ],
+          "hole": [
+            "Jd",
+            "9c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 15,
+          "board": [
+            "Qs",
+            "Tc",
+            "7h",
+            "4d",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 16,
+          "board": [
+            "Jc",
+            "Td",
+            "9s",
+            "5h",
+            "2c"
+          ],
+          "hole": [
+            "Qs",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 17,
+          "board": [
+            "Ad",
+            "Th",
+            "8s",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 18,
+          "board": [
+            "Kd",
+            "Th",
+            "6s",
+            "3c",
+            "2d"
+          ],
+          "hole": [
+            "Js",
+            "9c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 19,
+          "board": [
+            "Qs",
+            "Td",
+            "7h",
+            "4c",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 20,
+          "board": [
+            "Jh",
+            "Td",
+            "9s",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "Qs",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 21,
+          "board": [
+            "Ad",
+            "Th",
+            "8c",
+            "5s",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 22,
+          "board": [
+            "Kc",
+            "Ts",
+            "6d",
+            "3h",
+            "2c"
+          ],
+          "hole": [
+            "Jd",
+            "9h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 23,
+          "board": [
+            "Qs",
+            "Td",
+            "7h",
+            "4c",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 24,
+          "board": [
+            "Js",
+            "Td",
+            "9h",
+            "5c",
+            "2s"
+          ],
+          "hole": [
+            "Qh",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93103,
+      "phase": 1,
+      "hands": [
+        {
+          "hand": 1,
+          "board": [
+            "As",
+            "Th",
+            "8c",
+            "5d",
+            "2s"
+          ],
+          "hole": [
+            "8s",
+            "8d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 2,
+          "board": [
+            "Kc",
+            "Th",
+            "6d",
+            "3s",
+            "2c"
+          ],
+          "hole": [
+            "Jd",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 3,
+          "board": [
+            "Qd",
+            "Th",
+            "7c",
+            "4s",
+            "2d"
+          ],
+          "hole": [
+            "7d",
+            "7s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 4,
+          "board": [
+            "Js",
+            "Td",
+            "9c",
+            "5h",
+            "2s"
+          ],
+          "hole": [
+            "Qc",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 5,
+          "board": [
+            "Ad",
+            "Th",
+            "8s",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 6,
+          "board": [
+            "Kc",
+            "Td",
+            "6s",
+            "3h",
+            "2c"
+          ],
+          "hole": [
+            "Js",
+            "9h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 7,
+          "board": [
+            "Qc",
+            "Th",
+            "7s",
+            "4d",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 8,
+          "board": [
+            "Jh",
+            "Tc",
+            "9s",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qs",
+            "3d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 9,
+          "board": [
+            "Ad",
+            "Th",
+            "8c",
+            "5s",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 10,
+          "board": [
+            "Kd",
+            "Th",
+            "6s",
+            "3c",
+            "2d"
+          ],
+          "hole": [
+            "Js",
+            "9c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 11,
+          "board": [
+            "Qh",
+            "Ts",
+            "7c",
+            "4d",
+            "2h"
+          ],
+          "hole": [
+            "7h",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 12,
+          "board": [
+            "Jh",
+            "Td",
+            "9s",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "Qs",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93103,
+      "phase": 2,
+      "hands": [
+        {
+          "hand": 13,
+          "board": [
+            "As",
+            "Td",
+            "8c",
+            "5h",
+            "2s"
+          ],
+          "hole": [
+            "8s",
+            "8h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 14,
+          "board": [
+            "Kc",
+            "Th",
+            "6s",
+            "3d",
+            "2c"
+          ],
+          "hole": [
+            "Js",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 15,
+          "board": [
+            "Qd",
+            "Th",
+            "7c",
+            "4s",
+            "2d"
+          ],
+          "hole": [
+            "7d",
+            "7s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 16,
+          "board": [
+            "Jd",
+            "Ts",
+            "9c",
+            "5h",
+            "2d"
+          ],
+          "hole": [
+            "Qc",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 17,
+          "board": [
+            "Ad",
+            "Ts",
+            "8h",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 18,
+          "board": [
+            "Ks",
+            "Th",
+            "6c",
+            "3d",
+            "2s"
+          ],
+          "hole": [
+            "Jc",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 19,
+          "board": [
+            "Qh",
+            "Td",
+            "7s",
+            "4c",
+            "2h"
+          ],
+          "hole": [
+            "7h",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 20,
+          "board": [
+            "Js",
+            "Tc",
+            "9h",
+            "5d",
+            "2s"
+          ],
+          "hole": [
+            "Qh",
+            "3d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 21,
+          "board": [
+            "As",
+            "Th",
+            "8c",
+            "5d",
+            "2s"
+          ],
+          "hole": [
+            "8s",
+            "8d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 22,
+          "board": [
+            "Kh",
+            "Tc",
+            "6s",
+            "3d",
+            "2h"
+          ],
+          "hole": [
+            "Js",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 23,
+          "board": [
+            "Qd",
+            "Tc",
+            "7h",
+            "4s",
+            "2d"
+          ],
+          "hole": [
+            "7d",
+            "7s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 24,
+          "board": [
+            "Jh",
+            "Tc",
+            "9d",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "Qd",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93104,
+      "phase": 1,
+      "hands": [
+        {
+          "hand": 1,
+          "board": [
+            "Ad",
+            "Th",
+            "8c",
+            "5s",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 2,
+          "board": [
+            "Kc",
+            "Td",
+            "6h",
+            "3s",
+            "2c"
+          ],
+          "hole": [
+            "Jh",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 3,
+          "board": [
+            "Qc",
+            "Td",
+            "7s",
+            "4h",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 4,
+          "board": [
+            "Jh",
+            "Td",
+            "9s",
+            "5c",
+            "2h"
+          ],
+          "hole": [
+            "Qs",
+            "3c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 5,
+          "board": [
+            "Ad",
+            "Tc",
+            "8s",
+            "5h",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 6,
+          "board": [
+            "Ks",
+            "Td",
+            "6c",
+            "3h",
+            "2s"
+          ],
+          "hole": [
+            "Jc",
+            "9h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 7,
+          "board": [
+            "Qc",
+            "Th",
+            "7s",
+            "4d",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 8,
+          "board": [
+            "Jh",
+            "Ts",
+            "9c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 9,
+          "board": [
+            "Ad",
+            "Ts",
+            "8h",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 10,
+          "board": [
+            "Ks",
+            "Tc",
+            "6h",
+            "3d",
+            "2s"
+          ],
+          "hole": [
+            "Jh",
+            "9d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 11,
+          "board": [
+            "Qs",
+            "Th",
+            "7d",
+            "4c",
+            "2s"
+          ],
+          "hole": [
+            "7s",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 12,
+          "board": [
+            "Jc",
+            "Td",
+            "9s",
+            "5h",
+            "2c"
+          ],
+          "hole": [
+            "Qs",
+            "3h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        }
+      ]
+    },
+    {
+      "kind": "tape",
+      "seed": 93104,
+      "phase": 2,
+      "hands": [
+        {
+          "hand": 13,
+          "board": [
+            "Ah",
+            "Td",
+            "8c",
+            "5s",
+            "2h"
+          ],
+          "hole": [
+            "8h",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 14,
+          "board": [
+            "Kd",
+            "Th",
+            "6c",
+            "3s",
+            "2d"
+          ],
+          "hole": [
+            "Jc",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 15,
+          "board": [
+            "Qh",
+            "Td",
+            "7s",
+            "4c",
+            "2h"
+          ],
+          "hole": [
+            "7h",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 16,
+          "board": [
+            "Jc",
+            "Th",
+            "9d",
+            "5s",
+            "2c"
+          ],
+          "hole": [
+            "Qd",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "call"
+        },
+        {
+          "hand": 17,
+          "board": [
+            "Ad",
+            "Ts",
+            "8h",
+            "5c",
+            "2d"
+          ],
+          "hole": [
+            "8d",
+            "8c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 18,
+          "board": [
+            "Ks",
+            "Td",
+            "6c",
+            "3h",
+            "2s"
+          ],
+          "hole": [
+            "Jc",
+            "9h"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 19,
+          "board": [
+            "Qd",
+            "Ts",
+            "7h",
+            "4c",
+            "2d"
+          ],
+          "hole": [
+            "7d",
+            "7c"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 20,
+          "board": [
+            "Jh",
+            "Ts",
+            "9c",
+            "5d",
+            "2h"
+          ],
+          "hole": [
+            "Qc",
+            "3d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 21,
+          "board": [
+            "Ac",
+            "Th",
+            "8d",
+            "5s",
+            "2c"
+          ],
+          "hole": [
+            "8c",
+            "8s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 22,
+          "board": [
+            "Kc",
+            "Th",
+            "6d",
+            "3s",
+            "2c"
+          ],
+          "hole": [
+            "Jd",
+            "9s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 23,
+          "board": [
+            "Qc",
+            "Th",
+            "7s",
+            "4d",
+            "2c"
+          ],
+          "hole": [
+            "7c",
+            "7d"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        },
+        {
+          "hand": 24,
+          "board": [
+            "Jd",
+            "Th",
+            "9c",
+            "5s",
+            "2d"
+          ],
+          "hole": [
+            "Qc",
+            "3s"
+          ],
+          "your_action": "bet",
+          "opponent_response": "fold"
+        }
+      ]
+    }
+  ],
+  "notebook_updates": [
+    {
+      "seed": 93101,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 called 5 times (Hands 1, 3, 4, 5, 6) and folded 1 time (Hand 2). All calls occurred after my 10bb river bets. The single fold happened on Hand 2. No checks observed yet. Opponent appears to call frequently with one pair of board's highest rank."
+    },
+    {
+      "seed": 93101,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 called 5/6 bets. Folds only on Hand 2 (K-high board, no pair). Calls on all other boards, including low pairs. Pattern: Calls with any pair, folds air. Recommendation: Bet 10bb with any pair or better. Check back with air to avoid losing 10bb. Exploit their tendency to call with weak pairs by value betting frequently. Do not bluff; they rarely fold pairs. Maximize EV by betting value hands and checking weak hands."
+    },
+    {
+      "seed": 93101,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 called 9 times (Hands 1, 3, 4, 5, 6, 7, 8, 9, 10) and folded 3 times (Hands 2, 11, 12). All calls followed my 10bb river bets. Folds occurred on Hands 2, 11, and 12. No checks observed. Opponent calls frequently with one pair of board's highest rank, but has started folding more recently."
+    },
+    {
+      "seed": 93101,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 called 4/6 bets. Folds on Hands 11 & 12 (Q-high, J-high boards). Pattern: Calls with any pair, folds air. Recommendation: Bet 10bb with any pair or better. Check back with air to avoid losing 10bb. Exploit their tendency to call with weak pairs by value betting frequently. Do not bluff; they rarely fold pairs. Maximize EV by betting value hands and checking weak hands."
+    },
+    {
+      "seed": 93101,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 folded 6 consecutive hands (13-18) after my 10bb river bets. No calls observed in this segment. Total session: 9 calls, 9 folds. Opponent is folding consistently with one pair of board's highest rank. Recent trend shows high fold frequency. No checks observed. Maintain aggressive betting strategy to exploit current folding tendency."
+    },
+    {
+      "seed": 93101,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 folded 6/6 recent bets (Hands 13-18), including with pairs (8s, 7s). Previous calls (4/6) seem outdated or specific to higher boards. Current pattern: Folds everything. Recommendation: Bet 10bb with any hand. Since they fold air and weak pairs, betting maximizes EV by winning the 10bb pot uncontested. Even with air, betting yields +10bb EV vs 0 for checking. Stop checking back; exploit their extreme passivity by betting relentlessly to extract value from their folds."
+    },
+    {
+      "seed": 93101,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 called hands 20, 23, 24 after folds on 19, 21, 22. Recent trend: 3 calls, 3 folds. Opponent calls with one pair of board's highest rank (e.g., J on J-high board, 7 on 7-high board). No checks observed. Maintain aggressive betting strategy to exploit current folding tendency."
+    },
+    {
+      "seed": 93101,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 3/6 recent bets (Hands 20, 23, 24), folding 3/6. Calls occurred with pairs (Q, 7) or air. Folds happened with pairs (8, J) or air. Pattern: Calls ~50% of the time, seemingly random or based on specific board textures. Recommendation: Continue betting 10bb. With a 50% call rate, betting air yields +5bb EV (0.5*20 - 0.5*10) vs 0 for checking. Betting value hands yields +15bb EV. Exploit their inconsistent folding tendency by betting relentlessly to maximize EV from both folds and calls."
+    },
+    {
+      "seed": 93102,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 folds 4/6 bets (Hands 1, 2, 4, 6). Calls 2/6 bets (Hands 3, 5). Calls occurred when holding pair of board's highest rank (7s, 8s). Folds occurred with air or lower pairs. Opponent appears to call only with top pair or better, folding weaker holdings. Continue betting value; expect folds from bluffs or weak pairs."
+    },
+    {
+      "seed": 93102,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 folds 4/6 bets. Calls only when holding a pair of the board's highest rank (Hands 3, 5). Never calls with air or lower pairs. Strategy: Bet 10bb with any hand. If you hold the board's highest pair, expect a call (+10bb). Otherwise, expect a fold (+5bb). This maximizes EV by exploiting their passive, predictable range. Continue betting every river."
+    },
+    {
+      "seed": 93102,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 folds 10/12 bets (Hands 1, 2, 4, 6, 7, 8, 9, 10, 11, 12). Calls 2/12 bets (Hands 3, 5). Calls occurred with top pair (7s, 8s). Folds occurred with air or lower pairs. Opponent calls only with top pair or better. Continue betting value; expect folds from bluffs or weak pairs."
+    },
+    {
+      "seed": 93102,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 folds 10/10 bets. Calls 0/10. Never calls with air or lower pairs. Strategy: Bet 10bb with any hand. If you hold the board's highest pair, expect a call (+10bb). Otherwise, expect a fold (+5bb). This maximizes EV by exploiting their passive, predictable range. Continue betting every river."
+    },
+    {
+      "seed": 93102,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 called 6/6 recent bets (Hands 14-18). Calls occurred with top pair (K, Q, J, 8) or air (J9). Folds 10/12 prior. Opponent calls top pair or better; folds air/low pairs. Continue betting value; expect folds from bluffs or weak pairs."
+    },
+    {
+      "seed": 93102,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 6/6 recent bets, contradicting prior 0/10 call history. They now call with any pair, including lower pairs (e.g., Hand 16: Qs vs J-high board). Their range is no longer tight. Strategy: Bet 10bb with any hand. Expect calls from their entire range. This maximizes EV by extracting value from their passive, wide calling tendency. Continue betting every river to exploit their lack of folds."
+    },
+    {
+      "seed": 93102,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 called 6/6 recent bets (Hands 19-24). Calls occurred with top pair (Q, J, K) or air (Q3). Folds 10/12 prior. Opponent calls top pair or better; folds air/low pairs. Continue betting value; expect folds from bluffs or weak pairs."
+    },
+    {
+      "seed": 93102,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 5/6 recent bets, folding only Hand 21 (A-high board). They call with any pair, including lower pairs. Range is wide and passive. Strategy: Bet 10bb with any hand. Expect calls from their entire range. This maximizes EV by extracting value from their passive, wide calling tendency. Continue betting every river to exploit their lack of folds. The single fold on A-high suggests they may fold to top-pair blockers, but overall calling frequency is high enough to justify constant value betting."
+    },
+    {
+      "seed": 93103,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 called 4 times (Hands 1, 3, 5, 6) and folded 2 times (Hands 2, 4). Calls occurred when holding a pair of the board's highest rank (8s, 7s, 8s, 6s) or air (J9). Folds occurred with air (J9, Q3). No clear pattern yet; calls seem frequent regardless of hand strength."
+    },
+    {
+      "seed": 93103,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 called 4/6 bets (67%). Calls occurred on boards with 8s, 7s, 8s, and 6s. Folds on J/9 and Q/3 boards. Seat 1 holds one pair of board's highest rank. They call with weak pairs (8s, 7s) but fold air. Bet 10bb to extract value from their weak pair range; they rarely fold one pair. Check only if you suspect they have the nut pair, but betting is +EV against their calling station tendencies with low pairs."
+    },
+    {
+      "seed": 93103,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 called 10 times (Hands 1, 3, 5, 6, 7, 8, 9, 10, 11, 12) and folded 2 times (Hands 2, 4). Calls occurred with top pair (8s, 7s, 8s, 6s, 7s, 8s) or air (J9, Q3, J9, Q3). Folds occurred with air (J9, Q3). Seat 1 calls frequently regardless of hand strength, showing no clear folding tendency against bets."
+    },
+    {
+      "seed": 93103,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 called 10/10 bets (100%). Calls occurred on hands 7-12. No folds observed. Seat 1 holds one pair of board's highest rank. They call with weak pairs (7s, 8s) but fold air. Bet 10bb to extract value from their weak pair range; they rarely fold one pair. Check only if you suspect they have the nut pair, but betting is +EV against their calling station tendencies with low pairs."
+    },
+    {
+      "seed": 93103,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 called 16 times (Hands 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18) and folded 2 times (Hands 2, 4). Calls occurred with top pair (8s, 7s, 8s, 6s, 7s, 8s, 8s, 7s, 8s) or air (J9, Q3, J9, Q3, J9, Q3). Folds occurred with air (J9, Q3). Seat 1 calls frequently regardless of hand strength, showing no clear folding tendency against bets."
+    },
+    {
+      "seed": 93103,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 16/16 bets (100%). No folds observed. They consistently call with one pair of the board's highest rank, even when holding weak kickers or air. Their range is extremely tight to folding. Continue betting 10bb to maximize value extraction. They are a calling station with a narrow, predictable range. Check only if you hold the absolute nuts and fear a bluff, but betting is +EV against their tendency to call with any pair. Exploit their lack of folds by betting for value constantly."
+    },
+    {
+      "seed": 93103,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 called 22 times (Hands 1-18, 19-24) and folded 2 times (Hands 2, 4). Recent calls (Hands 19-24) occurred with top pair (7s, 8s, 7s) or air (Q3, J9, Q3). Folds remain limited to air (J9, Q3). Seat 1 continues to call bets frequently regardless of hand strength, showing no clear folding tendency against value or bluffs."
+    },
+    {
+      "seed": 93103,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 22/22 bets (100%). Zero folds observed. They consistently call with one pair of the board's highest rank, even with weak kickers or air. Their range is extremely tight to folding. Continue betting 10bb to maximize value extraction. They are a calling station with a narrow, predictable range. Check only if you hold the absolute nuts and fear a bluff, but betting is +EV against their tendency to call with any pair. Exploit their lack of folds by betting for value constantly."
+    },
+    {
+      "seed": 93104,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 folds 4 times (Hands 1, 2, 3, 5) and calls 2 times (Hands 4, 6). Folds occurred on boards with A, K, Q, J high cards. Calls occurred on J-high and K-high boards. No checks observed yet. Opponent appears to call with one pair on higher boards, fold on lower."
+    },
+    {
+      "seed": 93104,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 folds 4/6 bets. Calls only when holding top pair (Hands 4, 6). Folds with air or weak holdings. Strategy: Bet 10bb with any hand. Value bet top pair; bluff with air. Expect folds from weak hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+    },
+    {
+      "seed": 93104,
+      "phase": 1,
+      "format": "observations",
+      "notes": "Seat 1 folds 6 times (Hands 1, 2, 3, 5, 9, 11, 12) and calls 4 times (Hands 4, 6, 7, 8, 10). Folds on A, Q, J high boards. Calls on K, J, Q high boards. No checks observed. Opponent calls with one pair on higher boards, folds on lower."
+    },
+    {
+      "seed": 93104,
+      "phase": 1,
+      "format": "advice",
+      "notes": "Seat 1 called 4/6 bets (Hands 7, 8, 10, 12) and folded 2/6 (Hands 9, 11). Calls occurred with top pair (J, Q) or air (K-high). Folds occurred with mid-pair (8) or low pair (7). Strategy: Bet 10bb constantly. Exploit their tendency to call with top pair and fold with weaker pairs/air. Value bet top pair; bluff with air. Expect folds from non-top-pair hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+    },
+    {
+      "seed": 93104,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 folds 10 times (Hands 1, 2, 3, 5, 9, 11, 12, 13, 15, 17, 18) and calls 5 times (Hands 4, 6, 7, 8, 10, 16). Folds on A, Q, J, K high boards. Calls on J, Q high boards. No checks observed. Opponent calls with one pair on J/Q boards, folds on A/K/Q boards."
+    },
+    {
+      "seed": 93104,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 called 5/12 bets (Hands 7, 8, 10, 12, 16) and folded 7/12 (Hands 9, 11, 13, 14, 15, 17, 18). Calls occurred with top pair (J, Q) or air (K-high). Folds occurred with mid-pair (8), low pair (7), or air. Strategy: Bet 10bb constantly. Exploit their tendency to call with top pair and fold with weaker pairs/air. Value bet top pair; bluff with air. Expect folds from non-top-pair hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+    },
+    {
+      "seed": 93104,
+      "phase": 2,
+      "format": "observations",
+      "notes": "Seat 1 folds 16 times (Hands 1, 2, 3, 5, 9, 11, 12, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24) and calls 5 times (Hands 4, 6, 7, 8, 10, 16). Folds on A, Q, J, K high boards. Calls on J, Q high boards. No checks observed. Opponent calls with one pair on J/Q boards, folds on A/K/Q boards."
+    },
+    {
+      "seed": 93104,
+      "phase": 2,
+      "format": "advice",
+      "notes": "Seat 1 folded 6/6 recent bets (Hands 19-24). Total: 13 folds, 5 calls. Calls only with top pair (J, Q) or air (K-high). Folds with mid/low pairs or air. Strategy: Bet 10bb constantly. Exploit passive folding with non-top-pair hands. Value bet top pair; bluff with air. Expect folds from non-top-pair hands, calls from top pair. Maximize EV by betting frequently to exploit their passive fold tendency with non-top-pair hands."
+    }
+  ],
+  "measurement_caveat": "The legacy reader restricts percentage strings to five-point buckets without a rounding instruction. This can distort answers such as 8.3 into 80 or 85. These reader outputs do not establish a reading failure. Betting actions are preserved, but read-then-bet scores depend on this encoding. See the numeric replay runner."
+}

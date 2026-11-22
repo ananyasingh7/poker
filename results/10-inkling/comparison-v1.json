@@ -1,0 +1,277 @@
+{
+  "metric": "Mean bb lost per probe decision; lower is better.",
+  "read_then_bet_legacy": {
+    "qwen": {
+      "direct_observations": 1.875,
+      "direct_advice": 1.5,
+      "direct_frozen_observations": 3.0,
+      "direct_frozen_advice": 2.25,
+      "read_observations": 1.5,
+      "read_advice": 2.0,
+      "read_raw": 1.5,
+      "read_counts": 1.5,
+      "read_frozen_observations": 1.5,
+      "read_frozen_advice": 2.0,
+      "oracle": 1.5,
+      "blank": 1.5
+    },
+    "inkling": {
+      "direct_observations": 1.5,
+      "direct_advice": 1.875,
+      "direct_frozen_observations": 1.5,
+      "direct_frozen_advice": 1.875,
+      "read_observations": 0.37500000000000006,
+      "read_advice": 0.75,
+      "read_raw": 1.5,
+      "read_counts": 0.0,
+      "read_frozen_observations": 2.25,
+      "read_frozen_advice": 2.25,
+      "oracle": 0.375,
+      "blank": 1.5000000000000002
+    }
+  },
+  "inkling_numeric_replay": {
+    "read_observations": 0.375,
+    "read_advice": 0.75,
+    "read_raw": 1.125,
+    "read_counts": 0.0,
+    "read_frozen_observations": 2.25,
+    "read_frozen_advice": 1.125,
+    "read_frozen_raw": 1.875,
+    "oracle": 0.375,
+    "blank": 1.5000000000000002
+  },
+  "payoff_controls": {
+    "qwen": {
+      "numeric": {
+        "optimal": 6,
+        "decisions": 8,
+        "mean_loss_bb": 1.5000000000000002
+      },
+      "plain_language": {
+        "optimal": 6,
+        "decisions": 8,
+        "mean_loss_bb": 1.5000000000000002
+      },
+      "calculated_payoffs": {
+        "optimal": 8,
+        "decisions": 8,
+        "mean_loss_bb": 0.0
+      }
+    },
+    "inkling": {
+      "numeric": {
+        "optimal": 8,
+        "decisions": 8,
+        "mean_loss_bb": 0.0
+      },
+      "plain_language": {
+        "optimal": 6,
+        "decisions": 8,
+        "mean_loss_bb": 1.5
+      },
+      "calculated_payoffs": {
+        "optimal": 8,
+        "decisions": 8,
+        "mean_loss_bb": 0.0
+      }
+    }
+  },
+  "river_switch": {
+    "qwen": [
+      {
+        "seed": 92101,
+        "phase": 2,
+        "policy": "fold",
+        "visible_responses": 5,
+        "live_net_bb": 10.0,
+        "notes": "Seat 1 folds river bets with top pair and air. He is extremely passive, folding to value bets. Bet 10bb with any pair or better to extract value. Check back only with absolute air to avoid losing 5bb. His calling range is non-existent; exploit by betting strong hands and checking weak ones. Prior strategy confirmed effective.",
+        "scores": {
+          "updated": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "frozen": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "blank": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "oracle": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          }
+        }
+      },
+      {
+        "seed": 92102,
+        "phase": 2,
+        "policy": "call",
+        "visible_responses": 4,
+        "live_net_bb": 40.0,
+        "notes": "Seat 1 holds exactly one pair of the board's highest rank. They fold to river bets when their pair is beaten by my hand (e.g., I hold two pair or better). They call/showdown when their pair is the best hand (e.g., I hold air or a lower pair). Strategy: Bet 10bb when holding two pair or better to extract value from their one-pair range. Check when holding air or a lower pair to avoid losing 10bb to their superior one-pair hand. This maximizes EV by exploiting their fixed hand strength.",
+        "scores": {
+          "updated": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "frozen": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "blank": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          },
+          "oracle": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "check",
+              "bet",
+              "check",
+              "bet"
+            ]
+          }
+        }
+      }
+    ],
+    "inkling": [
+      {
+        "seed": 92101,
+        "phase": 2,
+        "policy": "fold",
+        "visible_responses": 0,
+        "live_net_bb": 0.0,
+        "notes": "Seat 1 calls 10bb bets often; value bets with pair win (9s, 8s), weak/no-pair bets lose (Js/4h, Qc/2h). Current board highest-rank pair for Seat 1; I should check unless I have a strong hand.",
+        "scores": {
+          "updated": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "check",
+              "check",
+              "check",
+              "check"
+            ]
+          },
+          "frozen": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "check",
+              "check",
+              "check",
+              "check"
+            ]
+          },
+          "blank": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          },
+          "oracle": {
+            "mean_loss_bb": 0.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          }
+        }
+      },
+      {
+        "seed": 92102,
+        "phase": 2,
+        "policy": "call",
+        "visible_responses": 8,
+        "live_net_bb": 0.0,
+        "notes": "Seat 1: 4/4 vs one pair of board's highest rank; betting 10 bb nets +5 bb each time. Continue betting 10 bb.",
+        "scores": {
+          "updated": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          },
+          "frozen": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          },
+          "blank": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          },
+          "oracle": {
+            "mean_loss_bb": 5.0,
+            "actions": [
+              "bet",
+              "bet",
+              "bet",
+              "bet"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "caveats": [
+    "Small descriptive pilots, not a model ranking or evidence of general learning.",
+    "Legacy five-point percentage string buckets can distort estimates; numeric replay corrects the encoding.",
+    "Qwen used Q4_K_M plus Pi LoRA, context 16384. Inkling used IQ4_NL, context 8192 and native JSON answer prefill.",
+    "Qwen numeric replay is unavailable in this comparison. Do not rank reader accuracy using the legacy outputs.",
+    "The drill initially stopped on a truncated 256-token notebook update. The continuation replays saved requests and keeps the previous notebook on note truncation, matching the table behavior. This policy was added after inspecting the failure."
+  ]
+}

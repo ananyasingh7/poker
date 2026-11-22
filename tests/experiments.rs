@@ -536,7 +536,8 @@ fn analyze_grades_model_rivers_against_the_scripted_field() {
 #[test]
 fn every_example_config_parses_and_validates() {
     // Batch configs have a "pilot" block; the rest are single-run configs.
-    // Configs are grouped in topic folders (examples/1-pilots, ...), so walk the whole tree.
+    // CLI configs are grouped in topic folders, so walk the whole tree. The standalone
+    // Python study has its own protocol and offline integration test, not a Rust Config.
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("examples");
     let mut files = vec![];
     let mut dirs = vec![root];
@@ -557,6 +558,9 @@ fn every_example_config_parses_and_validates() {
     {
         let text = std::fs::read_to_string(path).unwrap();
         let value: serde_json::Value = serde_json::from_str(&text).unwrap();
+        if path.ends_with("11-inkling-overnight/protocol.json") {
+            continue;
+        }
         if value.get("pilot").is_some() {
             let batch: Batch =
                 serde_json::from_value(value).unwrap_or_else(|e| panic!("{}: {e}", path.display()));

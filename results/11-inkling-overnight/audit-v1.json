@@ -1,0 +1,57 @@
+{
+  "checked": "2026-11-21",
+  "scope": "Independently recomputed from exported controlled_probe.json; final-half probes across all 96 histories.",
+  "primary_reproduced_from_48_switched_histories": 1.0034722222222223,
+  "arms": {
+    "direct_notes": {
+      "decisions": 1152,
+      "wrong_choices": 293,
+      "mean_loss_bb": 1.53125
+    },
+    "fresh_read": {
+      "decisions": 1152,
+      "wrong_choices": 196,
+      "mean_loss_bb": 1.0277777777777777
+    },
+    "calculator_notes": {
+      "decisions": 1152,
+      "wrong_choices": 24,
+      "mean_loss_bb": 0.125
+    },
+    "calculator_counts": {
+      "decisions": 1152,
+      "wrong_choices": 0,
+      "mean_loss_bb": 0.0
+    }
+  },
+  "example": {
+    "action": "bet",
+    "arm": "fresh_read",
+    "condition": "stable_caller",
+    "error": null,
+    "hand": 100,
+    "loss_bb": 6.0,
+    "probe": 0,
+    "seed": 1140002,
+    "split": "heldout",
+    "strong": false,
+    "true_fold_probability": 0.2,
+    "visible": {
+      "bet_bb": 10.0,
+      "board": [
+        "Js",
+        "9h",
+        "7d",
+        "5c",
+        "2s"
+      ],
+      "estimated_opponent_fold_percent": 25.0,
+      "hole": [
+        "Qc",
+        "Th"
+      ],
+      "pot_bb": 10.0,
+      "your_hand": "unpaired high card; loses to Seat 1"
+    }
+  }
+}

@@ -16,18 +16,15 @@ Details: [design](docs/design.md).
 
 ## What we know so far
 
-101,375 table hands and 32 river-drill hands, $18.97 ([full results](docs/results.md)):
+**Inkling 2 Mini is the current local model.** Its overnight study completed 96 controlled histories, 1,200 skill questions and 24 paired games in 6.6 hours, with $0 API fees. [Plain-language findings](results/11-inkling-overnight/takeaways.md), [full results](docs/results.md).
 
-- DeepSeek V4.1 Flash beats the bot field (+56 bb/100 thinking off) but wins only a fraction of what a simple tuned bot wins (+288).
-- The biggest helps, in order of certainty: **thinking** (low effort) on; **host-computed facts** (position, pot odds, hand strength); **accurate opponent profiles**; an explicit **bet-sizing rule** (the sharp rule held up on fresh cards). The model's own notes are accurate but their chip gain is unresolved.
-- Helper gains measured on the seeds used for tuning shrank on fresh seeds: claims now need fresh cards.
-- GLM-5.3 Flash wins as many chips as DeepSeek (+180 vs +175 bb/100; the difference, +4 [−85, +94], cannot be told from zero) at a fifth of the cost, but makes more graded mistakes on the turn and river. gpt-oss-20b is unusable (empty answers).
-- **Going forward:** GLM-5.3 Flash is the workhorse (DeepSeek as an anchor arm), playing against **less predictable bots** whose personalities, occasional surprises and seating are drawn from each seed, so a model has to learn each session's opponents.
-- **First GLM results against varied bots:** DeepSeek is the stronger player there (+126 [+23, +228] bb/100), GLM costs a fifth as much; the facts sheet is GLM's best help; GLM's own notes do nothing measurable.
-- **GLM's best setup** is facts sheet + tracker + sharp sizing rule (+222 bb/100 over no help). Notes plus tracker counts also beat no help. The gain from notes alone remains uncertain.
-- **Learning:** no model has been shown to play better late in a session than early. The one hint failed a pre-registered replication on 40 new seeds.
-- **Local Qwen/Pi:** Updated notes changed none of its four test decisions in either switch direction. In a follow-up, one sentence from its notes prompted both profitable bluffs. [Pilot results](docs/results.md#hidden-river-policy-switch-pilot-2026-11-20)
-- Weaknesses: the bots are still simple (now varied, not strong), samples are 10-20 seeds per arm, and only two thinking models have been compared. See the [roadmap](ROADMAP.md).
+- **It can use new evidence.** Fresh notes helped it adjust when an opponent changed in both directions. The controlled test supplied hand strength and guaranteed observations; its weights stayed unchanged.
+- **Choosing the bet was the larger weakness.** A fixed calculator using the same reads removed about 88% of avoidable chip loss. Exact recent action counts provided a smaller additional improvement.
+- **The benefit in games where it chooses its own bets remains uncertain.** The next test checks the calculator and counts separately and together in fresh games. [Simple next steps](ROADMAP.md#next-experiment)
+- **Fine-tuning remains untested.** We saved training candidates and kept evaluation histories separate.
+- **Earlier API results still matter.** Facts, opponent profiles and sizing rules helped DeepSeek and GLM. GLM's apparent learning gain failed replication. Qwen's local pilot did not show adaptation. Those results and the percentage-format correction are recorded in [results](docs/results.md).
+
+The current evidence is from simple scripted opponents and river decisions. General learning at a full six-seat table remains open.
 
 ## Quick start
 
@@ -44,18 +41,32 @@ cargo run --release -- catalog runs > results/runs.csv        # one row per run
 cargo run --release -p poker-table                            # watch a model play (add --mock for free)
 ```
 
-### Play with local Qwen/Pi
+### Play with a local model
 
-With the Qwen GGUF and Pi LoRA loaded in `llama-server` on port 9931, run one six-hand orbit. The model writes notes after hands three and six.
+With Inkling loaded in `llama-server` on port 9932, run one six-hand orbit. The model writes notes after hands three and six.
 
 ```sh
-cargo run --release -- openrouter examples/9-local-pi/smoke.json runs/my-pi-smoke
-python3 experiments/river_switch.py runs/my-river-switch       # two 16-hand river drills
+cargo run --release -- openrouter examples/10-inkling/smoke-answer-only.json runs/my-inkling-smoke
 ```
 
-The session CLI and batch pilot accept `local_port` and use the server's model alias. Local requests go directly to loopback without an API key. The lab sends temperature 0 for reproducibility and the example disables thinking. Token usage and request limits still apply. Each new session starts with empty notes.
+The session CLI and batch pilot accept `local_port` and use the server's model alias. Local requests go directly to loopback without an API key. The lab sends temperature 0 for reproducibility. Token usage and request limits still apply. Each new session starts with empty notes. Qwen/Pi on port 9931 remains available through `examples/9-local-pi/smoke.json`.
 
-Full command reference: [methods](docs/methods.md).
+Inkling's `local_json_prefill` option starts a JSON answer directly so reasoning does not consume the short answer limit. To repeat the small river pilots:
+
+```sh
+POKER_MODEL=inkling-2-mini POKER_MODEL_URL=http://127.0.0.1:9932/v1/chat/completions \
+  POKER_TEMPLATE_KWARGS='{"reasoning_effort":"none"}' POKER_JSON_PREFILL=1 \
+  POKER_KEEP_PRIOR_ON_NOTE_FAILURE=1 \
+  python3 -B experiments/local_suite.py runs/inkling-local-suite-new
+```
+
+To repeat the overnight study in a new directory, or resume it using the same directory:
+
+```sh
+python3 -B experiments/run_inkling_overnight.py runs/my-inkling-overnight results/my-inkling-overnight
+```
+
+The supervisor keeps the Mac awake and saves each response for recovery. The report marks whether the study completed. Full command reference: [methods](docs/methods.md).
 
 **What is a seed?** A number that decides how the deck is shuffled. The same seed deals exactly the same cards in the same order, so two setups (say, with and without notes) can face identical hands and the difference between them is the setup, not the cards. One seed here means one 60-hand session's worth of deals; "seeds 11-20" is ten different decks. A "fresh" seed is one never used while tuning a helper, so a result on it cannot have been fitted to those cards. Seeds are also the unit of the error bars: ten seeds is ten independent tries.
 
@@ -71,4 +82,4 @@ Full command reference: [methods](docs/methods.md).
 | `docs/` | [design](docs/design.md), [methods](docs/methods.md), [results](docs/results.md), [model input](docs/model-input.md), [table](docs/table.md), [papers](docs/papers.md) |
 | `ROADMAP.md` | Done, open gaps, next experiments |
 
-Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`. The same names are used in `examples/`, `runs/`, `results/` and the sections of [results](docs/results.md). Local Qwen/Pi is topic 9, `9-local-pi`.
+Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`, `9-local-pi`, `10-inkling`, `11-inkling-overnight`. These names match the sections of [results](docs/results.md). Standalone pilot run directories may use their original names.

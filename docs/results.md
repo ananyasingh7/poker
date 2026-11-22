@@ -1,6 +1,6 @@
 # Results
 
-Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated otherwise, sections 7–8 cover GLM-5.3 Flash, and section 9 covers local Qwen/Pi. See [methods](methods.md) for scoring.
+Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated otherwise, sections 7–8 cover GLM-5.3 Flash, section 9 covers local Qwen/Pi, and sections 10–11 cover local Inkling. See [methods](methods.md) for scoring and the [roadmap](../ROADMAP.md) for next steps.
 
 **Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix, except `memory-budget-v1.txt` (re-run 2026-11-19 with learning curves).
 
@@ -12,9 +12,9 @@ Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated 
 | --- | --- | --- | --- |
 | 1 | The model beats the five-bot field without help, but captures a small share of what a tuned bot wins | +56 [+25, +88] vs ceiling +288 (thinking off) | Solid (28 seeds) |
 | 2 | Telling the model facts it could compute (position, pot odds, made hand) is the biggest single gain with thinking off | +120 [+37, +203]; replicated on Qwen (+208) | Solid |
-| 3 | A calculator or the `solid` rule's advice add nothing measurable on top of those facts | equity −16 [−58, +26] | Unresolved, small |
+| 3 | In the earlier API table tests, an equity calculator or the `solid` rule's advice add nothing measurable on top of facts | equity −16 [−58, +26] | Unresolved, small |
 | 4 | Accurate opponent descriptions (cheat sheet) help; much more with thinking on | +33 [+2, +65] off; +107 [+54, +159] on | Solid with thinking |
-| 5 | The model's own notes are accurate and change behaviour, but no chip gain is resolved | +13 [−22, +49] off; +2 [−148, +152] on | Unresolved |
+| 5 | DeepSeek's own notes change behaviour, but no chip gain is resolved in the earlier table tests | +13 [−22, +49] off; +2 [−148, +152] on | Unresolved |
 | 6 | Every kind of opponent information cuts river mistakes, in the order tracker < notes < cheat sheet | −72 / −140 / −278 river cost | Solid (10 seeds) |
 | 7 | Only an explicit sizing instruction fixes bet sizing; the sharp rule holds on fresh cards | sharp: river −142 [−265, −18], chips +232 [+31, +434] | Solid on 10 fresh seeds |
 | 8 | Helper wins tuned on seeds 1-10 shrink on fresh seeds | plain rule −200 → −85 [−206, +35] | Solid warning |
@@ -22,11 +22,14 @@ Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated 
 | 10 | GLM-5.3 Flash wins as many chips as DeepSeek at a fifth of the cost and help gains it chips too, but it makes more graded mistakes; gpt-oss-20b has broken output | GLM vs DeepSeek chips +4 [−85, +94], turn cost +48 [+15, +82] | Two thinking models, one field |
 | 11 | Against varied bots, DeepSeek beats GLM on chips; GLM costs a fifth as much | DeepSeek minus GLM +126 [+23, +228] chips | 20 fresh seeds |
 | 12 | GLM’s highest-scoring setup combines facts, tracker and sharp sizing. Notes plus counts also beat no help | facts + tracker + sharp: chips +222 [+30, +415], river −146 [−238, −54]; notes + counts +184 [+1, +367]; notes alone +82 [−90, +254] | 20 fresh seeds |
-| 13 | No model gets measurably better over a session. The one hint (GLM notes closing on the cheat sheet) **failed a pre-registered replication** | original +393 [+112, +673]; replication −72 [−396, +253], 40 new seeds | Pre-registered |
+| 13 | The earlier full-table learning hint (GLM notes closing on the cheat sheet) **failed a pre-registered replication** | original +393 [+112, +673]; replication −72 [−396, +253], 40 new seeds | Pre-registered |
 | 14 | The sharp sizing rule is not clearly better than the plain one for GLM (the plain rule even wins more chips) | sharp minus plain: chips −130 [−303, +42], river −78 [−197, +42] | 20 fresh seeds |
 | 15 | Local Qwen/Pi’s updated notes gave the same decisions as frozen notes after an opponent switched | 0 bb saved per decision in both directions | Two-session pilot |
+| 16 | Inkling used fresh notes to adapt in both directions in a controlled river drill | fresh versus frozen reads: +1.003 [0.729, 1.281] bb saved per decision | Predeclared test; 48 changed histories |
+| 17 | Inkling's larger weakness was choosing the bet: a fixed calculator using the same read removed about 88% of avoidable loss | calculator +0.903 [0.660, 1.144]; recent counts added +0.125 [0.052, 0.219] bb saved per decision | Descriptive comparisons; 96 histories |
+| 18 | Separating reading from betting has no clearly resolved benefit when Inkling chooses its own bets | +0.081 [−0.161, +0.362] bb saved per decision | 24 paired games |
 
-**To date:** 101,375 table hands and 32 separate river-drill hands, $18.97 reported by the runs (see [Spend](#spend)).
+The table-run catalog predates the Inkling studies. Keep full-table hands, forced observations and synthetic river decisions separate; see [Spend](#spend) and sections 10–11 for their counts and costs.
 
 ---
 
@@ -203,7 +206,7 @@ Help effect (tracker + rule minus none, paired): DeepSeek low +99 chips / −136
 
 ## 7. GLM against varied bots (2026-11-18 to 11-19)
 
-From here on the workhorse is GLM-5.3 Flash (thinking low), against less predictable bots (`opponent_variation`: per-session personalities, 10% mixing, a field drawn per seed from the five current styles), on fresh seeds 21-40, seat 0, with one DeepSeek anchor arm on the same deals. Configs `examples/7-glm-varied/`; comparison `results/7-glm-varied/comparison.{md,json}` (`poker-lab compare ... --seat 0 --turn`). 7,212 hands, $1.03 reported ($1.08 on the account, smoke test included). Every batch completed 20 of 20 sessions; GLM had 0-0.6 fallbacks per 100 hands and no truncations, DeepSeek 20 truncated answers in 1,200 hands.
+For this API study the workhorse was GLM-5.3 Flash (thinking low), against less predictable bots (`opponent_variation`: per-session personalities, 10% mixing, a field drawn per seed from the five current styles), on fresh seeds 21-40, seat 0, with one DeepSeek anchor arm on the same deals. Configs `examples/7-glm-varied/`; comparison `results/7-glm-varied/comparison.{md,json}` (`poker-lab compare ... --seat 0 --turn`). 7,212 hands, $1.03 reported ($1.08 on the account, smoke test included). Every batch completed 20 of 20 sessions; GLM had 0-0.6 fallbacks per 100 hands and no truncations, DeepSeek 20 truncated answers in 1,200 hands.
 
 ### 7a. Ceiling for the varied field (free)
 
@@ -295,9 +298,87 @@ Two 16-hand river games, one switch in each direction. After eight hands the opp
 
 Values are bb lost per test decision. Qwen saw five folds after the first switch but still checked both profitable bluffs. Against the caller, its usual play was already optimal. Live winnings before and after the switch were +40 then +10 bb for call to fold, and 0 then +40 bb for fold to call. [Hands and notebook updates](../results/9-local-pi/river-switch-hands-v1.json)
 
-**Exploratory follow-up.** The full note advised checking weak hands. Given only its own first sentence about the opponent folding, Qwen bet both bluffs. We selected that sentence after seeing the result. The next test compares observation-only notes with notes that also give advice, on fresh deals. [Probe actions and scores](../results/9-local-pi/river-switch-v1.json)
+**Exploratory follow-up.** The full note advised checking weak hands. Given only its own first sentence about the opponent folding, Qwen bet both bluffs. We selected that sentence after seeing the result. The follow-up compared observation-only notes with notes that also give advice; see the next subsection. [Probe actions and scores](../results/9-local-pi/river-switch-v1.json)
+
+### Reading the opponent separately from betting (pilot, 2026-11-20)
+
+Four fixed observation histories used fold rates of 20% → 80%, 80% → 20%, 20% → 20% and 80% → 80%. Each contained 24 predetermined pot bets. Both notebook writers saw the same responses and updated every six bets. One prompt requested observations only; the other also requested advice. At each 12-bet checkpoint, Qwen estimated the current fold rate in one call and chose bets in separate calls. Four fresh river probes included explicit hand-strength labels. Thinking was off, temperature 0. [Runner and design](../experiments/read_then_bet.py)
+
+| Notebook prompt | Direct notes to bet | Notes to fold estimate to bet |
+| --- | ---: | ---: |
+| Observations only | 1.875 | 1.500 |
+| Observations plus advice | 1.500 | 2.000 |
+
+Values are mean bb lost per test decision at the final checkpoint, averaged over four histories. The observation-based separate stage matched the blank notebook's actions. Every separate-stage bluff was checked, even when the supplied fold rate was 80% or 100%. This helped against callers and missed profitable bluffs against folders. The advice-based stage also checked a value hand when supplied a 0% fold rate. Splitting the steps did not produce reliable adaptation. [All scores, observations and notebook updates](../results/9-local-pi/read-then-bet-v1.json)
+
+**Reader-test correction.** The response grammar allowed only strings at five-point intervals. An intended 8.3% answer could be forced into 80% or 85%. Inkling's later diagnostic exposed this problem. Qwen's recorded 80% answers from 22 calls and two folds cannot establish a reading failure. The betting scores remain as recorded, but the separate-stage scores depend on this flawed reader. Numeric replays allow ordinary percentages.
+
+**Exploratory payoff control.** On eight probe situations, supplying the true fold percentage as a number or sentence left two profitable bluffs unplayed. Supplying the calculated expected payoffs made all eight choices optimal. On an 80%-fold bluff, checking was worth −5 bb and betting +1 bb, including the sunk contribution. These controls were selected after inspecting the main run. [Control runner](../experiments/read_then_bet_controls.py), [control data](../results/9-local-pi/read-then-bet-controls-v1.json)
+
+**Limits.** One history per condition, shared board templates, forced observation bets and supplied hand strength. The observations-only writer sometimes added advice, and notebooks confused the player's cards with the opponent's. The percentage grammar needs correction before drawing conclusions about reading. The direct betting and supplied-payoff controls remain useful; this is a controlled drill rather than full-table learning.
+
+## 10. Local Inkling 2 Mini (2026-11-20)
+
+Inkling IQ4_NL ran on port 9932 with an 8,192-token context, temperature 0 and the same seeds, cards and scoring as Qwen. The original short answer limits filled with reasoning and produced three failed table decisions. Starting the native JSON answer directly (`local_json_prefill`) let both table checks finish cleanly: six hands with structured notes and two with journal notes, no fallbacks or memory errors, $0 API fees. Inkling wrote nonempty notes, but their counts and card descriptions were not consistently accurate. Different quantization, context and answer prefixes limit model comparisons. [Configs](../examples/10-inkling/), [saved data](../results/10-inkling/suite-v1.json)
+
+### Hidden river policy switch
+
+| Opponent after switch | Qwen fresh / frozen notes | Inkling fresh / frozen notes |
+| --- | ---: | ---: |
+| Always folds | 5 / 5 | 5 / 5 |
+| Always calls | 0 / 0 | 5 / 5 |
+
+Values are bb lost per probe decision. Fresh notes did not improve either model over frozen notes. Inkling checked every hand after the opponent became a folder, so it never observed the changed response. In the reverse switch it saw eight calls but kept advice to bet every hand. These two small drills show no reliable adaptation. [Comparison](../results/10-inkling/comparison-v1.json)
+
+### Reading separately from betting
+
+The same four observation histories and notebook prompts as section 9 were tested. The corrected replay reused those notes but allowed ordinary numeric percentages.
+
+| How Inkling chose its bet | Observations-only notes | Notes with advice |
+| --- | ---: | ---: |
+| Full notes directly | 1.500 | 1.875 |
+| Fresh notes → numeric estimate → bet | 0.375 | 0.750 |
+| Frozen notes → numeric estimate → bet | 2.250 | 1.125 |
+
+Values are mean bb lost per final-checkpoint decision: 16 decisions per column and method, across four histories. Splitting the steps reduced average cost, but the corrected replay still made a bad bluff after the opponent became a caller. The observations-only stage improved against the newly folding opponent and worsened against the newly calling opponent compared with its frozen read. The simple recent-count baseline lost zero; supplying the true fold rate still lost 0.375. Betting choices remain inconsistent even with useful estimates. [Numeric replay](../experiments/read_then_bet_numeric.py)
+
+Three of 32 notebook updates hit the 256-token limit. The drill continuation kept the previous note, matching the table's behavior; this policy was added after the failure. Saved requests were replayed and all completed checkpoints stayed unchanged.
+
+### Small betting and reader checks
+
+| Information supplied | Qwen correct bets | Inkling correct bets |
+| --- | ---: | ---: |
+| Fold chance as a number | 6 / 8 | 8 / 8 |
+| Fold chance in a sentence | 6 / 8 | 6 / 8 |
+| Calculated winnings for each choice | 8 / 8 | 8 / 8 |
+
+These use the same eight situations as Qwen's exploratory controls. Inkling handled the numeric version better here, but the sentence version still missed two profitable bluffs.
+
+The legacy percentage buckets returned 80% folds from 22 calls and two folds. With the same reader prompt and ordinary numeric output, Inkling returned 8.3%; reversing the counts returned 91.7%. This exposes a test-format problem, not evidence that Qwen cannot read counts. Qwen needs the corrected replay before comparing reader accuracy.
+
+**Reading.** Inkling is a useful local player, and separating the steps is promising in this small drill. Full-note play did not adapt reliably. There is one history per condition, forced observation bets, shared card templates and no uncertainty interval. Repeat the corrected test on fresh histories before calling this reliable learning or choosing fine-tuning.
+
+## 11. Overnight Inkling study (registered 2026-11-20)
+
+The fixed plan includes 96 independent 120-observation histories, 1,200 skill questions and 24 pairs of 80-hand own-choice games. The primary test compares fresh and frozen reads after an opponent changes. Separate comparisons hold the read fixed while replacing betting with a calculator, then hold the calculator fixed while replacing notes with exact recent counts. These guide the choice between better memory, a betting calculator and a later fine-tuning experiment.
+
+[Automatic report](../results/11-inkling-overnight/summary.md), [analysis data](../results/11-inkling-overnight/analysis.json), [live status](../results/11-inkling-overnight/progress.json), [registered plan](../examples/11-inkling-overnight/protocol.json). The report marks completion explicitly and includes uncertainty over independent histories. Fine-tuning is not performed in this study.
+
+**Completed 2026-11-21.** All 96 histories, 1,200 skill questions and 24 game pairs finished in 6.63 hours, using 16,716 local requests. Five note writes hit the limit and kept their previous note; no action or reader answers failed. API fees were $0.
+
+**Primary result: passed in the controlled drill.** Fresh reads saved 1.003 [0.729, 1.281] bb per decision compared with frozen reads after a switch. Both directions improved: caller to folder +1.076 [0.653, 1.549], folder to caller +0.931 [0.611, 1.271]. This is adaptation through notes with unchanged model weights, guaranteed observations and supplied hand strength.
+
+**The biggest measured fix was choosing the bet.** On the same 1,152 final-half probes across all 96 histories, separate reading and model betting made 196 wrong choices; a calculator using the same reads made 24; recent counts plus the calculator made zero. The calculator removed about 88% of avoidable chip loss, saving 0.903 [0.660, 1.144] bb per decision. Exact recent counts then saved another 0.125 [0.052, 0.219]. These intervention comparisons are descriptive. Zero errors applies to these simple test situations.
+
+**Memory was useful but imperfect.** Notes-based reads missed the true fold percentage by 8.13 points on average; raw-history reads by 8.61; recent counts by 7.21. Giving the entire history did not clearly improve decisions over notes. Most remaining model-betting errors were bluffs against frequent callers: 192 of 196 wrong choices in the separate-stage setup.
+
+**Own-choice play remains unresolved.** Separating reading from betting saved 0.081 [-0.161, 0.362] bb per decision after a change in 24 paired games. The interval includes zero. The controlled result has not established a benefit when Inkling determines which evidence it collects.
+
+**Next step.** Test a fixed betting calculator first, with exact-count memory as a separate addition, in fresh own-choice games. Fine-tuning remains a later candidate for residual errors; this study did not measure its benefit. [Plain-language findings](../results/11-inkling-overnight/takeaways.md)
 
 ## Spend
+
+The totals below predate Inkling. Its completed table checks add eight hands at $0 API cost; compatibility failures are described in section 10.
 
 From `results/runs.csv` (`poker-lab catalog runs`): cost as reported by each run's summary. Real OpenRouter usage is slightly higher, because sessions killed mid-way and later resumed are not in their batch's summary (the lineup cost $1.70 on the account against $1.58 reported; the 2026-11-19 runs $1.63 against about $1.30, because sessions interrupted by provider overloads were re-run).
 

@@ -31,6 +31,8 @@ pub struct Config {
     /// Use llama-server on this IPv4 loopback port. Omit for OpenRouter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub local_port: Option<std::num::NonZeroU16>,
+    /// Prefill the local assistant’s JSON answer channel for models that otherwise reason.
+    pub local_json_prefill: bool,
     pub seats: usize,
     pub model_seat: usize,
     pub all_models: bool,
@@ -319,6 +321,7 @@ impl Default for Config {
         Self {
             model: String::new(),
             local_port: None,
+            local_json_prefill: false,
             seats: 6,
             model_seat: 0,
             all_models: false,
@@ -496,10 +499,14 @@ impl Config {
             max_requests: self.max_requests,
             spend_limit_usd: self.spend_limit_usd,
             local_port: self.local_port,
+            local_json_prefill: self.local_json_prefill,
             endpoint: None,
         }
     }
     pub fn validate(&self) -> Result<(), String> {
+        if self.local_json_prefill && self.local_port.is_none() {
+            return Err("local_json_prefill requires local_port".into());
+        }
         if self.local_port.is_some()
             && (self.provider != ProviderPrefs::default() || self.reasoning_effort.is_some())
         {
@@ -1110,6 +1117,12 @@ impl OpenRouterAgent {
                 );
             }
         }
+        if self.config.local_json_prefill {
+            body["messages"]
+                .as_array_mut()
+                .unwrap()
+                .push(json!({"role":"assistant","content":"{"}));
+        }
         self.decision += 1;
         let id = json!({"hand":self.hand,"decision":self.decision,"seat":view.seat});
         let max_attempts = self.config.max_attempts.max(1);
@@ -1636,6 +1649,7 @@ mod tests {
         reply["usage"].as_object_mut().unwrap().remove("cost");
         let (url, received, server) = server(200, reply.to_string(), Duration::ZERO);
         let mut cfg = config();
+        cfg.local_json_prefill = true;
         cfg.local_port = url.rsplit_once(':').unwrap().1.parse().ok();
         cfg.reasoning_enabled = Some(false);
         let mut agent =
@@ -1643,6 +1657,10 @@ mod tests {
         assert_eq!(agent.decide(&view()).unwrap(), Action::Call);
         let body = received.recv().unwrap();
         assert_eq!(body["chat_template_kwargs"]["enable_thinking"], false);
+        assert_eq!(
+            body["messages"][2],
+            json!({"role":"assistant","content":"{"})
+        );
         assert!(body.get("provider").is_none() && body.get("usage").is_none());
         assert_eq!(agent.stop_reason(), None);
         let stats = agent.stats.borrow();

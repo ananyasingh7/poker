@@ -1,0 +1,22 @@
+{
+  "state": "complete",
+  "updated": "2026-11-21T11:02:01.240051+00:00",
+  "stage": "finished",
+  "current": "",
+  "elapsed_hours": 6.633913817207018,
+  "requests": 16716,
+  "failed_model_answers": 5,
+  "completed": {
+    "bet_diagnostic": 960,
+    "checkpoint": 576,
+    "controlled_complete": 96,
+    "controlled_probe": 23040,
+    "count_diagnostic": 240,
+    "online_complete": 48,
+    "online_hand": 3840,
+    "online_note": 192,
+    "preflight": 1,
+    "tape": 96
+  },
+  "error": null
+}

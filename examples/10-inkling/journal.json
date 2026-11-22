@@ -1,0 +1,23 @@
+{
+  "model": "inkling-2-mini",
+  "local_port": 9932,
+  "seed": 901,
+  "hands": 2,
+  "seats": 6,
+  "opponents": "mixed",
+  "opponent_field": [
+    "station",
+    "overfolder",
+    "solid",
+    "adaptive",
+    "tight"
+  ],
+  "reset_stacks": true,
+  "memory": "notes",
+  "notebook_style": "journal",
+  "notebook_every": 1,
+  "reasoning_enabled": false,
+  "timeout_ms": 120000,
+  "max_attempts": 2,
+  "max_requests": 100
+}

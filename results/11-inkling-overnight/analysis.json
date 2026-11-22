@@ -1,0 +1,1368 @@
+{
+  "updated": "2026-11-21T11:02:01.178713+00:00",
+  "complete_histories": 96,
+  "primary_fresh_vs_frozen": {
+    "n": 48,
+    "mean": 1.0034722222222223,
+    "interval_95": [
+      0.7291666666666667,
+      1.2812500000000002
+    ]
+  },
+  "directions": {
+    "caller_to_folder": {
+      "n": 24,
+      "mean": 1.076388888888889,
+      "interval_95": [
+        0.6527777777777779,
+        1.5486111111111114
+      ]
+    },
+    "folder_to_caller": {
+      "n": 24,
+      "mean": 0.9305555555555556,
+      "interval_95": [
+        0.6111111111111112,
+        1.2708333333333333
+      ]
+    }
+  },
+  "post_change_arm_losses": {
+    "calculator_counts": {
+      "n": 96,
+      "mean": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "calculator_frozen": {
+      "n": 96,
+      "mean": 1.53125,
+      "interval_95": [
+        1.25,
+        1.84375
+      ]
+    },
+    "calculator_notes": {
+      "n": 96,
+      "mean": 0.125,
+      "interval_95": [
+        0.052083333333333336,
+        0.21875000000000003
+      ]
+    },
+    "calculator_raw_history": {
+      "n": 96,
+      "mean": 0.20833333333333337,
+      "interval_95": [
+        0.13541666666666669,
+        0.29166666666666674
+      ]
+    },
+    "calculator_true": {
+      "n": 96,
+      "mean": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "counts_read": {
+      "n": 96,
+      "mean": 0.9565972222222222,
+      "interval_95": [
+        0.7395833333333334,
+        1.1770833333333333
+      ]
+    },
+    "direct_notes": {
+      "n": 96,
+      "mean": 1.53125,
+      "interval_95": [
+        1.2256944444444444,
+        1.8420138888888888
+      ]
+    },
+    "fresh_read": {
+      "n": 96,
+      "mean": 1.0277777777777777,
+      "interval_95": [
+        0.7916666666666666,
+        1.2621527777777777
+      ]
+    },
+    "frozen_read": {
+      "n": 96,
+      "mean": 1.4756944444444444,
+      "interval_95": [
+        1.203125,
+        1.7482638888888888
+      ]
+    },
+    "perfect_read": {
+      "n": 96,
+      "mean": 0.8958333333333334,
+      "interval_95": [
+        0.6979166666666666,
+        1.0989583333333333
+      ]
+    }
+  },
+  "interventions": {
+    "fixed_calculator": {
+      "n": 96,
+      "mean": 0.9027777777777778,
+      "interval_95": [
+        0.6597222222222222,
+        1.1440972222222223
+      ]
+    },
+    "exact_recent_counts": {
+      "n": 96,
+      "mean": 0.125,
+      "interval_95": [
+        0.052083333333333336,
+        0.21875000000000003
+      ]
+    },
+    "raw_history_memory": {
+      "n": 96,
+      "mean": -0.08333333333333336,
+      "interval_95": [
+        -0.17708333333333337,
+        0.02083333333333332
+      ]
+    },
+    "counts_and_calculator": {
+      "n": 96,
+      "mean": 1.0277777777777777,
+      "interval_95": [
+        0.7916666666666666,
+        1.2621527777777777
+      ]
+    }
+  },
+  "diagnostics": {
+    "reader_counts": {
+      "n": 80,
+      "failures": 0,
+      "mean_absolute_percentage_error": 0.02650000000000024
+    },
+    "reader_history": {
+      "n": 80,
+      "failures": 0,
+      "mean_absolute_percentage_error": 1.7193962500000002
+    },
+    "reader_counts_with_rate": {
+      "n": 80,
+      "failures": 0,
+      "mean_absolute_percentage_error": 0.01333333333333358
+    },
+    "bet_numeric_label_False": {
+      "n": 160,
+      "optimal_fraction": 0.8125,
+      "mean_loss_bb": 2.8265625,
+      "failures": 0
+    },
+    "bet_sentence_label_False": {
+      "n": 160,
+      "optimal_fraction": 0.85,
+      "mean_loss_bb": 1.8046875,
+      "failures": 0
+    },
+    "bet_payoffs_label_False": {
+      "n": 160,
+      "optimal_fraction": 0.98125,
+      "mean_loss_bb": 0.25,
+      "failures": 0
+    },
+    "bet_numeric_label_True": {
+      "n": 160,
+      "optimal_fraction": 0.8875,
+      "mean_loss_bb": 1.853125,
+      "failures": 0
+    },
+    "bet_sentence_label_True": {
+      "n": 160,
+      "optimal_fraction": 0.84375,
+      "mean_loss_bb": 1.8984375,
+      "failures": 0
+    },
+    "bet_payoffs_label_True": {
+      "n": 160,
+      "optimal_fraction": 0.96875,
+      "mean_loss_bb": 0.29375,
+      "failures": 0
+    }
+  },
+  "online_split_advantage": {
+    "n": 24,
+    "mean": 0.08094170716121935,
+    "interval_95": [
+      -0.16064169570267137,
+      0.36188278185229406
+    ]
+  },
+  "note_failures": 5,
+  "per_history_post_change_loss": {
+    "1140000": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 1.5000000000000002,
+      "perfect_read": 0.0
+    },
+    "1140001": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.5,
+      "direct_notes": 3.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140002": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140003": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140004": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 1.0000000000000002,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140005": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 1.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140006": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140007": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140008": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.5000000000000001,
+      "perfect_read": 0.0
+    },
+    "1140009": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 2.5,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140010": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 3.0
+    },
+    "1140011": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140012": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140013": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140014": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.1666666666666667,
+      "frozen_read": 1.5,
+      "perfect_read": 1.5
+    },
+    "1140015": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140016": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140017": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 3.6666666666666665,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140018": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 1.5,
+      "perfect_read": 1.5
+    },
+    "1140019": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140020": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.5000000000000001,
+      "perfect_read": 0.0
+    },
+    "1140021": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140022": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 2.5,
+      "perfect_read": 2.0
+    },
+    "1140023": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140024": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 1.0000000000000002,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140025": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.6666666666666665,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 3.0
+    },
+    "1140026": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.1666666666666665,
+      "direct_notes": 3.0,
+      "fresh_read": 1.6666666666666667,
+      "frozen_read": 2.5,
+      "perfect_read": 1.5
+    },
+    "1140027": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140028": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 1.0000000000000002,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140029": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.1666666666666667,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 0.0
+    },
+    "1140030": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 1.0,
+      "perfect_read": 1.0
+    },
+    "1140031": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140032": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140033": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.6666666666666667,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140034": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140035": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140036": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140037": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140038": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 1.3333333333333333,
+      "perfect_read": 2.0
+    },
+    "1140039": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.5000000000000001,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140040": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.1666666666666666,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 1.1666666666666667,
+      "perfect_read": 0.0
+    },
+    "1140041": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140042": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140043": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140044": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.166666666666667,
+      "perfect_read": 0.0
+    },
+    "1140045": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140046": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140047": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140048": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140049": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 1.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140050": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.6666666666666665,
+      "fresh_read": 1.5,
+      "frozen_read": 0.5,
+      "perfect_read": 2.0
+    },
+    "1140051": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140052": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 2.5000000000000004,
+      "perfect_read": 0.0
+    },
+    "1140053": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140054": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 0.5,
+      "perfect_read": 2.5
+    },
+    "1140055": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140056": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 2.0000000000000004,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.0000000000000004,
+      "perfect_read": 0.0
+    },
+    "1140057": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 1.0,
+      "calculator_raw_history": 1.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140058": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 0.0,
+      "perfect_read": 2.0
+    },
+    "1140059": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140060": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 2.0000000000000004,
+      "perfect_read": 0.0
+    },
+    "1140061": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140062": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140063": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140064": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 1.0000000000000002,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 1.5000000000000002,
+      "perfect_read": 0.0
+    },
+    "1140065": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140066": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140067": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140068": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 1.5000000000000002,
+      "perfect_read": 0.0
+    },
+    "1140069": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140070": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140071": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140072": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.0000000000000004,
+      "perfect_read": 0.0
+    },
+    "1140073": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 3.0,
+      "calculator_raw_history": 1.0,
+      "calculator_true": 0.0,
+      "counts_read": 3.0,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140074": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 0.0,
+      "perfect_read": 1.5
+    },
+    "1140075": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140076": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.5000000000000001,
+      "perfect_read": 0.0
+    },
+    "1140077": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.6666666666666665,
+      "direct_notes": 3.0,
+      "fresh_read": 3.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.0
+    },
+    "1140078": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.5,
+      "frozen_read": 2.0,
+      "perfect_read": 2.0
+    },
+    "1140079": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140080": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.5000000000000001,
+      "perfect_read": 0.0
+    },
+    "1140081": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 2.5,
+      "fresh_read": 1.5,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140082": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 0.0,
+      "perfect_read": 1.5
+    },
+    "1140083": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140084": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.5000000000000001,
+      "fresh_read": 0.0,
+      "frozen_read": 0.5000000000000001,
+      "perfect_read": 0.0
+    },
+    "1140085": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 2.5
+    },
+    "1140086": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.6666666666666665,
+      "fresh_read": 2.5,
+      "frozen_read": 1.5,
+      "perfect_read": 1.5
+    },
+    "1140087": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140088": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.0000000000000004,
+      "perfect_read": 0.0
+    },
+    "1140089": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.0,
+      "direct_notes": 3.0,
+      "fresh_read": 0.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.0
+    },
+    "1140090": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 1.5,
+      "direct_notes": 3.0,
+      "fresh_read": 1.6666666666666667,
+      "frozen_read": 1.5,
+      "perfect_read": 1.5
+    },
+    "1140091": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    },
+    "1140092": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0000000000000004,
+      "calculator_notes": 1.0000000000000002,
+      "calculator_raw_history": 1.0000000000000002,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 1.0000000000000002,
+      "perfect_read": 0.0
+    },
+    "1140093": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 3.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.5,
+      "direct_notes": 3.0,
+      "fresh_read": 2.0,
+      "frozen_read": 3.0,
+      "perfect_read": 1.5
+    },
+    "1140094": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 2.0,
+      "direct_notes": 3.0,
+      "fresh_read": 1.5,
+      "frozen_read": 0.5,
+      "perfect_read": 0.5
+    },
+    "1140095": {
+      "calculator_counts": 0.0,
+      "calculator_frozen": 0.0,
+      "calculator_notes": 0.0,
+      "calculator_raw_history": 0.0,
+      "calculator_true": 0.0,
+      "counts_read": 0.0,
+      "direct_notes": 0.0,
+      "fresh_read": 0.0,
+      "frozen_read": 0.0,
+      "perfect_read": 0.0
+    }
+  },
+  "planned_histories": 96,
+  "planned_online_pairs": 24,
+  "completed_online_pairs": 24,
+  "caveat": "Intervals resample whole independent histories. Only fresh versus frozen is confirmatory; all intervention comparisons are descriptive. This is a river drill with supplied hand strength in the main experiment. No fine-tuning was performed.",
+  "state": "complete",
+  "error": null
+}

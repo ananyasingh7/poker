@@ -1,13 +1,28 @@
 """Local Qwen adaptation pilot. Run with: python3 experiments/river_switch.py NEW_RUN_DIR"""
 import itertools
 import json
+import os
 from pathlib import Path
 import random
 import sys
 from urllib.request import ProxyHandler, build_opener, Request
 
-URL = "http://127.0.0.1:9931/v1/chat/completions"
-MODEL = "qwen3.8-pi"
+URL = os.environ.get("POKER_MODEL_URL", "http://127.0.0.1:9931/v1/chat/completions")
+MODEL = os.environ.get("POKER_MODEL", "qwen3.8-pi")
+JSON_PREFILL = os.environ.get("POKER_JSON_PREFILL", "0") == "1"
+ACTION_MAX_TOKENS = int(os.environ.get("POKER_ACTION_MAX_TOKENS", "32"))
+NOTE_MAX_TOKENS = int(os.environ.get("POKER_NOTE_MAX_TOKENS", "256"))
+TEMPLATE_KWARGS = json.loads(os.environ.get("POKER_TEMPLATE_KWARGS", '{"enable_thinking":false}'))
+KEEP_PRIOR_ON_NOTE_FAILURE = os.environ.get("POKER_KEEP_PRIOR_ON_NOTE_FAILURE", "0") == "1"
+REPLAY_ROOT = os.environ.get("POKER_REPLAY_TRACE_ROOT")
+replayed = {}
+if REPLAY_ROOT:
+    for path in sorted(Path(REPLAY_ROOT).rglob('*trace*.jsonl'), key=lambda p: p.stat().st_mtime):
+        for line in path.read_text().splitlines():
+            row = json.loads(line)
+            if row['kind'] == 'inference':
+                key = json.dumps(row['request'], sort_keys=True)
+                replayed.setdefault(key, []).append(row['reply'])
 # Two deliberately extreme, unannounced policies. Opponent never raises.
 GAMES = [(92101, "call", "fold"), (92102, "fold", "call")]
 CHECKPOINT_HANDS = 8
@@ -26,26 +41,42 @@ RULES = ("Heads-up hold'em river drill. You are Seat 0. Seat 1 is the same oppon
 http = build_opener(ProxyHandler({}))
 
 
-def ask(system, observation, field, options=None):
-    spec = {"type": "string"}
+def ask(system, observation, field, options=None, numeric=False):
+    spec = {"type": "number", "minimum": 0, "maximum": 100} if numeric else {"type": "string"}
     if options:
         spec["enum"] = options
     schema = {"type": "object", "properties": {field: spec}, "required": [field],
               "additionalProperties": False}
-    body = {"model": MODEL, "temperature": 0, "max_tokens": 256 if not options else 32,
-            "chat_template_kwargs": {"enable_thinking": False},
+    body = {"model": MODEL, "temperature": 0, "max_tokens": NOTE_MAX_TOKENS if not options else ACTION_MAX_TOKENS,
+            "chat_template_kwargs": TEMPLATE_KWARGS,
             "response_format": {"type": "json_schema", "json_schema":
                                 {"name": field, "strict": True, "schema": schema}},
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": json.dumps(observation)}]}
-    req = Request(URL, json.dumps(body).encode(), {"Content-Type": "application/json"})
-    with http.open(req, timeout=180) as response:
-        reply = json.load(response)
-    log("inference", request=body, reply=reply)
+    if JSON_PREFILL:
+        body["messages"].append({"role": "assistant", "content": "{"})
+    key = json.dumps(body, sort_keys=True)
+    replay = replayed.get(key)
+    was_replayed = bool(replay)
+    if was_replayed:
+        reply = replay.pop(0)
+    else:
+        req = Request(URL, json.dumps(body).encode(), {"Content-Type": "application/json"})
+        with http.open(req, timeout=180) as response:
+            reply = json.load(response)
+    log("inference", request=body, reply=reply, replayed=was_replayed)
     choice = reply["choices"][0]
+    if field == 'notes' and choice['finish_reason'] == 'length' and KEEP_PRIOR_ON_NOTE_FAILURE:
+        prior = observation.get('prior', observation.get('prior_notebook'))
+        assert isinstance(prior, str) and reply['model'] == MODEL
+        log('notebook_failure', reason='length', policy='keep prior notebook')
+        return prior
     assert choice["finish_reason"] == "stop" and reply["model"] == MODEL
     result = json.loads(choice["message"]["content"])[field]
-    assert isinstance(result, str) and (not options or result in options)
+    if numeric:
+        assert type(result) in (int, float) and 0 <= result <= 100
+    else:
+        assert isinstance(result, str) and (not options or result in options)
     return result
 
 
@@ -117,8 +148,8 @@ def evaluate(seed, checkpoint, policy, notebooks, probes):
     return scores
 
 
-if __name__ == "__main__":
-    directory = Path(sys.argv[1])
+def run(directory):
+    global trace, seed, phase, cache
     directory.mkdir(parents=True, exist_ok=False)
     trace = (directory / "trace.jsonl").open("x")
     rows = []
@@ -139,3 +170,7 @@ if __name__ == "__main__":
             rows.append(row)
             print(json.dumps(row), flush=True)
     (directory / "results.json").write_text(json.dumps(rows, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    run(Path(sys.argv[1]))

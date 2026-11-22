@@ -14,5 +14,19 @@ Small, readable outputs of the runs in `runs/` (which is git-ignored and private
 | `7-glm-varied/ceiling-{varied,fixed}-v1.json` | `poker-lab ceiling current 8 40 OUT [--varied] --check-seeds 21-40 --check-seat 0` |
 | [9-local-pi/river-switch-v1.json](9-local-pi/river-switch-v1.json) | Two river-switch sessions, checkpoint notes, probe actions and scores, plus the exploratory excerpt test |
 | [9-local-pi/river-switch-hands-v1.json](9-local-pi/river-switch-hands-v1.json) | The 32 synthetic river hands and all eight notebook updates, in play order |
+| [9-local-pi/read-then-bet-v1.json](9-local-pi/read-then-bet-v1.json) | Four controlled histories, saved design, predictions, decisions, 96 observed bets and 32 notebook updates |
+| [9-local-pi/read-then-bet-controls-v1.json](9-local-pi/read-then-bet-controls-v1.json) | Exploratory probability, payoff and reader-prompt controls |
+| [10-inkling/suite-v1.json](10-inkling/suite-v1.json) | Inkling table checks, switch drills, notebooks, fixed observation histories and corrected numeric reader replay |
+| [10-inkling/comparison-v1.json](10-inkling/comparison-v1.json) | Qwen/Inkling scores with probability-grammar and runtime caveats |
+| [11-inkling-overnight/takeaways.md](11-inkling-overnight/takeaways.md), [summary.md](11-inkling-overnight/summary.md), [analysis.json](11-inkling-overnight/analysis.json) | Completed overnight briefing, full study and uncertainty estimates |
+| [11-inkling-overnight/protocol.json](11-inkling-overnight/protocol.json), [registered-seeds.json](11-inkling-overnight/registered-seeds.json) | Plan and independent histories fixed before the main run |
+| `11-inkling-overnight/{tape,checkpoint,controlled_probe}.json` | Observed responses, notebooks, estimates, choices and exact grades from 96 histories; comparison rows are not independent games |
+| `11-inkling-overnight/{online_hand,online_note}.json` | Decisions and notes from the 24 paired own-choice games |
+| `11-inkling-overnight/{count_diagnostic,bet_diagnostic,training-candidates}.json` | Skill questions, labels and training candidates; each record preserves its split |
+| [11-inkling-overnight/audit-v1.json](11-inkling-overnight/audit-v1.json), [progress.json](11-inkling-overnight/progress.json) | Independent check of the reported totals and final completion status |
 
 Full table histories and private model traces stay under `runs/`.
+
+Export a completed local suite with `python3 -B experiments/export_local_suite.py SUITE_DIR SMOKE_DIR JOURNAL_DIR results/10-inkling`. The legacy five-point reader grammar can distort percentages; its outputs do not establish reader accuracy. The numeric replay allows ordinary percentages.
+
+The overnight supervisor is `experiments/run_inkling_overnight.py RUN_DIR RESULT_DIR`. It keeps the Mac awake and resumes from the request cache after bounded retries. The final export includes observations, notes, reads, decisions, exact grades and separate training candidates. Raw replies and the recovery database stay in `runs/`. The report labels incomplete runs and does not claim a measured fine-tuning benefit.

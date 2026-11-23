@@ -26,6 +26,8 @@ Details: [design](docs/design.md).
 
 The current evidence is from simple scripted opponents and river decisions. General learning at a full six-seat table remains open.
 
+![The spectator table: DeepSeek playing six-handed with the session statistics panel open](docs/images/spectator-table.png)
+
 ## Quick start
 
 The lab uses Rust. OpenRouter reads credentials from `OPENROUTER_API_KEY` or a git-ignored `.openrouter-api-key`.
@@ -69,8 +71,6 @@ python3 -B experiments/run_inkling_overnight.py runs/my-inkling-overnight result
 The supervisor keeps the Mac awake and saves each response for recovery. The report marks whether the study completed. Full command reference: [methods](docs/methods.md).
 
 The own-choice study is **complete**. `python3 -B experiments/run_inkling_own_choice.py` only prints its offline plan. Inference requires `--execute`; repeating the study needs fresh output directories. [Results and data](results/README.md).
-
-**What is a seed?** A number that fixes the cards and random draws, so versions face matched situations. Session length comes from the protocol: earlier table tests usually use 60 hands; the own-choice river games use 120. A "fresh" seed is one never used while tuning a helper. Error bars use whole independent seeds, or whole opponent identities in the across-session memory test.
 
 ## Repository map
 

@@ -2,6 +2,8 @@
 
 A controlled lab for measuring how language models play six-handed no-limit Texas hold'em, and above all **how they learn**: whether a model gets better at a table as it sees more hands, what kind of memory or training makes that happen, and what it costs.
 
+**[Open the interactive hand-history notebook](docs/inkling-notebook.html)** to replay the overnight games, try training examples and compare the original and tuned Inkling. From a checkout, open the HTML file directly in your browser.
+
 ## Why
 
 Language models can describe poker strategy fluently; whether that turns into winning play is an open question (see [related papers](docs/papers.md)). Poker is a good test because it needs probabilistic judgment, reading opponents, remembering what matters, and adapting, all under hidden information. The lab's goals:

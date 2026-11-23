@@ -1,23 +1,23 @@
 # Roadmap
 
-Current direction as of 2026-11-21. The full experiment history and numbers are in [results](docs/results.md).
+Current direction as of 2026-11-22. The full experiment history and numbers are in [results](docs/results.md).
 
 ## Where we are
 
 - **Current model:** Inkling 2 Mini IQ4_NL, running locally on port 9932. Qwen/Pi, GLM and DeepSeek remain historical comparisons.
 - **Built:** a verified six-seat poker engine, scripted opponents, model players, notes and action counts, resumable experiments, decision grading and a spectator table.
-- **Latest finding:** Inkling used fresh notes to adjust to changing opponents in a controlled river test. Choosing the bet was the larger weakness: a fixed calculator using the same reads removed about 88% of avoidable chip loss. Exact recent counts added a smaller gain.
-- **Still open:** when Inkling chose its own bets, separating reading from betting had no clearly resolved benefit. General learning at a six-seat table and fine-tuning gains remain unproven.
+- **Latest finding:** updating reads beat freezing them in own-choice games, in both switch directions and both samples. Recent counts plus a calculator performed best among the four main setups; that version uses code for both steps. These comparisons are descriptive.
+- **Still open:** a calculator alone missed the predeclared success rule. Keeping notes across sessions and occasional test bets had no clear overall benefit. General learning at a six-seat table and fine-tuning gains remain unproven.
 
-The overnight study finished all 96 controlled histories, 1,200 skill questions and 24 paired games. [Plain-language findings](results/11-inkling-overnight/takeaways.md), [detailed report](results/11-inkling-overnight/summary.md), [data index](results/README.md).
+The latest run finished all sections in 7.7 hours: 32 main and 32 fresh-repeat games across six versions, 12 memory identities, 512 exam questions, scarce-evidence and gradual-change tests, and 400 seeds across five code-only policies. [Plain-language findings](results/12-inkling-own-choice/takeaways.md), [detailed report](results/12-inkling-own-choice/summary.md), [data index](results/README.md).
 
 ## Next experiment
 
-**Let Inkling read the opponent. Let a calculator compare the bets. Keep a reliable count of what happened.**
+**Build an assisted Inkling player, then identify what still needs training.** No new run or training is scheduled.
 
-For example, Inkling might say, “This player folds about one time in four.” The calculator checks whether a bluff would earn or lose chips on average. A counter remembers the actual calls and folds, so evidence does not disappear when the model rewrites its notes.
+Supply reliable hand facts, recent counts and calculated chip values, then let Inkling choose. Use the code-only counts-plus-calculator player as the reference. The full assisted combination still needs testing in sequential play.
 
-Test four versions on fresh river games:
+The completed study compared these versions, plus two that froze their reads before the opponent changed:
 
 | Version | What changes |
 | --- | --- |
@@ -26,16 +26,18 @@ Test four versions on fresh river games:
 | Counts only | Supply a fold estimate from recent action counts; Inkling chooses the bet |
 | Both | Supply the count-based estimate and let the calculator choose the bet |
 
-In these games, Inkling's own choices determine which opponent responses it sees. That is the gap the overnight controlled test could not settle.
+Each version's bets determined which opponent responses it saw. The fresh repeat used the same fixed comparison, not a winner selected from the first sample.
 
-Before running, fix the new seeds, prompts, failure rules and main comparison. Measure chips given up through bad decisions and how quickly play changes after the opponent changes. Report uncertainty across whole games, including cases where the helper does not improve play.
+Priorities:
 
-**Fine-tuning comes after this test.** If useful mistakes remain, train on the saved, correctly graded training candidates and evaluate on untouched histories. Training has not been tested yet.
+1. **Reliable help first.** In the limited betting exam, supplied chip values eliminated errors. A rule alone did not reliably fix them.
+2. **Memory that can change its mind.** Across-session notes had mixed results. Compare recent evidence against stale notes rather than assuming more memory helps.
+3. **Small fine-tuning pilot later.** Target repeatable residual mistakes and use untouched evaluation groups. The exam split accidentally separated bluff-threshold margins as well as board ranks; balance fresh groups before training. Keep the completed study's original split unchanged.
 
 ## Learning track
 
-1. **Within-session adaptation.** Controlled Inkling test passed in both directions; benefit in own-choice play remains unresolved. Run the four versions above next.
-2. **Across-session memory.** Keep notes for the same opponent across several sessions, then test on fresh cards. Open.
+1. **Within-session adaptation.** Controlled Inkling test passed; fresh reads also beat frozen reads in own-choice play, descriptively, in both directions and samples.
+2. **Across-session memory.** Completed across 12 identities; no clear overall benefit. Stable and changing opponents differed, with only three identities per condition.
 3. **Fine-tuning.** Train on decisions with justified labels, then compare the trained and original models on held-out data. Open.
 4. **Full-table transfer.** Check whether gains survive harder opponents and six-seat play. River drills supply hand strength and use simple opponents; that help must be accounted for.
 

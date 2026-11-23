@@ -16,12 +16,12 @@ Details: [design](docs/design.md).
 
 ## What we know so far
 
-**Inkling 2 Mini is the current local model.** Its overnight study completed 96 controlled histories, 1,200 skill questions and 24 paired games in 6.6 hours, with $0 API fees. [Plain-language findings](results/11-inkling-overnight/takeaways.md), [full results](docs/results.md).
+**Inkling 2 Mini is the current local model.** Its latest study completed every section in 7.7 hours, with $0 API fees: 64 main/repeat games comparing six versions, memory across sessions, 512 skill questions and separate exploration and code-only tests. [Plain-language findings](results/12-inkling-own-choice/takeaways.md), [full results](docs/results.md).
 
-- **It can use new evidence.** Fresh notes helped it adjust when an opponent changed in both directions. The controlled test supplied hand strength and guaranteed observations; its weights stayed unchanged.
-- **Choosing the bet was the larger weakness.** A fixed calculator using the same reads removed about 88% of avoidable chip loss. Exact recent action counts provided a smaller additional improvement.
-- **The benefit in games where it chooses its own bets remains uncertain.** The next test checks the calculator and counts separately and together in fresh games. [Simple next steps](ROADMAP.md#next-experiment)
-- **Fine-tuning remains untested.** We saved training candidates and kept evaluation histories separate.
+- **It can use new evidence during play.** Updating reads beat freezing them after an opponent changed, in both directions and both samples. These own-choice comparisons are descriptive; weights stayed unchanged.
+- **Recent counts plus a calculator performed best among the four main setups.** This version uses code for both steps. A calculator alone improved the average, but missed the predeclared rule requiring both samples' intervals above zero.
+- **Keeping notes across sessions and occasional information-gathering bets had no clear overall benefit.** More memory was not automatically better.
+- **Fine-tuning remains untested.** Supplying calculated chip values removed all errors in the limited betting exam. The exam split was imbalanced; fix that before a training study. [Simple next steps](ROADMAP.md#next-experiment)
 - **Earlier API results still matter.** Facts, opponent profiles and sizing rules helped DeepSeek and GLM. GLM's apparent learning gain failed replication. Qwen's local pilot did not show adaptation. Those results and the percentage-format correction are recorded in [results](docs/results.md).
 
 The current evidence is from simple scripted opponents and river decisions. General learning at a full six-seat table remains open.
@@ -68,7 +68,9 @@ python3 -B experiments/run_inkling_overnight.py runs/my-inkling-overnight result
 
 The supervisor keeps the Mac awake and saves each response for recovery. The report marks whether the study completed. Full command reference: [methods](docs/methods.md).
 
-**What is a seed?** A number that decides how the deck is shuffled. The same seed deals exactly the same cards in the same order, so two setups (say, with and without notes) can face identical hands and the difference between them is the setup, not the cards. One seed here means one 60-hand session's worth of deals; "seeds 11-20" is ten different decks. A "fresh" seed is one never used while tuning a helper, so a result on it cannot have been fitted to those cards. Seeds are also the unit of the error bars: ten seeds is ten independent tries.
+The own-choice study is **complete**. `python3 -B experiments/run_inkling_own_choice.py` only prints its offline plan. Inference requires `--execute`; repeating the study needs fresh output directories. [Results and data](results/README.md).
+
+**What is a seed?** A number that fixes the cards and random draws, so versions face matched situations. Session length comes from the protocol: earlier table tests usually use 60 hands; the own-choice river games use 120. A "fresh" seed is one never used while tuning a helper. Error bars use whole independent seeds, or whole opponent identities in the across-session memory test.
 
 ## Repository map
 
@@ -82,4 +84,4 @@ The supervisor keeps the Mac awake and saves each response for recovery. The rep
 | `docs/` | [design](docs/design.md), [methods](docs/methods.md), [results](docs/results.md), [model input](docs/model-input.md), [table](docs/table.md), [papers](docs/papers.md) |
 | `ROADMAP.md` | Done, open gaps, next experiments |
 
-Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`, `9-local-pi`, `10-inkling`, `11-inkling-overnight`. These names match the sections of [results](docs/results.md). Standalone pilot run directories may use their original names.
+Topics, in order: `1-pilots`, `2-thinking-off`, `3-qwen`, `4-table`, `5-thinking-low`, `6-lineup`, `7-glm-varied`, `8-glm-learning`, `9-local-pi`, `10-inkling`, `11-inkling-overnight`, `12-inkling-own-choice`. These names match the sections of [results](docs/results.md). Standalone pilot run directories may use their original names.

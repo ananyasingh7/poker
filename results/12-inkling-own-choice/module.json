@@ -1,0 +1,22 @@
+[
+  {
+    "admitted": true,
+    "name": "core",
+    "remaining_hours": 12.976602224111558
+  },
+  {
+    "admitted": true,
+    "name": "gradual",
+    "remaining_hours": 6.5382820108201765
+  },
+  {
+    "admitted": true,
+    "name": "replication",
+    "remaining_hours": 10.499703097144762
+  },
+  {
+    "admitted": true,
+    "name": "scarce",
+    "remaining_hours": 7.350740564929114
+  }
+]

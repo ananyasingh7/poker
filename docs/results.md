@@ -1,6 +1,6 @@
 # Results
 
-Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated otherwise, sections 7–8 cover GLM-5.3 Flash, section 9 covers local Qwen/Pi, and sections 10–11 cover local Inkling. See [methods](methods.md) for scoring and the [roadmap](../ROADMAP.md) for next steps.
+Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated otherwise, sections 7–8 cover GLM-5.3 Flash, section 9 covers local Qwen/Pi, and sections 10–12 cover local Inkling. See [methods](methods.md) for scoring and the [roadmap](../ROADMAP.md) for next steps.
 
 **Grader fix (2026-11-18).** River and turn costs on this page were re-graded after a fix: bots whose randomness depends on their cards (the `solid` bluff roll) were graded with each hand in one card order only; both orders are now considered. Costs moved by 1-9 bb/100 and no conclusion changed, except that tracker + rule's turn effect on seeds 1-10 (−35 [−76, +5]) no longer clears zero. Chip results are unaffected. The thinking-off analyses in `results/2-thinking-off` predate the fix, except `memory-budget-v1.txt` (re-run 2026-11-19 with learning curves).
 
@@ -27,9 +27,11 @@ Experiments in date order. Sections 1–6 use DeepSeek V4.1 Flash unless stated 
 | 15 | Local Qwen/Pi’s updated notes gave the same decisions as frozen notes after an opponent switched | 0 bb saved per decision in both directions | Two-session pilot |
 | 16 | Inkling used fresh notes to adapt in both directions in a controlled river drill | fresh versus frozen reads: +1.003 [0.729, 1.281] bb saved per decision | Predeclared test; 48 changed histories |
 | 17 | Inkling's larger weakness was choosing the bet: a fixed calculator using the same read removed about 88% of avoidable loss | calculator +0.903 [0.660, 1.144]; recent counts added +0.125 [0.052, 0.219] bb saved per decision | Descriptive comparisons; 96 histories |
-| 18 | Separating reading from betting has no clearly resolved benefit when Inkling chooses its own bets | +0.081 [−0.161, +0.362] bb saved per decision | 24 paired games |
+| 18 | In the first own-choice pilot, separating reading from betting had no clearly resolved benefit | +0.081 [−0.161, +0.362] bb saved per decision | 24 paired games |
+| 19 | Updating Inkling's reads beat freezing them in own-choice play, in both change directions and both samples | +1.189 [0.599, 1.884]; repeat +1.066 [0.426, 1.798] bb saved per decision | Descriptive; 16 changed seeds per sample |
+| 20 | The larger own-choice test missed its calculator-only success rule; counts plus calculator performed best among the main setups | calculator first interval includes zero; combined +0.866 [0.410, 1.345], repeat +1.257 [0.853, 1.710] | Primary did not pass; combined comparisons descriptive and code-only |
 
-The table-run catalog predates the Inkling studies. Keep full-table hands, forced observations and synthetic river decisions separate; see [Spend](#spend) and sections 10–11 for their counts and costs.
+The table-run catalog predates the Inkling studies. Keep full-table hands, forced observations and synthetic river decisions separate; see [Spend](#spend) and sections 10–12 for their counts and costs.
 
 ---
 
@@ -375,6 +377,28 @@ The fixed plan includes 96 independent 120-observation histories, 1,200 skill qu
 **Own-choice play remains unresolved.** Separating reading from betting saved 0.081 [-0.161, 0.362] bb per decision after a change in 24 paired games. The interval includes zero. The controlled result has not established a benefit when Inkling determines which evidence it collects.
 
 **Next step.** Test a fixed betting calculator first, with exact-count memory as a separate addition, in fresh own-choice games. Fine-tuning remains a later candidate for residual errors; this study did not measure its benefit. [Plain-language findings](../results/11-inkling-overnight/takeaways.md)
+
+## 12. Inkling own-choice study (completed 2026-11-22)
+
+All sections finished in 7.71 hours with 26,878 unique local requests and $0 API fees: 64 main/repeat seeds across six versions, 16 scarce-evidence and 16 gradual-change seeds across four versions, 12 opponent identities across sessions, 512 exam questions, and 400 seeds across five code-only memory policies. Five unique note answers were truncated and reused in six fallback updates; no action or read answers failed. [Simple findings](../results/12-inkling-own-choice/takeaways.md), [report](../results/12-inkling-own-choice/summary.md), [audit](../results/12-inkling-own-choice/audit.json), [fixed plan](../examples/12-inkling-own-choice/protocol.json).
+
+Values below are expected bb saved per decision, with 95% whole-seed bootstrap intervals. Positive favors the named change. Each version sees only responses to its own bets; cards and potential responses are matched.
+
+| Change from Inkling's own read and bet | First 32 seeds | Fresh 32 seeds |
+| --- | ---: | ---: |
+| Calculator only | +0.419 [−0.017, +0.869] | +0.528 [+0.134, +0.943] |
+| Recent counts only | +0.482 [+0.206, +0.775] | +0.487 [+0.246, +0.755] |
+| Counts plus calculator | +0.866 [+0.410, +1.345] | +1.257 [+0.853, +1.710] |
+
+**The primary calculator-only test did not pass:** both samples had to have intervals above zero. The other comparisons are descriptive. Counts plus calculator performed best among these four setups, but uses code for both reading and betting; its gain is not model learning.
+
+**Updating reads helped during play.** After an opponent changed, fresh versus frozen reads saved 1.189 [0.599, 1.884] in the first sample and 1.066 [0.426, 1.798] in the repeat, with Inkling choosing bets. Both change directions improved in each sample. These are descriptive own-choice adaptation results, with unchanged weights and supplied hand strength, not full-table learning.
+
+**Keeping notes across sessions had no clear overall gain:** −0.021 [−1.029, +0.708] across 12 identities. Stable and changing opponents differed; each condition had only three identities. Occasional information-gathering bets also had no resolved benefit after including their costs. In 400 code-only seeds, the last 20 responses beat the last 60 or all responses; more memory was not automatically better.
+
+**Calculated chip values helped in the exam:** 32/32 held-out and 96/96 development choices had zero regret, versus 21/32 held-out with only the fold chance and hand strength. This does not establish perfect betting in sequential play. Review found that every fourth group selected only questions 10 percentage points below the bluff threshold for evaluation; development used other margins, and board ranks differed too. Within-question format comparisons remain paired, but development/evaluation accuracy is not a clean generalization comparison. Preserve this split and balance fresh groups before any training study. The 384 training candidates contain no evaluation examples; fine-tuning remains untested.
+
+**Next direction:** supply recent counts, reliable hand facts and calculated chip values to Inkling; use the code-only player as the reference. Test residual mistakes before choosing fine-tuning. No new run is scheduled.
 
 ## Spend
 

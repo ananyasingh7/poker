@@ -1,0 +1,755 @@
+{
+  "state": "complete",
+  "updated": "2026-11-22T11:42:07.354421+00:00",
+  "error": null,
+  "modules": {
+    "core": {
+      "complete_seeds": 32,
+      "planned_seeds": 32,
+      "arms": {
+        "model": {
+          "mean_regret_bb": 1.5223958333333334,
+          "bets": 3328,
+          "probes": 0,
+          "post_switch_regret_bb": 2.0734341252699786,
+          "post_switch_read_error_points": 29.55863930885529,
+          "early_post_switch_regret_bb": 2.8312500000000003,
+          "late_post_switch_regret_bb": 1.6732673267326732
+        },
+        "calculator": {
+          "mean_regret_bb": 1.1031250000000001,
+          "bets": 2603,
+          "probes": 0,
+          "post_switch_regret_bb": 2.8250539956803458,
+          "post_switch_read_error_points": 37.00669546436285,
+          "early_post_switch_regret_bb": 4.5,
+          "late_post_switch_regret_bb": 1.9405940594059408
+        },
+        "counts": {
+          "mean_regret_bb": 1.0401041666666666,
+          "bets": 2963,
+          "probes": 0,
+          "post_switch_regret_bb": 1.533477321814255,
+          "post_switch_read_error_points": 16.94486174790289,
+          "early_post_switch_regret_bb": 2.8125,
+          "late_post_switch_regret_bb": 0.858085808580858
+        },
+        "both": {
+          "mean_regret_bb": 0.6562500000000001,
+          "bets": 2219,
+          "probes": 0,
+          "post_switch_regret_bb": 2.332613390928726,
+          "post_switch_read_error_points": 29.073257650149674,
+          "early_post_switch_regret_bb": 3.8625000000000003,
+          "late_post_switch_regret_bb": 1.524752475247525
+        },
+        "model_frozen": {
+          "mean_regret_bb": 1.8687500000000001,
+          "bets": 3255,
+          "probes": 0,
+          "post_switch_regret_bb": 3.2850971922246224,
+          "post_switch_read_error_points": 58.50291576673866,
+          "early_post_switch_regret_bb": 3.6,
+          "late_post_switch_regret_bb": 3.118811881188119
+        },
+        "calculator_frozen": {
+          "mean_regret_bb": 1.46875,
+          "bets": 2641,
+          "probes": 0,
+          "post_switch_regret_bb": 4.516198704103672,
+          "post_switch_read_error_points": 59.477645788336936,
+          "early_post_switch_regret_bb": 4.78125,
+          "late_post_switch_regret_bb": 4.376237623762377
+        }
+      },
+      "comparisons": {
+        "model_minus_calculator": {
+          "n": 32,
+          "mean": 0.41927083333333326,
+          "interval_95": [
+            -0.0166666666666668,
+            0.8692708333333332
+          ]
+        },
+        "model_minus_counts": {
+          "n": 32,
+          "mean": 0.4822916666666666,
+          "interval_95": [
+            0.20624999999999993,
+            0.7749999999999999
+          ]
+        },
+        "model_minus_both": {
+          "n": 32,
+          "mean": 0.8661458333333333,
+          "interval_95": [
+            0.40989583333333324,
+            1.3447916666666666
+          ]
+        },
+        "calculator_minus_both": {
+          "n": 32,
+          "mean": 0.44687499999999997,
+          "interval_95": [
+            0.25781249999999994,
+            0.6515624999999999
+          ]
+        },
+        "counts_minus_both": {
+          "n": 32,
+          "mean": 0.3838541666666666,
+          "interval_95": [
+            0.003645833333333173,
+            0.7541666666666667
+          ]
+        }
+      },
+      "learning": {
+        "model": {
+          "changed_opponents": {
+            "n": 16,
+            "mean": 1.1891970087209147,
+            "interval_95": [
+              0.5987947909472798,
+              1.8841756680760875
+            ]
+          },
+          "by_condition": {
+            "caller_to_folder": {
+              "n": 8,
+              "mean": 1.829287107402716,
+              "interval_95": [
+                1.0428571428571431,
+                2.739007421150279
+              ]
+            },
+            "folder_to_caller": {
+              "n": 8,
+              "mean": 0.5491069100391135,
+              "interval_95": [
+                0.0704237288135593,
+                1.3443187744458935
+              ]
+            },
+            "stable_caller": {
+              "n": 8,
+              "mean": 0.5374060934117963,
+              "interval_95": [
+                -1.096601876480763,
+                1.9278281424491972
+              ]
+            },
+            "stable_folder": {
+              "n": 8,
+              "mean": 0.0,
+              "interval_95": [
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "meaning": "Frozen minus fresh post-switch regret; positive favors updates. Descriptive, whole-seed intervals."
+        },
+        "calculator": {
+          "changed_opponents": {
+            "n": 16,
+            "mean": 1.6594571427964164,
+            "interval_95": [
+              1.006792106198886,
+              2.30640812932623
+            ]
+          },
+          "by_condition": {
+            "caller_to_folder": {
+              "n": 8,
+              "mean": 1.301730452476796,
+              "interval_95": [
+                0.36363636363636376,
+                2.422877087849038
+              ]
+            },
+            "folder_to_caller": {
+              "n": 8,
+              "mean": 2.0171838331160368,
+              "interval_95": [
+                1.3209973924380705,
+                2.6606258148631032
+              ]
+            },
+            "stable_caller": {
+              "n": 8,
+              "mean": -0.1939655172413793,
+              "interval_95": [
+                -0.5818965517241379,
+                0.0
+              ]
+            },
+            "stable_folder": {
+              "n": 8,
+              "mean": -0.12500000000000003,
+              "interval_95": [
+                -0.3750000000000001,
+                0.0
+              ]
+            }
+          },
+          "meaning": "Frozen minus fresh post-switch regret; positive favors updates. Descriptive, whole-seed intervals."
+        }
+      }
+    },
+    "replication": {
+      "complete_seeds": 32,
+      "planned_seeds": 32,
+      "arms": {
+        "model": {
+          "mean_regret_bb": 1.7526041666666667,
+          "bets": 3290,
+          "probes": 0,
+          "post_switch_regret_bb": 2.469493278179938,
+          "post_switch_read_error_points": 29.3435367114788,
+          "early_post_switch_regret_bb": 3.31875,
+          "late_post_switch_regret_bb": 2.0494590417310663
+        },
+        "calculator": {
+          "mean_regret_bb": 1.225,
+          "bets": 2567,
+          "probes": 0,
+          "post_switch_regret_bb": 2.94105480868666,
+          "post_switch_read_error_points": 41.52368148914167,
+          "early_post_switch_regret_bb": 3.9375000000000004,
+          "late_post_switch_regret_bb": 2.44822256568779
+        },
+        "counts": {
+          "mean_regret_bb": 1.2651041666666667,
+          "bets": 3025,
+          "probes": 0,
+          "post_switch_regret_bb": 1.311271975180972,
+          "post_switch_read_error_points": 16.724640406129545,
+          "early_post_switch_regret_bb": 2.6875,
+          "late_post_switch_regret_bb": 0.6306027820710973
+        },
+        "both": {
+          "mean_regret_bb": 0.49531250000000004,
+          "bets": 2232,
+          "probes": 0,
+          "post_switch_regret_bb": 1.6380558428128233,
+          "post_switch_read_error_points": 23.814112822624352,
+          "early_post_switch_regret_bb": 3.31875,
+          "late_post_switch_regret_bb": 0.8068006182380217
+        },
+        "model_frozen": {
+          "mean_regret_bb": 2.0755208333333335,
+          "bets": 3265,
+          "probes": 0,
+          "post_switch_regret_bb": 3.538779731127198,
+          "post_switch_read_error_points": 60.54663908996898,
+          "early_post_switch_regret_bb": 3.3875,
+          "late_post_switch_regret_bb": 3.6136012364760433
+        },
+        "calculator_frozen": {
+          "mean_regret_bb": 1.6187500000000001,
+          "bets": 2759,
+          "probes": 0,
+          "post_switch_regret_bb": 4.268872802481903,
+          "post_switch_read_error_points": 56.94374353671148,
+          "early_post_switch_regret_bb": 4.2,
+          "late_post_switch_regret_bb": 4.302936630602782
+        }
+      },
+      "comparisons": {
+        "model_minus_calculator": {
+          "n": 32,
+          "mean": 0.5276041666666665,
+          "interval_95": [
+            0.13385416666666655,
+            0.9432291666666666
+          ]
+        },
+        "model_minus_counts": {
+          "n": 32,
+          "mean": 0.4875,
+          "interval_95": [
+            0.24635416666666665,
+            0.7546875
+          ]
+        },
+        "model_minus_both": {
+          "n": 32,
+          "mean": 1.2572916666666665,
+          "interval_95": [
+            0.8531249999999999,
+            1.7098958333333332
+          ]
+        },
+        "calculator_minus_both": {
+          "n": 32,
+          "mean": 0.7296875,
+          "interval_95": [
+            0.5140625,
+            0.96875
+          ]
+        },
+        "counts_minus_both": {
+          "n": 32,
+          "mean": 0.7697916666666667,
+          "interval_95": [
+            0.42708333333333326,
+            1.165625
+          ]
+        }
+      },
+      "learning": {
+        "model": {
+          "changed_opponents": {
+            "n": 16,
+            "mean": 1.0657567204090392,
+            "interval_95": [
+              0.4264681909367508,
+              1.797624639826479
+            ]
+          },
+          "by_condition": {
+            "caller_to_folder": {
+              "n": 8,
+              "mean": 1.4612651549149762,
+              "interval_95": [
+                0.2499045566502464,
+                2.690208607295929
+              ]
+            },
+            "folder_to_caller": {
+              "n": 8,
+              "mean": 0.670248285903102,
+              "interval_95": [
+                0.32877101317582924,
+                1.0074823943661972
+              ]
+            },
+            "stable_caller": {
+              "n": 8,
+              "mean": 0.4021775677500348,
+              "interval_95": [
+                -0.42937591082752385,
+                1.238631790744467
+              ]
+            },
+            "stable_folder": {
+              "n": 8,
+              "mean": 0.0,
+              "interval_95": [
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "meaning": "Frozen minus fresh post-switch regret; positive favors updates. Descriptive, whole-seed intervals."
+        },
+        "calculator": {
+          "changed_opponents": {
+            "n": 16,
+            "mean": 1.2862999385609848,
+            "interval_95": [
+              0.655760165833712,
+              1.9449830397340053
+            ]
+          },
+          "by_condition": {
+            "caller_to_folder": {
+              "n": 8,
+              "mean": 0.42187500000000017,
+              "interval_95": [
+                0.0,
+                0.9843750000000004
+              ]
+            },
+            "folder_to_caller": {
+              "n": 8,
+              "mean": 2.1507248771219696,
+              "interval_95": [
+                1.2932551319648096,
+                3.041149167733675
+              ]
+            },
+            "stable_caller": {
+              "n": 8,
+              "mean": 0.4721986417657046,
+              "interval_95": [
+                -0.4342105263157895,
+                1.8508064516129032
+              ]
+            },
+            "stable_folder": {
+              "n": 8,
+              "mean": 0.0,
+              "interval_95": [
+                0.0,
+                0.0
+              ]
+            }
+          },
+          "meaning": "Frozen minus fresh post-switch regret; positive favors updates. Descriptive, whole-seed intervals."
+        }
+      }
+    },
+    "scarce": {
+      "complete_seeds": 16,
+      "planned_seeds": 16,
+      "arms": {
+        "model": {
+          "mean_regret_bb": 2.165625,
+          "bets": 1629,
+          "probes": 0,
+          "post_switch_regret_bb": 3.2017353579175705,
+          "post_switch_read_error_points": 33.488069414316705,
+          "early_post_switch_regret_bb": 3.6375,
+          "late_post_switch_regret_bb": 2.9700996677740865
+        },
+        "model_probe": {
+          "mean_regret_bb": 2.14375,
+          "bets": 1646,
+          "probes": 5,
+          "post_switch_regret_bb": 3.0455531453362257,
+          "post_switch_read_error_points": 30.97180043383948,
+          "early_post_switch_regret_bb": 3.45,
+          "late_post_switch_regret_bb": 2.830564784053156
+        },
+        "calculator": {
+          "mean_regret_bb": 1.646875,
+          "bets": 1101,
+          "probes": 0,
+          "post_switch_regret_bb": 4.164859002169198,
+          "post_switch_read_error_points": 46.26572668112799,
+          "early_post_switch_regret_bb": 5.2875000000000005,
+          "late_post_switch_regret_bb": 3.5681063122923593
+        },
+        "calculator_probe": {
+          "mean_regret_bb": 1.6812500000000001,
+          "bets": 1120,
+          "probes": 17,
+          "post_switch_regret_bb": 4.151843817787419,
+          "post_switch_read_error_points": 47.96746203904556,
+          "early_post_switch_regret_bb": 5.2125,
+          "late_post_switch_regret_bb": 3.588039867109635
+        }
+      },
+      "comparisons": {
+        "model_minus_model_probe": {
+          "n": 16,
+          "mean": 0.021875000000000006,
+          "interval_95": [
+            -0.02499999999999998,
+            0.09999999999999999
+          ]
+        },
+        "calculator_minus_calculator_probe": {
+          "n": 16,
+          "mean": -0.03437499999999996,
+          "interval_95": [
+            -0.221875,
+            0.1375000000000001
+          ]
+        }
+      }
+    },
+    "gradual": {
+      "complete_seeds": 16,
+      "planned_seeds": 16,
+      "arms": {
+        "model": {
+          "mean_regret_bb": 1.0005208333333333,
+          "bets": 1878,
+          "probes": 0,
+          "post_switch_regret_bb": 0.9539651837524179,
+          "post_switch_read_error_points": 13.318762088974855,
+          "early_post_switch_regret_bb": 0.7012500000000003,
+          "late_post_switch_regret_bb": 1.0672268907563025
+        },
+        "calculator": {
+          "mean_regret_bb": 0.7408333333333333,
+          "bets": 1365,
+          "probes": 0,
+          "post_switch_regret_bb": 0.8808510638297874,
+          "post_switch_read_error_points": 18.7678916827853,
+          "early_post_switch_regret_bb": 1.1212500000000003,
+          "late_post_switch_regret_bb": 0.773109243697479
+        },
+        "counts": {
+          "mean_regret_bb": 0.9596354166666667,
+          "bets": 1839,
+          "probes": 0,
+          "post_switch_regret_bb": 0.9121856866537719,
+          "post_switch_read_error_points": 9.196588711095481,
+          "early_post_switch_regret_bb": 0.6975000000000002,
+          "late_post_switch_regret_bb": 1.0084033613445378
+        },
+        "both": {
+          "mean_regret_bb": 0.4058333333333334,
+          "bets": 1115,
+          "probes": 0,
+          "post_switch_regret_bb": 0.6858800773694392,
+          "post_switch_read_error_points": 12.98855701447009,
+          "early_post_switch_regret_bb": 1.1100000000000003,
+          "late_post_switch_regret_bb": 0.4957983193277311
+        }
+      },
+      "comparisons": {
+        "model_minus_calculator": {
+          "n": 16,
+          "mean": 0.2596875,
+          "interval_95": [
+            -0.11927083333333334,
+            0.6261458333333333
+          ]
+        },
+        "model_minus_counts": {
+          "n": 16,
+          "mean": 0.04088541666666668,
+          "interval_95": [
+            -0.011770833333333335,
+            0.10067708333333336
+          ]
+        },
+        "model_minus_both": {
+          "n": 16,
+          "mean": 0.5946875,
+          "interval_95": [
+            0.14020833333333335,
+            1.07125
+          ]
+        },
+        "calculator_minus_both": {
+          "n": 16,
+          "mean": 0.335,
+          "interval_95": [
+            0.11093750000000001,
+            0.5569791666666667
+          ]
+        },
+        "counts_minus_both": {
+          "n": 16,
+          "mean": 0.5538020833333334,
+          "interval_95": [
+            0.11369791666666668,
+            1.0217708333333333
+          ]
+        }
+      }
+    }
+  },
+  "extras": {
+    "exam": {
+      "training_candidate": {
+        "numeric_label": {
+          "questions": 96,
+          "errors": 0,
+          "zero_regret_fraction": 0.84375,
+          "mean_regret_bb": 0.1033854166666668
+        },
+        "numeric_cards": {
+          "questions": 96,
+          "errors": 0,
+          "zero_regret_fraction": 0.8125,
+          "mean_regret_bb": 0.13671875000000014
+        },
+        "rule_label": {
+          "questions": 96,
+          "errors": 0,
+          "zero_regret_fraction": 0.7916666666666666,
+          "mean_regret_bb": 0.2187500000000001
+        },
+        "payoffs_label": {
+          "questions": 96,
+          "errors": 0,
+          "zero_regret_fraction": 1,
+          "mean_regret_bb": 0.0
+        },
+        "paired_groups": {
+          "complete_groups": 48,
+          "comparisons": {
+            "numeric_label_minus_rule_label": {
+              "n": 48,
+              "mean": -0.11536458333333333,
+              "interval_95": [
+                -0.2559895833333333,
+                -0.004427083333333383
+              ]
+            },
+            "numeric_label_minus_payoffs_label": {
+              "n": 48,
+              "mean": 0.1033854166666668,
+              "interval_95": [
+                0.04791666666666674,
+                0.17187500000000028
+              ]
+            },
+            "numeric_cards_minus_numeric_label": {
+              "n": 48,
+              "mean": 0.03333333333333333,
+              "interval_95": [
+                -0.029166666666666636,
+                0.11015625
+              ]
+            }
+          }
+        }
+      },
+      "heldout": {
+        "numeric_label": {
+          "questions": 32,
+          "errors": 0,
+          "zero_regret_fraction": 0.65625,
+          "mean_regret_bb": 1.5
+        },
+        "numeric_cards": {
+          "questions": 32,
+          "errors": 0,
+          "zero_regret_fraction": 0.53125,
+          "mean_regret_bb": 2.35546875
+        },
+        "rule_label": {
+          "questions": 32,
+          "errors": 0,
+          "zero_regret_fraction": 0.75,
+          "mean_regret_bb": 1.171875
+        },
+        "payoffs_label": {
+          "questions": 32,
+          "errors": 0,
+          "zero_regret_fraction": 1,
+          "mean_regret_bb": 0.0
+        },
+        "paired_groups": {
+          "complete_groups": 16,
+          "comparisons": {
+            "numeric_label_minus_rule_label": {
+              "n": 16,
+              "mean": 0.328125,
+              "interval_95": [
+                0.0,
+                0.75
+              ]
+            },
+            "numeric_label_minus_payoffs_label": {
+              "n": 16,
+              "mean": 1.5,
+              "interval_95": [
+                0.75,
+                2.375
+              ]
+            },
+            "numeric_cards_minus_numeric_label": {
+              "n": 16,
+              "mean": 0.85546875,
+              "interval_95": [
+                0.08203125,
+                1.81640625
+              ]
+            }
+          }
+        }
+      }
+    },
+    "exam_questions_saved": 512,
+    "exam_questions_planned": 512,
+    "memory": {
+      "complete_identities": 12,
+      "planned_identities": 12,
+      "reset_minus_carry_bb": {
+        "n": 12,
+        "mean": -0.02083333333333341,
+        "interval_95": [
+          -1.0291666666666668,
+          0.7083333333333333
+        ]
+      },
+      "by_condition": {
+        "stable_caller": {
+          "n": 3,
+          "mean": 1.4333333333333333,
+          "interval_95": [
+            1.4,
+            1.5
+          ]
+        },
+        "stable_folder": {
+          "n": 3,
+          "mean": 0.0,
+          "interval_95": [
+            0.0,
+            0.0
+          ]
+        },
+        "caller_to_folder": {
+          "n": 3,
+          "mean": -1.8000000000000003,
+          "interval_95": [
+            -4.6000000000000005,
+            0.0
+          ]
+        },
+        "folder_to_caller": {
+          "n": 3,
+          "mean": 0.2833333333333333,
+          "interval_95": [
+            0.0,
+            0.85
+          ]
+        }
+      },
+      "note_failures": 0,
+      "read_failures": 0
+    },
+    "code_baselines": {
+      "complete_seeds": 400,
+      "planned_seeds": 400,
+      "last20_minus_policy_bb": {
+        "last5": {
+          "n": 400,
+          "mean": -0.05137500000000002,
+          "interval_95": [
+            -0.12675000000000003,
+            0.01774999999999999
+          ]
+        },
+        "last60": {
+          "n": 400,
+          "mean": -0.29862500000000003,
+          "interval_95": [
+            -0.3395,
+            -0.260625
+          ]
+        },
+        "cumulative": {
+          "n": 400,
+          "mean": -0.501,
+          "interval_95": [
+            -0.57025,
+            -0.434625
+          ]
+        },
+        "decay": {
+          "n": 400,
+          "mean": -0.028625000000000005,
+          "interval_95": [
+            -0.05050000000000001,
+            -0.006750000000000002
+          ]
+        }
+      }
+    },
+    "completed_modules": [
+      "code_baselines",
+      "exam",
+      "memory"
+    ],
+    "caveat": "Extras are descriptive. Memory intervals resample identities; code intervals resample paired seeds. Exam formats of the same situation are not independent replications. No training performed."
+  },
+  "success_criterion_met": false,
+  "saved_hands_including_partial": 61440,
+  "failure_counts": {
+    "actions": 0,
+    "notes": 6,
+    "reads": 0
+  },
+  "unit": "Whole paired seed; only complete arm sets enter comparisons."
+}

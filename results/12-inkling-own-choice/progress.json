@@ -1,0 +1,23 @@
+{
+  "state": "complete",
+  "updated": "2026-11-22T11:42:08.645079+00:00",
+  "stage": "gradual",
+  "current": "gradual/1240015/counts/hand/120",
+  "elapsed_hours": 7.706437077257369,
+  "requests": 26878,
+  "failed_model_answers": 5,
+  "completed": {
+    "baseline_game": 2000,
+    "episode": 512,
+    "exam": 512,
+    "extra_complete": 3,
+    "hand": 61440,
+    "memory_episode": 24,
+    "memory_hand": 4320,
+    "memory_note": 168,
+    "module": 4,
+    "note": 1376,
+    "preflight": 1
+  },
+  "error": null
+}

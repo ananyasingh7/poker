@@ -1,0 +1,11 @@
+{
+  "prepared_at_launch": "2026-11-22T03:59:45.409948+00:00",
+  "files": {
+    "experiments/inkling_own_choice.py": "b0f7a8099ab59cc871c79a1bf4cccb31d2f9e2fc35608ce387dc646219a3b917",
+    "experiments/inkling_overnight.py": "f2f25fd5f61f9311bf66a072da8eed2691e5c5632e3eae9e719cd0a6c978b025",
+    "experiments/inkling_own_choice_extra.py": "1ef2e0ee41927e7fc595844a29d51935581190fb245f5372e57fb60de5a06b87",
+    "experiments/run_inkling_own_choice.py": "5d04efbe6cc05ba9824a1cadf9e8228a7586e1313959711233c299a09ee3b32e",
+    "experiments/test_inkling_own_choice.py": "8d045012d2f5c7606edf4d069314006b080e9a180a6156148c9db770a81c1da5",
+    "examples/12-inkling-own-choice/protocol.json": "a46e0f00560ec9e211c4ea227d4915ca98849bd8571c32189f811441e59d6ef4"
+  }
+}

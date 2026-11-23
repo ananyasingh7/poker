@@ -558,7 +558,10 @@ fn every_example_config_parses_and_validates() {
     {
         let text = std::fs::read_to_string(path).unwrap();
         let value: serde_json::Value = serde_json::from_str(&text).unwrap();
-        if path.ends_with("11-inkling-overnight/protocol.json") {
+        // Standalone Python studies validate these protocols in offline integration tests.
+        if path.ends_with("11-inkling-overnight/protocol.json")
+            || path.ends_with("12-inkling-own-choice/protocol.json")
+        {
             continue;
         }
         if value.get("pilot").is_some() {

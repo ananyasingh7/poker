@@ -1,0 +1,18 @@
+{
+  "hand.json.gz": {
+    "encoding": "gzip",
+    "uncompressed_name": "hand.json",
+    "uncompressed_bytes": 70689363,
+    "compressed_bytes": 2852034,
+    "sha256_uncompressed": "7e14c1ff32421d54e059b9a12de75baa6c55da5d3a31a512147b497b18d46b1d",
+    "sha256_compressed": "321df3a8f73d54e5691fb9ee4c496d7168d0b14537164d0ef74150fccedcdff6"
+  },
+  "baseline_game.json.gz": {
+    "encoding": "gzip",
+    "uncompressed_name": "baseline_game.json",
+    "uncompressed_bytes": 95503991,
+    "compressed_bytes": 4888001,
+    "sha256_uncompressed": "8213f2b57e2b2cb187fd1ee9900c8faa601c95e3a9d30ce5e8fbecd75954b36c",
+    "sha256_compressed": "e5e64ce6b6f6c5b07a45bbb3ce2637f1568d871b37bf1a228ec65c96a0f09b29"
+  }
+}

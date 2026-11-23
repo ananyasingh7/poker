@@ -64,7 +64,15 @@ All grades are evaluator-only (they use hidden information) and are meant for co
 
 **Leak report:** missed river bets, bluffs (postflop bets with under 30% equity against the cards held) and how often they were called down, and truncated answers.
 
-## Default setup (since 2026-11-18)
+## Inkling own-choice study
+
+The local study in `examples/12-inkling-own-choice/protocol.json` is complete. `python3 -B experiments/run_inkling_own_choice.py` prints the plan without inference. Adding `RUN_DIR RESULT_DIR --execute` explicitly launches or resumes the detached worker, snapshots its sources, saves each request and keeps the Mac awake. Use fresh directories to repeat it. The 13-hour budget includes recovery; no second overnight run starts automatically.
+
+Grades are exact expected bb lost against the best immediate choice under the scripted policy, not full-table win rates or long-term optimal-policy values. Independent units are whole paired seeds, whole opponent identities for memory, and whole situation groups for exam formats. Only calculator versus model betting is primary, and both the main sample and fresh repeat must pass. Other comparisons are descriptive; the counts-plus-calculator version uses no model.
+
+Published large datasets use `.json.gz`; load them with `json.load(gzip.open(path, 'rt'))`. The data manifest checks both compressed and original bytes. Raw replies, recovery state and uncompressed originals remain under ignored `runs/`. The executed protocol and split stay unchanged. Review found the exam's held-out margins were imbalanced; balance fresh groups before a future training experiment. See [results](results.md#12-inkling-own-choice-study-completed-2026-11-22).
+
+## Default API setup (since 2026-11-18)
 
 New experiments use **GLM-5.3 Flash** (`z-ai/glm-5.3-flash`, thinking on with `reasoning_effort: low`, providers Wafer then Darkbloom) against **varied bots** (`opponent_variation`: personalities, mixing 0.1, random field from the five current styles), on **fresh seeds** (21 onward), with **one DeepSeek V4.1 Flash anchor arm** on the same deals so results connect to sections 1-6 of the results. Templates: `examples/7-glm-varied/`. The spectator table defaults to the same model and to VARIED bots.
 

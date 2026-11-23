@@ -24,9 +24,18 @@ Small, readable outputs of the runs in `runs/` (which is git-ignored and private
 | `11-inkling-overnight/{online_hand,online_note}.json` | Decisions and notes from the 24 paired own-choice games |
 | `11-inkling-overnight/{count_diagnostic,bet_diagnostic,training-candidates}.json` | Skill questions, labels and training candidates; each record preserves its split |
 | [11-inkling-overnight/audit-v1.json](11-inkling-overnight/audit-v1.json), [progress.json](11-inkling-overnight/progress.json) | Independent check of the reported totals and final completion status |
+| [12-inkling-own-choice/takeaways.md](12-inkling-own-choice/takeaways.md), [summary.md](12-inkling-own-choice/summary.md), [analysis.json](12-inkling-own-choice/analysis.json), [extra-analysis.json](12-inkling-own-choice/extra-analysis.json) | Reviewed findings, automatic report, paired game comparisons, memory and exam results |
+| `12-inkling-own-choice/{protocol,registered-seeds,extra-registration,source-manifest,completion,progress}.json` | Original plan, seed/split registration, executed source hashes and completion |
+| `12-inkling-own-choice/hand.json.gz`, `baseline_game.json.gz` | Losslessly compressed decisions and code-only trajectories, with sizes and SHA-256 hashes in `data-manifest.json` |
+| `12-inkling-own-choice/{note,episode,memory_hand,memory_note,memory_episode,exam,training-candidates}.json` | Notebooks, finished games, cross-session decisions and skill questions; only exam development groups enter training candidates |
+| [12-inkling-own-choice/audit.json](12-inkling-own-choice/audit.json) | Independent grading and matching checks, failure accounting and the exam split caveat |
 
 Full table histories and private model traces stay under `runs/`.
 
 Export a completed local suite with `python3 -B experiments/export_local_suite.py SUITE_DIR SMOKE_DIR JOURNAL_DIR results/10-inkling`. The legacy five-point reader grammar can distort percentages; its outputs do not establish reader accuracy. The numeric replay allows ordinary percentages.
 
 The overnight supervisor is `experiments/run_inkling_overnight.py RUN_DIR RESULT_DIR`. It keeps the Mac awake and resumes from the request cache after bounded retries. The final export includes observations, notes, reads, decisions, exact grades and separate training candidates. Raw replies and the recovery database stay in `runs/`. The report labels incomplete runs and does not claim a measured fine-tuning benefit.
+
+The own-choice study uses `experiments/run_inkling_own_choice.py`; without `--execute` it only prints the plan. The original executed code and protocol are preserved by the source manifest. The protocol's status describes preparation; `progress.json` and `completion.json` record the finished run. The automatic `summary.md` is supplemented by the reviewed `takeaways.md` and independent audit. Uncompressed originals and raw requests remain under ignored `runs/`.
+
+Read the published large datasets with Python's `json.load(gzip.open(path, 'rt'))`. Compression changes no records or split assignments. The exam split is imbalanced; its development and evaluation accuracies should not be treated as a clean generalization comparison. This study did not train a model.

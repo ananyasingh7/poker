@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "source_snapshot_hashes_verified": true,
+  "main_hands_regraded": 61440,
+  "paired_cards_and_response_draws_verified": true,
+  "counts_reconstructed_from_each_arms_observed_bets": true,
+  "reported_arm_and_paired_means_recomputed": true,
+  "training_candidates": 384,
+  "evaluation_examples_in_training_export": 0,
+  "exam_margins_by_split": {
+    "heldout": [
+      -0.1
+    ],
+    "training_candidate": [
+      -0.02,
+      0.02,
+      0.1
+    ]
+  },
+  "exam_caveat": "Every fourth group picks only the -10 percentage-point margin for held-out questions; development has -2, +2, +10. Board ranks differ by split too. Within-situation format comparisons remain paired; do not interpret development vs held-out accuracy as a clean generalization estimate. Rebalance groups before a future training study; retain this run unchanged.",
+  "unique_requests": 26878,
+  "unique_failed_answers": [
+    {
+      "field": "notes",
+      "error": "finish_reason=length"
+    },
+    {
+      "field": "notes",
+      "error": "finish_reason=length"
+    },
+    {
+      "field": "notes",
+      "error": "finish_reason=length"
+    },
+    {
+      "field": "notes",
+      "error": "finish_reason=length"
+    },
+    {
+      "field": "notes",
+      "error": "finish_reason=length"
+    }
+  ],
+  "note_failure_uses": 6,
+  "failure_note": "Five unique truncated note answers were cached; one was used twice, yielding six fallback note updates. No action or read failures.",
+  "memory_hands_regraded": 4320,
+  "memory_pair_mean_recomputed": -0.02083333333333341,
+  "code_only_games_regraded": 2000,
+  "code_only_decisions_regraded": 240000,
+  "code_only_policy_estimates_reconstructed": true
+}

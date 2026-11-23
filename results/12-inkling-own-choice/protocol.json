@@ -1,0 +1,157 @@
+{
+  "version": 2,
+  "status": "prepared; not started",
+  "model": "inkling-2-mini",
+  "endpoint": "http://127.0.0.1:9932/v1/chat/completions",
+  "temperature": 0,
+  "tokens": {
+    "action": 64,
+    "notes": 512,
+    "fold_percent": 128
+  },
+  "max_hours": 13,
+  "intended_hours": [
+    11,
+    13
+  ],
+  "hands": 120,
+  "note_every": 20,
+  "count_window": 20,
+  "switch_range": [
+    48,
+    72
+  ],
+  "probe_after_unobserved_hands": 20,
+  "freeze_after": 40,
+  "modules": [
+    {
+      "name": "core",
+      "seed_start": 1210000,
+      "seeds": 32,
+      "strong_probability": 0.25,
+      "arms": [
+        "model",
+        "calculator",
+        "counts",
+        "both",
+        "model_frozen",
+        "calculator_frozen"
+      ],
+      "optional": false
+    },
+    {
+      "name": "replication",
+      "seed_start": 1220000,
+      "seeds": 32,
+      "strong_probability": 0.25,
+      "arms": [
+        "model",
+        "calculator",
+        "counts",
+        "both",
+        "model_frozen",
+        "calculator_frozen"
+      ],
+      "optional": false
+    },
+    {
+      "name": "scarce",
+      "seed_start": 1230000,
+      "seeds": 16,
+      "strong_probability": 0.05,
+      "arms": [
+        "model",
+        "model_probe",
+        "calculator",
+        "calculator_probe"
+      ],
+      "optional": false
+    },
+    {
+      "name": "gradual",
+      "seed_start": 1240000,
+      "seeds": 16,
+      "strong_probability": 0.25,
+      "arms": [
+        "model",
+        "calculator",
+        "counts",
+        "both"
+      ],
+      "optional": true,
+      "admit_remaining_hours": 2.5
+    }
+  ],
+  "memory_study": {
+    "seed_start": 1250000,
+    "identities": 12,
+    "sessions": 3,
+    "hands_per_session": 60,
+    "arms": [
+      "carry",
+      "reset"
+    ],
+    "strong_probability": 0.25
+  },
+  "exam": {
+    "seed_start": 1260000,
+    "pots": [
+      5,
+      10,
+      20,
+      40
+    ],
+    "bet_ratios": [
+      0.25,
+      0.5,
+      1,
+      2
+    ],
+    "threshold_margins": [
+      -0.1,
+      -0.02,
+      0.02,
+      0.1
+    ],
+    "variants": [
+      "numeric_label",
+      "numeric_cards",
+      "rule_label",
+      "payoffs_label"
+    ],
+    "heldout_every": 4
+  },
+  "code_baselines": {
+    "seed_start": 1270000,
+    "seeds": 400,
+    "policies": [
+      "last5",
+      "last20",
+      "last60",
+      "cumulative",
+      "decay"
+    ],
+    "decay_per_observed_bet": 0.95
+  },
+  "extra_design": "Frozen arms share the same initial procedure as their fresh counterpart, then stop updating notes and reads after hand 40, before any possible hidden switch. Compare post-switch loss, with each direction reported separately; these are descriptive learning contrasts, not extra primary tests. Memory study: same opponent identity across three fresh-card sessions; four balanced conditions stable caller, stable folder, caller-to-folder and folder-to-caller, changing only after session one. Carry keeps notes and read; reset erases both at session boundaries. A calculator chooses all memory-study bets, isolating use of memory from betting mistakes. Grade sessions two and three, bootstrap whole identities, report stable and changed identities separately.",
+  "exam_design": "128 situations, each asked in four formats (512 requests). Fold chance is explicitly supplied and lies 2 or 10 percentage points above/below the bluff break-even point. Both winning and losing hands, four pot scales and four bet ratios. Every fourth situation group is held out; its two strengths and all four formats stay together. Training-candidate boards have highest rank Q/K, held-out boards T/J. Only exam development situations enter training-candidates.json; every sequential game remains evaluation-only. Correctness means zero regret, allowing tied actions. No training is performed.",
+  "baseline_design": "400 additional fresh seeds and five actual code-only policies, each with its own observed responses. Last-5/20/60, all observations and exponentially discounted observed responses, with Laplace smoothing. All use a calculator. Save trajectories and compare paired whole seeds. Not model learning, not free observations or replayed-policy performance. Only responses to bets update a policy; decay advances per observed bet, not per check.",
+  "conditions": [
+    "caller_to_folder",
+    "folder_to_caller",
+    "stable_caller",
+    "stable_folder"
+  ],
+  "opponent": "Fold probability 0.2 or 0.8. Abrupt hidden switch uniformly at hands 48..72; stable controls have no switch. Gradual module uses 0.35 and 0.65, with a 30-hand linear transition centered at the hidden switch. No agent sees probabilities, condition labels or switch times.",
+  "matching": "Each seed shares cards, strength draws and uniform potential responses across arms. Responses are revealed only after that arm actually bets. Each arm keeps its own history.",
+  "counts": "Last 20 observed bet responses, Laplace estimate (folds+1)/(responses+2), initially 50 percent. Checks never enter the response counter.",
+  "memory": "Own notes and numeric read update every 20 completed hands. Same prior 50 percent. Frozen arms stop updating after hand 40. No hidden policy or unmade response enters notes. Memory resets between independent seeds; the separate memory study explicitly compares carry versus reset between sessions of one identity.",
+  "exploration": "Probe arms override a weak-hand check with a normal 10bb bet after at least 20 hands without an observed response. Same action size as all other bets; full expected chip cost included. Any bet resets the timer. No extra free observations.",
+  "primary": "Core paired whole-episode mean regret(model) minus regret(calculator), averaged across all 32 seeds. Positive means a calculator using the model's own read helps. One confirmatory comparison, whole-seed bootstrap, 4000 resamples.",
+  "success": "Core and independent replication must each finish all 32 six-arm seeds and each have a 95 percent paired seed-bootstrap interval above zero for model minus calculator. This establishes a helper benefit in this drill, not model learning. Other comparisons remain descriptive.",
+  "secondary": "Counts-only and both; post-switch regret and read error; early/late post-switch regret; frozen vs updated reads with separate change directions and stable controls; carry vs reset across sessions; card, rule and payoff exam formats; observed responses; probe vs no probe in scarce evidence; actual code-only memory policies; gradual changes. All descriptive. No best-arm selection for replication.",
+  "grading": "Exact one-decision expected net bb and regret against hidden scripted policy, including all probe costs and strong hands. Not a counterfactual multi-hand policy value. All arms know their hand strength; opponent always top pair; pot and bet both 10bb.",
+  "runtime": "Fixed order preflight, core, replication, compact exam, across-session memory, scarce evidence, code baselines, optional gradual. Optional module admitted only by remaining wall time, never scores. No automatic second overnight run. Hard deadline includes resumed time and preflight; allow an in-flight request and report export to finish. Save partial data and report incomplete comparisons without claiming success. Saved prior request timings imply about 10 hours of inference for mandatory modules, before caching, overhead or hardware drift; reserve the remaining time rather than promising completion.",
+  "failure_policy": "Invalid notes retain prior; invalid read retains prior (initially 50); invalid action checks before any probe override. Record failures. Transport retries bounded at six; wrong alias aborts. Exact request cache and committed hands allow resume; cache hits are not new independent evidence.",
+  "scope": "No training, full-table claims or weight changes. Both and all code-baseline policies are programmed players with no model calls. Memory study tests notes and reads kept across sessions of the same identity, not weight learning. Local API fees zero; electricity and hardware time remain real costs. Runtime is an estimate, not a completion guarantee."
+}

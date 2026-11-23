@@ -1,0 +1,482 @@
+[
+  {
+    "module": "core",
+    "seed": 1210000,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210001,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210002,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210003,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210004,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210005,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210006,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210007,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210008,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210009,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210010,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210011,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210012,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210013,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210014,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210015,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210016,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210017,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210018,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210019,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210020,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210021,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210022,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210023,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210024,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210025,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210026,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210027,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210028,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "core",
+    "seed": 1210029,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210030,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "core",
+    "seed": 1210031,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220000,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220001,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220002,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220003,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220004,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220005,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220006,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220007,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220008,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220009,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220010,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220011,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220012,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220013,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220014,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220015,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220016,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220017,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220018,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220019,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220020,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220021,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220022,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220023,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220024,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220025,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220026,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220027,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220028,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "replication",
+    "seed": 1220029,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220030,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "replication",
+    "seed": 1220031,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230000,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230001,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230002,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230003,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230004,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230005,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230006,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230007,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230008,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230009,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230010,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230011,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230012,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230013,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230014,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "scarce",
+    "seed": 1230015,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240000,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240001,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240002,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240003,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240004,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240005,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240006,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240007,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240008,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240009,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240010,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240011,
+    "condition": "stable_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240012,
+    "condition": "caller_to_folder"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240013,
+    "condition": "folder_to_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240014,
+    "condition": "stable_caller"
+  },
+  {
+    "module": "gradual",
+    "seed": 1240015,
+    "condition": "stable_folder"
+  }
+]

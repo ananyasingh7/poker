@@ -1,0 +1,5 @@
+{
+  "poker.gguf": "47ab19d1d3a2c31d01a72b69a70778c1dbed07f8fa8712cc06e6cbc868357753",
+  "e70a1d2c-a779-5de0-ad50-db4344636389:train:0_weights_000140/adapter_model.safetensors": "62fbc6f765e89ffe30dea111e3e24deaa8e9a756864ef9f8f050a1955bcb5927",
+  "e70a1d2c-a779-5de0-ad50-db4344636389:train:0_weights_000140/adapter_config.json": "57d0cf5c97642f8604766f3940adb82fa90441abbb6f622ef770d37dbcf9420c"
+}

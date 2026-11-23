@@ -561,6 +561,7 @@ fn every_example_config_parses_and_validates() {
         // Standalone Python studies validate these protocols in offline integration tests.
         if path.ends_with("11-inkling-overnight/protocol.json")
             || path.ends_with("12-inkling-own-choice/protocol.json")
+            || path.ends_with("14-inkling-finetuning/session-001.json")
         {
             continue;
         }

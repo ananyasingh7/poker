@@ -47,3 +47,21 @@ Cheat sheet, own notes and tracker exclude each other. Changes apply from the ne
 
 - `dealer.rs` plays a hand step by step (records equal `arena::Session`'s, every hand passes `replay`); `frames.rs` turns a hand into pictures (checked against the referee's state); `session.rs` is the game thread (settings, pacing, audit tap, tallies, river and turn grading after each hand); `analysis.rs` reuses the lab's evaluators; `canvas.rs`, `tableview.rs`, `app.rs` draw a 720x405 framebuffer through `winit` + `softbuffer`.
 - Limits: one model seat, the fixed five-bot field; reasoning is shown when the response arrives (no streaming); a pause takes effect at the next action; a few dozen hands say almost nothing about win rate (SESSION shows the 95% range).
+
+## Try Inkling Session 001
+
+From the checkout, start the local model in one terminal:
+
+```sh
+./scripts/serve-inkling-001.sh
+```
+
+The launcher loads the original IQ4_NL model and the step-140 poker adapter together. It serves the alias `inkling-poker-001` on port 9933. After startup, open [local chat](http://127.0.0.1:9933) for a direct conversation, or run the spectator in another terminal:
+
+```sh
+cargo run --release -p poker-table -- --inkling-001
+```
+
+Choose **Start game** to watch Inkling play five bots. This is an exploratory full-table session. Its training covered heads-up river bets. A short table game measures neither win rate nor improvement. Stop the table and press Ctrl-C in the model terminal when finished.
+
+The launcher defaults to this project's existing FastSSD runtime and model and its local adapter. On another machine, supply `LLAMA_SERVER`, `INKLING_BASE`, and `INKLING_ADAPTER`. Git contains the training examples, evaluation scores and artifact hashes. The model binaries live on the training Mac.

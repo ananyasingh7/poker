@@ -1,0 +1,154 @@
+{
+  "original": {
+    "mean_loss_bb": 6.019417824074074,
+    "good_bluff_bet_rate": 0.6041666666666666,
+    "value_bet_rate": 0.8611111111111112,
+    "bad_bluff_bet_rate": 0.4097222222222222
+  },
+  "checkpoints": [
+    {
+      "label": "epoch-000020",
+      "step": 20,
+      "guardrail_pass": false,
+      "pairs_correct": 17,
+      "mean_loss_bb": 5.393641203703705,
+      "good_bluff_bet_rate": 0.13194444444444445,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.020833333333333332,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000020",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000020"
+    },
+    {
+      "label": "epoch-000040",
+      "step": 40,
+      "guardrail_pass": false,
+      "pairs_correct": 45,
+      "mean_loss_bb": 3.848563657407408,
+      "good_bluff_bet_rate": 0.4791666666666667,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.16666666666666666,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000040",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000040"
+    },
+    {
+      "label": "epoch-000060",
+      "step": 60,
+      "guardrail_pass": true,
+      "pairs_correct": 78,
+      "mean_loss_bb": 1.8499849537037043,
+      "good_bluff_bet_rate": 0.7222222222222222,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.18055555555555555,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000060",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000060"
+    },
+    {
+      "label": "epoch-000080",
+      "step": 80,
+      "guardrail_pass": true,
+      "pairs_correct": 77,
+      "mean_loss_bb": 2.0035208333333347,
+      "good_bluff_bet_rate": 0.5833333333333333,
+      "value_bet_rate": 0.9930555555555556,
+      "bad_bluff_bet_rate": 0.04861111111111111,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000080",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000080"
+    },
+    {
+      "label": "epoch-000100",
+      "step": 100,
+      "guardrail_pass": true,
+      "pairs_correct": 122,
+      "mean_loss_bb": 0.23090856481481511,
+      "good_bluff_bet_rate": 0.8611111111111112,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.013888888888888888,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000100",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000100"
+    },
+    {
+      "label": "epoch-000120",
+      "step": 120,
+      "guardrail_pass": true,
+      "pairs_correct": 135,
+      "mean_loss_bb": 0.15619328703703705,
+      "good_bluff_bet_rate": 0.9375,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000120",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000120"
+    },
+    {
+      "label": "epoch-000140",
+      "step": 140,
+      "guardrail_pass": true,
+      "pairs_correct": 144,
+      "mean_loss_bb": 0.0,
+      "good_bluff_bet_rate": 1,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000140",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000140"
+    },
+    {
+      "label": "epoch-000160",
+      "step": 160,
+      "guardrail_pass": true,
+      "pairs_correct": 139,
+      "mean_loss_bb": 0.019087962962962956,
+      "good_bluff_bet_rate": 0.9791666666666666,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.013888888888888888,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000160",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000160"
+    },
+    {
+      "label": "epoch-000180",
+      "step": 180,
+      "guardrail_pass": true,
+      "pairs_correct": 142,
+      "mean_loss_bb": 0.008740740740740731,
+      "good_bluff_bet_rate": 1,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0.013888888888888888,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000180",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000180"
+    },
+    {
+      "label": "epoch-000200",
+      "step": 200,
+      "guardrail_pass": true,
+      "pairs_correct": 144,
+      "mean_loss_bb": 0.0,
+      "good_bluff_bet_rate": 1,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000200",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000200"
+    },
+    {
+      "label": "epoch-final",
+      "step": 219,
+      "guardrail_pass": true,
+      "pairs_correct": 144,
+      "mean_loss_bb": 0.0,
+      "good_bluff_bet_rate": 1,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/final",
+      "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/final"
+    }
+  ],
+  "selected": {
+    "label": "epoch-000140",
+    "step": 140,
+    "guardrail_pass": true,
+    "pairs_correct": 144,
+    "mean_loss_bb": 0.0,
+    "good_bluff_bet_rate": 1,
+    "value_bet_rate": 1,
+    "bad_bluff_bet_rate": 0,
+    "state_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000140",
+    "sampler_path": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/sampler_weights/000140"
+  }
+}

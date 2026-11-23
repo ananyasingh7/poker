@@ -1,0 +1,31 @@
+{
+  "model": "inkling-2-mini",
+  "max_hours": 8,
+  "histories_per_condition": 0,
+  "tokens": {
+    "action": 64,
+    "notes": 512,
+    "fold_percent": 128
+  },
+  "hands": 100,
+  "switch_range": [
+    42,
+    58
+  ],
+  "note_every": 20,
+  "count_window": 20,
+  "freeze_after": 40,
+  "blocks": 48,
+  "arms": [
+    "model",
+    "model_frozen",
+    "both"
+  ],
+  "seed_ranges": {
+    "abrupt": 1410000,
+    "gradual": 1420000,
+    "reserved_games": 1430000
+  },
+  "splits": "Original quiz pots define train/dev/test. Static test inputs and 48 fresh game seeds reserved for a future model comparison. All played games are evaluation only.",
+  "metrics": "Paired format switches and expected bb lost; compare fresh and frozen by complete seed after change. Report incompatible and failed answers."
+}

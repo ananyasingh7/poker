@@ -1,0 +1,7 @@
+{
+  "use_for_final_comparison": "final-exam.jsonl",
+  "questions": 1908,
+  "excluded_pot_size_groups": 1,
+  "matched_train_or_dev_prompts_remaining": 0,
+  "sha256": "57b3e1d54b2c5c6bac6ea0af3645a664c62d0e7b15bd2ccd6e2bd3587d40c1df"
+}

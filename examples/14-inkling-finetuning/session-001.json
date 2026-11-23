@@ -1,0 +1,12 @@
+{
+  "session": "001-river",
+  "parent": "thinkingmachines/Inkling-2-Mini",
+  "hypothesis": "Teaching matched bluff decisions and hand comparisons reduces river decision loss while preserving good bluffs and value bets.",
+  "dataset": "runs/inkling-sleep-v1",
+  "formats": ["plain", "table", "cards_only", "hand_read"],
+  "shuffle_seed": 14001,
+  "training": {"learning_rate": 0.0001, "num_epochs": 1, "batch_size": 32, "lora_rank": 16, "save_every": 20},
+  "selection": "Select the lowest mean development betting loss among checkpoints meeting the profitable-bluff and value-bet guardrails. Break ties by paired-threshold accuracy, then earlier checkpoint. If none qualify, keep the incumbent.",
+  "guardrails": {"maximum_good_bluff_rate_drop_points": 5, "maximum_value_bet_rate_drop_points": 5},
+  "release": {"minimum_relative_betting_loss_reduction": 0.10, "game_seeds": 48, "paired_game_savings_95pct_lower_bound_above": 0}
+}

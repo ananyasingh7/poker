@@ -16,12 +16,12 @@ Details: [design](docs/design.md).
 
 ## What we know so far
 
-**Inkling 2 Mini is the current local model.** Its latest study completed every section in 7.7 hours, with $0 API fees: 64 main/repeat games comparing six versions, memory across sessions, 512 skill questions and separate exploration and code-only tests. [Plain-language findings](results/12-inkling-own-choice/takeaways.md), [full results](docs/results.md).
+**Inkling 2 Mini is the current local model.** Its November 22 study completed every section in 7.7 hours, with $0 API fees: 64 main/repeat games comparing six versions, memory across sessions, 512 skill questions and separate exploration and code-only tests. [Plain-language findings](results/12-inkling-own-choice/takeaways.md), [full results](docs/results.md).
 
 - **It can use new evidence during play.** Updating reads beat freezing them after an opponent changed, in both directions and both samples. These own-choice comparisons are descriptive; weights stayed unchanged.
 - **Recent counts plus a calculator performed best among the four main setups.** This version uses code for both steps. A calculator alone improved the average, but missed the predeclared rule requiring both samples' intervals above zero.
 - **Keeping notes across sessions and occasional information-gathering bets had no clear overall benefit.** More memory was not automatically better.
-- **Fine-tuning remains untested.** Supplying calculated chip values removed all errors in the limited betting exam. The exam split was imbalanced; fix that before a training study. [Simple next steps](ROADMAP.md#next-experiment)
+- **Session 001 trained a local poker adapter.** The step-140 adapter reduced expected loss on a local river development sample from 9.75 to 0.42 big blinds per decision. It solved 6 of 12 fresh size-switch pairs with cards alone. [Results](results/14-inkling-finetuning/session-001.md) · [Try it in the UI](docs/table.md#try-inkling-session-001) · [Session 002 plan](docs/inkling-session-002.md)
 - **Earlier API results still matter.** Facts, opponent profiles and sizing rules helped DeepSeek and GLM. GLM's apparent learning gain failed replication. Qwen's local pilot did not show adaptation. Those results and the percentage-format correction are recorded in [results](docs/results.md).
 
 The current evidence is from simple scripted opponents and river decisions. General learning at a full six-seat table remains open.

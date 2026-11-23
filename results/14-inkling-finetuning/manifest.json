@@ -1,0 +1,50 @@
+{
+  "config": {
+    "session": "001-river",
+    "parent": "thinkingmachines/Inkling-2-Mini",
+    "hypothesis": "Teaching matched bluff decisions and hand comparisons reduces river decision loss while preserving good bluffs and value bets.",
+    "dataset": "runs/inkling-sleep-v1",
+    "formats": [
+      "plain",
+      "table",
+      "cards_only",
+      "hand_read"
+    ],
+    "shuffle_seed": 14001,
+    "training": {
+      "learning_rate": 0.0001,
+      "num_epochs": 1,
+      "batch_size": 32,
+      "lora_rank": 16,
+      "save_every": 20
+    },
+    "selection": "Select the lowest mean development betting loss among checkpoints meeting the profitable-bluff and value-bet guardrails. Break ties by paired-threshold accuracy, then earlier checkpoint. If none qualify, keep the incumbent.",
+    "guardrails": {
+      "maximum_good_bluff_rate_drop_points": 5,
+      "maximum_value_bet_rate_drop_points": 5
+    },
+    "release": {
+      "minimum_relative_betting_loss_reduction": 0.1,
+      "game_seeds": 48,
+      "paired_game_savings_95pct_lower_bound_above": 0
+    }
+  },
+  "examples": 7039,
+  "categories": {
+    "cards_only/bad_bluff": 640,
+    "cards_only/good_bluff": 640,
+    "cards_only/value": 640,
+    "hand_read/lose": 640,
+    "hand_read/win": 639,
+    "plain/bad_bluff": 640,
+    "plain/good_bluff": 640,
+    "plain/value": 640,
+    "table/bad_bluff": 640,
+    "table/good_bluff": 640,
+    "table/value": 640
+  },
+  "source_train_sha256": "5fa65b89b6bc6d2377de151ecef8b83e999c6631ddf870c32451ae8f8f60c3fc",
+  "dev_sha256": "541f6e6c75f9044bd1ad9369b276ea48d950877c241348bbb19014008e27dece",
+  "locked_exam_sha256": "57b3e1d54b2c5c6bac6ea0af3645a664c62d0e7b15bd2ccd6e2bd3587d40c1df",
+  "train_sha256": "63c0778c9c41b5858053dadd52bb0383f306cacf5c97756438bc0655b05771e6"
+}

@@ -27,6 +27,7 @@ const USAGE: &str = "poker-table: watch a model play six-handed poker against th
 
 USAGE (from the poker-lab directory, so the key file and runs/ are found):
   poker-table                 open the table; choose the player and help, then start
+  poker-table --inkling-001     watch the tuned local player on loopback port 9933
   poker-table --mock          the model is a local mock: free, offline, canned reasoning
   poker-table --open DIR      replay and analyse a saved session (a directory with evaluator.jsonl)
   poker-table --runs DIR      where to save sessions (default: runs)
@@ -37,6 +38,7 @@ KEYS  space pause/resume   c settings   h show all cards   tab or 1-5 panel tabs
       left/right step through hands   up/down previous/next hand   l or esc back to live   +/- speed";
 
 struct Options {
+    inkling: bool,
     mock: bool,
     open: Option<PathBuf>,
     runs: Option<PathBuf>,
@@ -45,6 +47,7 @@ struct Options {
 
 fn options() -> Result<Options, String> {
     let mut options = Options {
+        inkling: false,
         mock: false,
         open: None,
         runs: Some(PathBuf::from("runs")),
@@ -59,6 +62,7 @@ fn options() -> Result<Options, String> {
         };
         match arg.as_str() {
             "--mock" => options.mock = true,
+            "--inkling-001" => options.inkling = true,
             "--open" => options.open = Some(path("--open")?),
             "--runs" => options.runs = Some(path("--runs")?),
             "--no-save" => options.runs = None,
@@ -66,6 +70,9 @@ fn options() -> Result<Options, String> {
             "-h" | "--help" => return Err(USAGE.into()),
             other => return Err(format!("unknown option {other}\n\n{USAGE}")),
         }
+    }
+    if options.inkling && (options.mock || options.open.is_some() || options.snapshot.is_some()) {
+        return Err("--inkling-001 needs live table mode".into());
     }
     Ok(options)
 }
@@ -85,6 +92,18 @@ fn build(options: &Options) -> Result<(Arc<Shared>, App), String> {
             Some(mock::serve()?),
             Settings {
                 model: "mock/model".into(),
+                ..Settings::default()
+            },
+        )
+    } else if options.inkling {
+        (
+            Some(String::new()),
+            None,
+            Settings {
+                local_inkling: true,
+                model: "inkling-poker-001".into(),
+                thinking: false,
+                facts_sheet: false,
                 ..Settings::default()
             },
         )
@@ -118,6 +137,7 @@ fn build(options: &Options) -> Result<(Arc<Shared>, App), String> {
 fn snapshot(dir: &Path, open: Option<&Path>) -> Result<(), String> {
     std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
     let options = Options {
+        inkling: false,
         mock: open.is_none(),
         open: open.map(Path::to_path_buf),
         runs: None,

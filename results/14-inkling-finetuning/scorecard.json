@@ -1,0 +1,316 @@
+{
+  "original": {
+    "plain": {
+      "invalid": 0,
+      "mean_loss_bb": 5.535569444444445,
+      "value_bet_rate": 0.9583333333333334,
+      "good_bluff_bet_rate": 0.125,
+      "bad_bluff_bet_rate": 0.0625,
+      "pairs_correct": 6,
+      "pairs_total": 48
+    },
+    "table": {
+      "invalid": 1,
+      "mean_loss_bb": 5.168878472222222,
+      "value_bet_rate": 0.9166666666666666,
+      "good_bluff_bet_rate": 0.8125,
+      "bad_bluff_bet_rate": 0.5416666666666666,
+      "pairs_correct": 14,
+      "pairs_total": 48
+    },
+    "cards_only": {
+      "invalid": 0,
+      "mean_loss_bb": 7.353805555555555,
+      "value_bet_rate": 0.7083333333333334,
+      "good_bluff_bet_rate": 0.875,
+      "bad_bluff_bet_rate": 0.625,
+      "pairs_correct": 13,
+      "pairs_total": 48
+    },
+    "hand_read": {
+      "invalid": 33,
+      "win_accuracy": 0.20833333333333334,
+      "win_unique": 48,
+      "lose_accuracy": 0.6875,
+      "lose_unique": 48
+    },
+    "overall_betting": {
+      "mean_loss_bb": 6.019417824074074,
+      "good_bluff_bet_rate": 0.6041666666666666,
+      "value_bet_rate": 0.8611111111111112,
+      "bad_bluff_bet_rate": 0.4097222222222222
+    }
+  },
+  "tuned": {
+    "plain": {
+      "invalid": 0,
+      "mean_loss_bb": 0.0,
+      "value_bet_rate": 1,
+      "good_bluff_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "pairs_correct": 48,
+      "pairs_total": 48
+    },
+    "table": {
+      "invalid": 0,
+      "mean_loss_bb": 0.0,
+      "value_bet_rate": 1,
+      "good_bluff_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "pairs_correct": 48,
+      "pairs_total": 48
+    },
+    "cards_only": {
+      "invalid": 0,
+      "mean_loss_bb": 0.0,
+      "value_bet_rate": 1,
+      "good_bluff_bet_rate": 1,
+      "bad_bluff_bet_rate": 0,
+      "pairs_correct": 48,
+      "pairs_total": 48
+    },
+    "hand_read": {
+      "invalid": 0,
+      "win_accuracy": 1,
+      "win_unique": 48,
+      "lose_accuracy": 1,
+      "lose_unique": 48
+    },
+    "overall_betting": {
+      "mean_loss_bb": 0.0,
+      "good_bluff_bet_rate": 1,
+      "value_bet_rate": 1,
+      "bad_bluff_bet_rate": 0
+    }
+  },
+  "step": 140,
+  "local": {
+    "pots": [
+      202,
+      164
+    ],
+    "questions": 96,
+    "model": "/Volumes/FastSSD/inkling-pi-test/models/Inkling-2-Mini-IQ4_NL.gguf",
+    "registered_adapters": [
+      {
+        "id": 0,
+        "path": "/Users/ananyasingh/poker/runs/inkling-tuning/001-river/selected-adapter/poker.gguf",
+        "scale": 1.0,
+        "task_name": "",
+        "prompt_prefix": ""
+      }
+    ],
+    "seed": 14001,
+    "temperature": 0,
+    "comparison_scales": {
+      "original": 0.0,
+      "adapter": 1.0
+    },
+    "original": {
+      "plain": {
+        "invalid": 0,
+        "mean_loss_bb": 11.280750000000003,
+        "value_bet_rate": 1,
+        "good_bluff_bet_rate": 0,
+        "bad_bluff_bet_rate": 0.125,
+        "pairs_correct": 0,
+        "pairs_total": 8
+      },
+      "table": {
+        "invalid": 0,
+        "mean_loss_bb": 8.3545,
+        "value_bet_rate": 1,
+        "good_bluff_bet_rate": 0.625,
+        "bad_bluff_bet_rate": 0.5,
+        "pairs_correct": 1,
+        "pairs_total": 8
+      },
+      "cards_only": {
+        "invalid": 0,
+        "mean_loss_bb": 9.602666666666664,
+        "value_bet_rate": 0.75,
+        "good_bluff_bet_rate": 0.75,
+        "bad_bluff_bet_rate": 0.375,
+        "pairs_correct": 3,
+        "pairs_total": 8
+      },
+      "hand_read": {
+        "invalid": 0,
+        "win_accuracy": 0.25,
+        "win_unique": 8,
+        "lose_accuracy": 1,
+        "lose_unique": 8
+      },
+      "overall_betting": {
+        "mean_loss_bb": 9.745972222222223,
+        "good_bluff_bet_rate": 0.4583333333333333,
+        "value_bet_rate": 0.9166666666666666,
+        "bad_bluff_bet_rate": 0.3333333333333333
+      }
+    },
+    "original_size_transfer": {
+      "plain": {
+        "correct": 11,
+        "questions": 24,
+        "pairs_correct": 0,
+        "pairs": 12,
+        "invalid": 0,
+        "mean_loss_bb": 6.282683333333335
+      },
+      "cards_only": {
+        "correct": 10,
+        "questions": 24,
+        "pairs_correct": 0,
+        "pairs": 12,
+        "invalid": 0,
+        "mean_loss_bb": 6.651011249999999
+      }
+    },
+    "adapter": {
+      "plain": {
+        "invalid": 0,
+        "mean_loss_bb": 0.0,
+        "value_bet_rate": 1,
+        "good_bluff_bet_rate": 1,
+        "bad_bluff_bet_rate": 0,
+        "pairs_correct": 8,
+        "pairs_total": 8
+      },
+      "table": {
+        "invalid": 0,
+        "mean_loss_bb": 1.2540833333333328,
+        "value_bet_rate": 1,
+        "good_bluff_bet_rate": 1,
+        "bad_bluff_bet_rate": 0.125,
+        "pairs_correct": 7,
+        "pairs_total": 8
+      },
+      "cards_only": {
+        "invalid": 0,
+        "mean_loss_bb": 0.0,
+        "value_bet_rate": 1,
+        "good_bluff_bet_rate": 1,
+        "bad_bluff_bet_rate": 0,
+        "pairs_correct": 8,
+        "pairs_total": 8
+      },
+      "hand_read": {
+        "invalid": 0,
+        "win_accuracy": 1,
+        "win_unique": 8,
+        "lose_accuracy": 1,
+        "lose_unique": 8
+      },
+      "overall_betting": {
+        "mean_loss_bb": 0.4180277777777776,
+        "good_bluff_bet_rate": 1,
+        "value_bet_rate": 1,
+        "bad_bluff_bet_rate": 0.041666666666666664
+      }
+    },
+    "adapter_size_transfer": {
+      "plain": {
+        "correct": 19,
+        "questions": 24,
+        "pairs_correct": 7,
+        "pairs": 12,
+        "invalid": 0,
+        "mean_loss_bb": 2.5691366666666666
+      },
+      "cards_only": {
+        "correct": 18,
+        "questions": 24,
+        "pairs_correct": 6,
+        "pairs": 12,
+        "invalid": 0,
+        "mean_loss_bb": 2.9373166666666664
+      }
+    }
+  },
+  "errors": {
+    "base": {
+      "by_size": {
+        "0.25": 7.1574074074074066,
+        "0.5": 5.243273148148147,
+        "1.0": 6.943703703703705,
+        "2.0": 4.733287037037036
+      },
+      "costly_misses": [
+        {
+          "group": 117,
+          "format": "cards_only",
+          "pot": 188,
+          "bet": 94.0,
+          "fold_pct": 18.3,
+          "hand": "you win",
+          "target": "bet",
+          "action": "check",
+          "loss_bb": 76.798
+        },
+        {
+          "group": 0,
+          "format": "cards_only",
+          "pot": 164,
+          "bet": 82.0,
+          "fold_pct": 23.3,
+          "hand": "you win",
+          "target": "bet",
+          "action": "check",
+          "loss_bb": 62.894000000000005
+        },
+        {
+          "group": 120,
+          "format": "table",
+          "pot": 200,
+          "bet": 200,
+          "fold_pct": 35.0,
+          "hand": "you lose",
+          "target": "check",
+          "action": "bet",
+          "loss_bb": 60.0
+        },
+        {
+          "group": 120,
+          "format": "cards_only",
+          "pot": 200,
+          "bet": 200,
+          "fold_pct": 35.0,
+          "hand": "you lose",
+          "target": "check",
+          "action": "bet",
+          "loss_bb": 60.0
+        },
+        {
+          "group": 3,
+          "format": "table",
+          "pot": 197,
+          "bet": 197,
+          "fold_pct": 35.0,
+          "hand": "you lose",
+          "target": "check",
+          "action": "bet",
+          "loss_bb": 59.10000000000002
+        }
+      ],
+      "errors": 136
+    },
+    "tuned": {
+      "by_size": {
+        "0.25": 0.0,
+        "0.5": 0.0,
+        "1.0": 0.0,
+        "2.0": 0.0
+      },
+      "costly_misses": [],
+      "errors": 0
+    }
+  },
+  "full_batches": 219,
+  "train_examples": 7008,
+  "training_cost": 0.9229477500000001,
+  "logged_sampling_cost": 0.21550495,
+  "unlogged_sampling_upper": 0.0046104,
+  "projected_cost_upper": 1.1430631,
+  "full_reservation_upper": 1.4234556,
+  "total_training_tokens": 1230597
+}

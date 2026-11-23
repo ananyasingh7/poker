@@ -448,3 +448,36 @@ fn defaults_are_glm_and_varied_bots_drawn_from_the_seed() {
     .lab_config();
     assert_eq!(deepseek.provider.quantizations, ["fp8"]);
 }
+
+#[test]
+#[ignore = "requires the Session 001 adapter running on localhost:9933"]
+fn local_inkling_plays_a_spectator_hand() {
+    let shared = start(
+        Settings {
+            local_inkling: true,
+            thinking: false,
+            facts_sheet: false,
+            model: "inkling-poker-001".into(),
+            ..Settings::default()
+        },
+        Env {
+            key: Some(String::new()),
+            endpoint: None,
+            runs_root: None,
+        },
+    );
+    wait_for(&shared, "local Inkling hand", |s| {
+        !s.hands.is_empty() && !s.thoughts.is_empty()
+    });
+    let state = shared.lock();
+    assert!(state.stats.lab.requests > 0);
+    assert_eq!(state.stats.lab.reported_cost_usd, 0.0);
+    assert!(
+        state
+            .thoughts
+            .iter()
+            .any(|thought| thought.is_action() && thought.outcome == "ok")
+    );
+    drop(state);
+    shared.control(|s| s.quit = true);
+}

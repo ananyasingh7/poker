@@ -854,6 +854,9 @@ impl App {
         } else {
             let spent = state.stats.lab.reported_cost_usd + state.stats.lab.assumed_cost_usd;
             let spend = match &state.applied {
+                Some(applied) if applied.brain == Brain::Model && applied.local_inkling => {
+                    "local Inkling: no API fees".to_owned()
+                }
                 Some(applied) if applied.brain == Brain::Model && self.mock => {
                     "mock model: nothing is spent".to_owned()
                 }
@@ -2113,7 +2116,9 @@ impl App {
 
         c.text(x, y, "PLAYER", Font::Bold, theme::CHIP);
         y += 16;
-        let model_label = if self.mock {
+        let model_label = if self.draft.local_inkling {
+            "MODEL     Inkling Session 001 on your Mac"
+        } else if self.mock {
             "MODEL     local mock, nothing is spent"
         } else {
             "MODEL     live through OpenRouter; costs money"
@@ -2165,20 +2170,25 @@ impl App {
         if focused {
             c.fill(Rect::new(end + 1, y + 3, 5, 9), theme::CHIP);
         }
-        if input.hit(field) {
+        if input.hit(field) && !self.draft.local_inkling {
             self.focus = Some(Field::Model);
         } else if input.clicked {
             self.focus = None;
         }
         y += 20;
-        if check(c, input, x + 16, y, 454, self.draft.thinking, false) {
+        if check(c, input, x + 16, y, 454, self.draft.thinking, false) && !self.draft.local_inkling
+        {
             self.draft.thinking = !self.draft.thinking;
         }
         c.text(x + 32, y, "SHOW THINKING", Font::Body, theme::INK);
         c.text(
             x + 118,
             y,
-            "it reasons before each move, and you read it",
+            if self.draft.local_inkling {
+                "off for the local poker adapter"
+            } else {
+                "it reasons before each move, and you read it"
+            },
             Font::Body,
             theme::DIM,
         );

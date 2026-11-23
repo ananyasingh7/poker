@@ -83,6 +83,7 @@ pub enum Notes {
 /// What the spectator chooses before the game and during a pause.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Settings {
+    pub local_inkling: bool,
     pub brain: Brain,
     pub model: String,
     /// Ask the model to reason before answering and show that reasoning. The lab's experiments
@@ -108,6 +109,7 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
+            local_inkling: false,
             brain: Brain::Model,
             model: DEFAULT_MODEL.into(),
             thinking: true,
@@ -203,7 +205,15 @@ impl Settings {
             } else {
                 Scaffold::None
             },
-            provider: provider_for(&self.model),
+            local_port: self
+                .local_inkling
+                .then(|| std::num::NonZeroU16::new(9933).unwrap()),
+            local_json_prefill: self.local_inkling,
+            provider: if self.local_inkling {
+                ProviderPrefs::default()
+            } else {
+                provider_for(&self.model)
+            },
             ..Config::default()
         }
     }

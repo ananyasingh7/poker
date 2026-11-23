@@ -1,0 +1,12 @@
+{
+  "checks": 289,
+  "largest_relative_error": 0.000873959215823561,
+  "worst_matrix": "blk.22.attn_v/None",
+  "seed": 14001,
+  "experts_per_layer": [
+    0,
+    63,
+    127
+  ],
+  "layers": 24
+}

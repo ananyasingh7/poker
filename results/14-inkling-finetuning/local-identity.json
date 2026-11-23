@@ -1,0 +1,8 @@
+{
+  "model": "/Volumes/FastSSD/inkling-pi-test/models/Inkling-2-Mini-IQ4_NL.gguf",
+  "bytes": 17627940768,
+  "base_sha256": "cbdf3fa9dc50a4124977980f37da4f1fa764b0cfe800d275cd43d26ce2a81af4",
+  "server": "/Volumes/FastSSD/inkling-pi-test/runtime/build/bin/llama-server",
+  "server_sha256": "e2bbe6032ae0e3dda6e223e344c84e7a937d4858d0c427f6d8cde88dec05b90b",
+  "runtime_source": "/Volumes/FastSSD/inkling-pi-test/runtime/llama.cpp-29b52d398b294509746ec0a3f28948a3107c0213"
+}

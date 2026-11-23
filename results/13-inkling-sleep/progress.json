@@ -1,0 +1,16 @@
+{
+  "state": "complete",
+  "updated": "2026-11-23T08:13:18.676794+00:00",
+  "stage": "own-choice games and opponent reads",
+  "current": "gradual/1420047/both/hand/100",
+  "elapsed_hours": 3.7410399632983737,
+  "requests": 14627,
+  "failed_model_answers": 3,
+  "completed": {
+    "episode": 288,
+    "hand": 28800,
+    "note": 576,
+    "quiz": 864
+  },
+  "error": null
+}

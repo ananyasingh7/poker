@@ -1,8 +1,12 @@
 # Roadmap
 
-Current direction as of 2026-11-22. The full experiment history and numbers are in [results](docs/results.md).
+Current direction as of 2026-11-23. The full experiment history and numbers are in [results](docs/results.md).
 
-## Where we are
+## Next experiment
+
+[Session 002 plan](docs/inkling-session-002.md). Session 001 trained and exported a poker adapter. Step 140 improved local river decisions and got both sides of 6/12 fresh cards-only bet-size pairs correct. The next experiment targets this gap. [Session 001 report](results/14-inkling-finetuning/session-001.md)
+
+## Research plan before Session 001
 
 - **Current model:** Inkling 2 Mini IQ4_NL, running locally on port 9932. Qwen/Pi, GLM and DeepSeek remain historical comparisons.
 - **Built:** a verified six-seat poker engine, scripted opponents, model players, notes and action counts, resumable experiments, decision grading and a spectator table.
@@ -11,7 +15,7 @@ Current direction as of 2026-11-22. The full experiment history and numbers are 
 
 The latest run finished all sections in 7.7 hours: 32 main and 32 fresh-repeat games across six versions, 12 memory identities, 512 exam questions, scarce-evidence and gradual-change tests, and 400 seeds across five code-only policies. [Plain-language findings](results/12-inkling-own-choice/takeaways.md), [detailed report](results/12-inkling-own-choice/summary.md), [data index](results/README.md).
 
-## Next experiment
+## Earlier assisted-player proposal
 
 **Build an assisted Inkling player, then identify what still needs training.** No new run or training is scheduled.
 
@@ -46,7 +50,7 @@ Earlier GLM learning hints failed replication. Qwen's local pilot did not show r
 ## Other open work
 
 - Human play through the spectator table.
-- Local-model selection in the spectator UI; CLI support is already built.
+- Broader local-model selection beyond the Session 001 spectator preset.
 - Compare direct model calls with the Pi agent harness on the same deals.
 - Real mixed-model tables, with separate settings for each model.
 - Harder opponents, including opponents that adjust to the model's play.

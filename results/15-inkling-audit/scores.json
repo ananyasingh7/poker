@@ -1,0 +1,53 @@
+{
+  "original": {
+    "at_30": [
+      "bet",
+      "check"
+    ],
+    "novel_price_pairs_correct": 0,
+    "novel_pairs": 10,
+    "hand_errors": [
+      "straight",
+      "overpair",
+      "two pair",
+      "set"
+    ],
+    "correct_replay_checks": 2,
+    "replays": 11,
+    "invalid": 0,
+    "game_loss_by_seed": {
+      "1600200": 1.5,
+      "1600201": 0.17500000000000004,
+      "1600202": 0.9250000000000002,
+      "1600203": 1.8499999999999999
+    },
+    "game_mean_loss": 1.1125,
+    "game_same_read_calculator_loss": 0.8625000000000002
+  },
+  "step140": {
+    "at_30": [
+      "bet",
+      "check"
+    ],
+    "novel_price_pairs_correct": 3,
+    "novel_pairs": 10,
+    "hand_errors": [
+      "bottom pair",
+      "middle pair",
+      "straight",
+      "overpair",
+      "flush"
+    ],
+    "correct_replay_checks": 11,
+    "replays": 11,
+    "invalid": 0,
+    "game_loss_by_seed": {
+      "1600200": 1.1,
+      "1600201": 0.5000000000000001,
+      "1600202": 1.2500000000000002,
+      "1600203": 0.8750000000000002
+    },
+    "game_mean_loss": 0.9312500000000001,
+    "game_same_read_calculator_loss": 0.8187500000000001
+  }
+}

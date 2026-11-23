@@ -1,0 +1,9 @@
+{
+  "games": 48,
+  "hands": 4800,
+  "mean_absolute_error_percentage_points": {
+    "model": 19.128791666666668,
+    "recent20": 11.073647785124662,
+    "bayes": 3.4475072755164744
+  }
+}

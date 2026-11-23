@@ -1,5 +1,7 @@
 # Inkling Poker · Session 001
 
+**Protocol update.** The historical exam is now a regression check. All 48 pricing cases occurred in training. Current release criteria and development results are in the [pre-Session 002 audit](../15-inkling-audit/report.md).
+
 The selected poker adapter is step 140 of 219. On the 432 hosted development betting decisions, average expected chips given up fell from 6.019 to 0.000 big blinds. This measures how well each decision uses the given fold chance in a restricted heads-up river drill. Game winnings and in-game adaptation require separate tests.
 
 The GGUF adapter is stored on the training Mac at `runs/inkling-tuning/001-river/selected-adapter/poker.gguf`. The sibling checkpoint directory contains the PEFT weights. [Try the local model](../../docs/table.md#try-inkling-session-001) · [Trainer settings](config.json) · [All candidate scores](selection.json)

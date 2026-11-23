@@ -1,5 +1,7 @@
 # Inkling poker training sessions
 
+**Protocol update.** The historical exam is now a regression check. All 48 pricing cases occurred in training. Current release criteria and development results are in the [pre-Session 002 audit](../results/15-inkling-audit/report.md).
+
 Session 001 teaches a river decision: compare the hand with top pair, skip an unprofitable bluff, take a profitable bluff, and bet a winning hand. The same poker situation appears in several formats. Bet and hand targets are computed from the cards and chip values. The base player already updates its estimate of an opponent during a game. Training aims to improve how the player acts on that estimate.
 
 ## Prepared session 001

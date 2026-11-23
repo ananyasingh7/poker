@@ -1,5 +1,7 @@
 # Roadmap
 
+**Protocol update.** The historical exam is now a regression check. All 48 pricing cases occurred in training. Current release criteria and development results are in the [pre-Session 002 audit](results/15-inkling-audit/report.md).
+
 Current direction as of 2026-11-23. The full experiment history and numbers are in [results](docs/results.md).
 
 ## Next experiment

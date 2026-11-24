@@ -4,12 +4,49 @@ import json
 import unittest
 from pathlib import Path
 
-from inkling_session002 import OUT, score
+from inkling_session002 import OUT, SEEDS, score
 from inkling_split_audit import boards, pricing_cases, require_novel
 from prepare_inkling_tune import classify
+from score_inkling_tune import score as historical_score
+from summarize_inkling_session002 import load_predictions
 
 
 class FrozenSession002(unittest.TestCase):
+    def test_report_replays_from_committed_answers(self):
+        report = json.loads((OUT / "results.json").read_text())
+        questions = load_predictions("dev")
+        controls = load_predictions("retention-questions")
+
+        def control_actions(name):
+            return {
+                (r["group"], r["format"]): r["answer"] for r in load_predictions(name)
+            }
+
+        self.assertEqual(
+            control_actions("retention-step140"),
+            control_actions("retention-parent-local"),
+        )
+        losses = {}
+        for seed in SEEDS:
+            arm = report["replicates"][str(seed)]
+            answers = load_predictions(f"candidate-{seed}")
+            self.assertEqual(
+                [
+                    {k: row[k] for k in question}
+                    for row, question in zip(answers, questions, strict=True)
+                ],
+                questions,
+            )
+            self.assertEqual(score(answers), arm["metrics"])
+            history = historical_score(controls, load_predictions(f"retention-{seed}"))
+            self.assertEqual(history["overall_betting"], arm["retention"])
+            losses[seed] = arm["metrics"]["combined"]["mean_loss_bb"]
+        median_loss = sorted(losses.values())[1]
+        self.assertEqual(
+            report["representative"],
+            next(seed for seed in SEEDS if losses[seed] == median_loss),
+        )
+
     def test_splits(self):
         manifest = json.loads((OUT / "manifest.json").read_text())
         paths = [

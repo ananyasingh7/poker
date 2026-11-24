@@ -1,0 +1,42 @@
+{
+  "plain": {
+    "invalid": 0,
+    "mean_loss_bb": 3.2972499999999982,
+    "value_bet_rate": 1,
+    "good_bluff_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.25,
+    "pairs_correct": 6,
+    "pairs_total": 8
+  },
+  "table": {
+    "invalid": 0,
+    "mean_loss_bb": 2.0431666666666657,
+    "value_bet_rate": 1,
+    "good_bluff_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.125,
+    "pairs_correct": 7,
+    "pairs_total": 8
+  },
+  "cards_only": {
+    "invalid": 0,
+    "mean_loss_bb": 2.0431666666666657,
+    "value_bet_rate": 1,
+    "good_bluff_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.125,
+    "pairs_correct": 7,
+    "pairs_total": 8
+  },
+  "hand_read": {
+    "invalid": 0,
+    "win_accuracy": 1,
+    "win_unique": 8,
+    "lose_accuracy": 1,
+    "lose_unique": 8
+  },
+  "overall_betting": {
+    "mean_loss_bb": 2.4611944444444434,
+    "good_bluff_bet_rate": 1,
+    "value_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.16666666666666666
+  }
+}

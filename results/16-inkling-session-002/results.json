@@ -1,0 +1,297 @@
+{
+  "representative": 1622101,
+  "advance_to_release_evaluation": false,
+  "replicates": {
+    "1622101": {
+      "metrics": {
+        "hand": {
+          "correct": 24,
+          "total": 32,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 42,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 10,
+          "pairs": 16,
+          "mean_loss_bb": 0.6284102083333337,
+          "bet_rates": {
+            "good_bluff": 0.875,
+            "bad_bluff": 0.25,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 35,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 5,
+          "pairs": 16,
+          "mean_loss_bb": 3.6602968750000007,
+          "bet_rates": {
+            "good_bluff": 0.875,
+            "bad_bluff": 0.5625,
+            "value": 0.875
+          }
+        }
+      },
+      "exploratory_consistency": {
+        "both_standalone_correct": 31,
+        "combined_errors_among_these": 4,
+        "model_read_plus_calculator_mean_loss_bb": 2.828392291666667
+      },
+      "retention": {
+        "mean_loss_bb": 2.4611944444444434,
+        "good_bluff_bet_rate": 1,
+        "value_bet_rate": 1,
+        "bad_bluff_bet_rate": 0.16666666666666666
+      },
+      "guardrails": {
+        "lower_combined_loss": false,
+        "hand_reading": true,
+        "bluff_pricing": true,
+        "retained_good_bluffs": true,
+        "retained_value_bets": true
+      },
+      "paired_savings_95pct": [
+        -1.4561712499999997,
+        0.6438974999999992
+      ],
+      "examples": 2304,
+      "updates": 72,
+      "estimated_training_cost": 0.27223275,
+      "trained_tokens": 362977,
+      "checkpoint": {
+        "name": "final",
+        "batch": 0,
+        "epoch": 1,
+        "state_path": "tinker://817da2f9-87f1-5008-98b2-2c5b2639192f:train:0/weights/final",
+        "sampler_path": "tinker://817da2f9-87f1-5008-98b2-2c5b2639192f:train:0/sampler_weights/final",
+        "elapsed_tokens": 362977
+      },
+      "gguf_sha256": "33542f0860f6b70b6ef855c732393bd942924665d5f23194eccf81717e64b3bf",
+      "conversion": {
+        "checks": 289,
+        "largest_relative_error": 0.000848715309984982,
+        "worst_matrix": "blk.5.attn_rel/None",
+        "seed": 14001,
+        "experts_per_layer": [
+          0,
+          63,
+          127
+        ],
+        "layers": 24
+      }
+    },
+    "1622102": {
+      "metrics": {
+        "hand": {
+          "correct": 23,
+          "total": 32,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 43,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 11,
+          "pairs": 16,
+          "mean_loss_bb": 0.3323147916666666,
+          "bet_rates": {
+            "good_bluff": 0.8125,
+            "bad_bluff": 0.125,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 37,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 8,
+          "pairs": 16,
+          "mean_loss_bb": 3.676750625,
+          "bet_rates": {
+            "good_bluff": 0.9375,
+            "bad_bluff": 0.4375,
+            "value": 0.8125
+          }
+        }
+      },
+      "exploratory_consistency": {
+        "both_standalone_correct": 33,
+        "combined_errors_among_these": 5,
+        "model_read_plus_calculator_mean_loss_bb": 5.324533958333333
+      },
+      "retention": {
+        "mean_loss_bb": 1.3235277777777776,
+        "good_bluff_bet_rate": 1,
+        "value_bet_rate": 1,
+        "bad_bluff_bet_rate": 0.16666666666666666
+      },
+      "guardrails": {
+        "lower_combined_loss": false,
+        "hand_reading": true,
+        "bluff_pricing": true,
+        "retained_good_bluffs": true,
+        "retained_value_bets": true
+      },
+      "paired_savings_95pct": [
+        -2.141392916666666,
+        1.4025429166666685
+      ],
+      "examples": 2304,
+      "updates": 72,
+      "estimated_training_cost": 0.27223275,
+      "trained_tokens": 362977,
+      "checkpoint": {
+        "name": "final",
+        "batch": 0,
+        "epoch": 1,
+        "state_path": "tinker://debd81fb-3697-54ee-9d57-23c2a62d27f5:train:0/weights/final",
+        "sampler_path": "tinker://debd81fb-3697-54ee-9d57-23c2a62d27f5:train:0/sampler_weights/final",
+        "elapsed_tokens": 362977
+      },
+      "gguf_sha256": "efebd6fbf54a6499dc1f5be497f4210c3afb7bb4fe265ba5b3a8c905d3656992",
+      "conversion": {
+        "checks": 289,
+        "largest_relative_error": 0.0008114577503874898,
+        "worst_matrix": "blk.22.ffn_down_exps/63",
+        "seed": 14001,
+        "experts_per_layer": [
+          0,
+          63,
+          127
+        ],
+        "layers": 24
+      }
+    },
+    "1622103": {
+      "metrics": {
+        "hand": {
+          "correct": 25,
+          "total": 32,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 43,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 11,
+          "pairs": 16,
+          "mean_loss_bb": 0.41167333333333317,
+          "bet_rates": {
+            "good_bluff": 0.75,
+            "bad_bluff": 0.0625,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 41,
+          "total": 48,
+          "invalid": 0,
+          "pairs_correct": 12,
+          "pairs": 16,
+          "mean_loss_bb": 3.518462291666667,
+          "bet_rates": {
+            "good_bluff": 0.9375,
+            "bad_bluff": 0.1875,
+            "value": 0.8125
+          }
+        }
+      },
+      "exploratory_consistency": {
+        "both_standalone_correct": 36,
+        "combined_errors_among_these": 3,
+        "model_read_plus_calculator_mean_loss_bb": 3.015378125
+      },
+      "retention": {
+        "mean_loss_bb": 1.741555555555555,
+        "good_bluff_bet_rate": 1,
+        "value_bet_rate": 1,
+        "bad_bluff_bet_rate": 0.20833333333333334
+      },
+      "guardrails": {
+        "lower_combined_loss": false,
+        "hand_reading": true,
+        "bluff_pricing": true,
+        "retained_good_bluffs": true,
+        "retained_value_bets": true
+      },
+      "paired_savings_95pct": [
+        -2.9651518749999997,
+        2.345151666666667
+      ],
+      "examples": 2304,
+      "updates": 72,
+      "estimated_training_cost": 0.27223275,
+      "trained_tokens": 362977,
+      "checkpoint": {
+        "name": "final",
+        "batch": 0,
+        "epoch": 1,
+        "state_path": "tinker://e99dd23c-e17b-5b5c-9810-f846460a7493:train:0/weights/final",
+        "sampler_path": "tinker://e99dd23c-e17b-5b5c-9810-f846460a7493:train:0/sampler_weights/final",
+        "elapsed_tokens": 362977
+      },
+      "gguf_sha256": "76bfaad67c25a6f2c5be63062e828665aece6c135f8fc02c5480292d5dfd8c88",
+      "conversion": {
+        "checks": 289,
+        "largest_relative_error": 0.0010514536406844854,
+        "worst_matrix": "blk.20.ffn_gate_up_exps/63",
+        "seed": 14001,
+        "experts_per_layer": [
+          0,
+          63,
+          127
+        ],
+        "layers": 24
+      }
+    }
+  },
+  "parent": {
+    "hand": {
+      "correct": 19,
+      "total": 32,
+      "invalid": 0
+    },
+    "price": {
+      "correct": 37,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 5,
+      "pairs": 16,
+      "mean_loss_bb": 2.146831041666667,
+      "bet_rates": {
+        "good_bluff": 0.9375,
+        "bad_bluff": 0.625,
+        "value": 1.0
+      }
+    },
+    "combined": {
+      "correct": 33,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 3,
+      "pairs": 16,
+      "mean_loss_bb": 3.3896366666666675,
+      "bet_rates": {
+        "good_bluff": 0.9375,
+        "bad_bluff": 0.75,
+        "value": 0.875
+      }
+    }
+  },
+  "parent_exploratory_consistency": {
+    "both_standalone_correct": 21,
+    "combined_errors_among_these": 0,
+    "model_read_plus_calculator_mean_loss_bb": 4.075966458333334
+  },
+  "parent_retention": {
+    "mean_loss_bb": 0.4180277777777776,
+    "good_bluff_bet_rate": 1,
+    "value_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.041666666666666664
+  },
+  "estimated_cost": 0.8166982500000001
+}

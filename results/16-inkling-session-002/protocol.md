@@ -2,6 +2,8 @@
 
 The parent is the private Session 001 step-140 training state. Each replicate starts from those same learned weights with a fresh optimizer. The three predeclared shuffle seeds are 1622101, 1622102 and 1622103. This tests sensitivity to training order. Initialization is shared and exact hosted execution determinism is outside our control.
 
+The three runs finished. The representative failed the development loss criterion. [Full results and hand replay](report.md).
+
 ## Frozen design
 
 Every new group contains one losing hand, one winning hand and a fold rate. Half the groups have a hole-card rank matching the board in both hands; the other half have no match in either. For the losing hand, changing only the bet size reverses the correct action. The amounts straddle the calculated break-even point at varying distances. Value bets protect against a policy that simply checks expensive bets.
@@ -35,6 +37,8 @@ Use one epoch, batch size 32, native tml_v0 renderer, rank 16 inherited from the
 1. Run `python3 -B experiments/inkling_session002.py` to recreate the splits. This requires the historical split files in runs/ for exclusion checks. The committed compressed splits suffice for training and evaluation.
 2. Run `runs/inkling-training-env/bin/python -B experiments/train_inkling_session002.py` for the offline renderer check. It creates three deterministic file orders in the ignored run directory.
 3. Start `scripts/serve-inkling-001.sh`, wait for its health endpoint, and run `python3 -B experiments/inkling_session002.py --baseline`. Both arms use the same IQ4_NL base, JSON constraints, temperature zero and decoding seed 14001. Adapter scales are 0 and 1.
-4. After spending authorization, adding `--train` to the renderer-check command submits the three Tinker runs. Download each final adapter, verify its conversion using the Session 001 procedure, and save the GGUF as `runs/inkling-tuning/002-pricing/<seed>/final.gguf`. Load that file with the launcher's INKLING_ADAPTER override and run `experiments/inkling_session002.py --candidate-seed <seed>` with Python. Also replay the matched historical development controls before promotion.
+4. Adding `--train` to the renderer-check command submits paid training. Each final checkpoint has 72 updates. The trainer skips completed replicates and stops if it finds an incomplete run directory.
+5. Free port 9933 after recording the baselines. Run `python3 -B experiments/evaluate_inkling_session002.py` to export, convert and test all three final adapters locally. Add `--wait` to start the evaluator while training is in progress. It verifies the loaded adapter path for each seed and replays the [96 historical control prompts](retention-questions.jsonl.gz). Run the evaluator separately with `--parent-controls` to reproduce step 140 on those same controls. Its [96 new answers](retention-parent-local.jsonl.gz) exactly matched the [96 historical actions](retention-step140.jsonl.gz).
+6. Run `python3 -B experiments/summarize_inkling_session002.py` to combine the saved answers, local weights and trainer logs. The paired bootstrap resamples the 16 whole situations together (10,000 draws). The reported interval describes uncertainty across those situations for a given adapter.
 
 [Manifest](manifest.json) · [Training examples](train.jsonl.gz) · [Development examples](dev.jsonl.gz) · [Token count and order hashes](render-check.json)

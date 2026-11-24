@@ -1,6 +1,6 @@
 # Session 002 · Does Inkling price a bluff?
 
-Status — planned, pending review of the [pre-training diagnostics](../results/15-inkling-audit/report.md). Parent — Session 001, step 140. The new experiment can use generated examples without another overnight gameplay run.
+Status — splits and training orders frozen. [Session 002 protocol and local baselines](../results/16-inkling-session-002/protocol.md). [Pre-training diagnostics](../results/15-inkling-audit/report.md). Parent — Session 001, step 140. The new experiment can use generated examples without another overnight gameplay run.
 
 **Question.** With a losing hand, does Inkling risk a small bet yet decline a large one against the very same opponent? In the first local transfer check it got both decisions right on 7 of 12 pairs with hand strength given and 6 of 12 with cards alone. The plain practice quiz admitted a shortcut because 30 of 31 fold percentages predicted a single action on losing hands.
 

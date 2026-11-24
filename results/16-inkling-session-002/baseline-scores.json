@@ -1,0 +1,68 @@
+{
+  "original": {
+    "hand": {
+      "correct": 22,
+      "total": 32,
+      "invalid": 0
+    },
+    "price": {
+      "correct": 32,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 0,
+      "pairs": 16,
+      "mean_loss_bb": 3.3767606249999993,
+      "bet_rates": {
+        "good_bluff": 0.0,
+        "bad_bluff": 0.0,
+        "value": 1.0
+      }
+    },
+    "combined": {
+      "correct": 30,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 0,
+      "pairs": 16,
+      "mean_loss_bb": 4.005005,
+      "bet_rates": {
+        "good_bluff": 0.75,
+        "bad_bluff": 0.8125,
+        "value": 0.9375
+      }
+    }
+  },
+  "step140": {
+    "hand": {
+      "correct": 19,
+      "total": 32,
+      "invalid": 0
+    },
+    "price": {
+      "correct": 37,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 5,
+      "pairs": 16,
+      "mean_loss_bb": 2.146831041666667,
+      "bet_rates": {
+        "good_bluff": 0.9375,
+        "bad_bluff": 0.625,
+        "value": 1.0
+      }
+    },
+    "combined": {
+      "correct": 33,
+      "total": 48,
+      "invalid": 0,
+      "pairs_correct": 3,
+      "pairs": 16,
+      "mean_loss_bb": 3.3896366666666675,
+      "bet_rates": {
+        "good_bluff": 0.9375,
+        "bad_bluff": 0.75,
+        "value": 0.875
+      }
+    }
+  }
+}

@@ -13,3 +13,7 @@ Session 002 is complete. In the median run, Inkling priced 5 of 16 bluff pairs c
 7. The 48 reserved fixed-price game seeds test whole-game behavior at a 50% threshold. Require paired game savings against the original with a 95% interval above zero, plus a separately preregistered variable-price game comparison against step 140 before claiming general game improvement. Match deals and opponent randomness; let each policy observe its own responses. Compare read calibration with a same-evidence counting learner and an observer given the simulator prior. Release and full-table trials remain separate decisions.
 
 [Session 001 results](../results/14-inkling-finetuning/session-001.md)
+
+## Follow-up on fresh hands
+
+All four local adapters replayed 32 additional groups to locate the most expensive mistakes. Reserve these boards and fold rates from future training. [Fresh river diagnosis and proposed Session 003 target](../results/17-inkling-fresh-diagnosis/report.md)

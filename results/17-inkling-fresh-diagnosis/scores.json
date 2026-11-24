@@ -1,0 +1,254 @@
+{
+  "step140": {
+    "metrics": {
+      "hand": {
+        "correct": 36,
+        "total": 64,
+        "invalid": 0
+      },
+      "price": {
+        "correct": 76,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 12,
+        "pairs": 32,
+        "mean_loss_bb": 1.735993333333335,
+        "bet_rates": {
+          "good_bluff": 0.6875,
+          "bad_bluff": 0.3125,
+          "value": 1.0
+        }
+      },
+      "combined": {
+        "correct": 64,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 8,
+        "pairs": 32,
+        "mean_loss_bb": 4.728954583333335,
+        "bet_rates": {
+          "good_bluff": 0.875,
+          "bad_bluff": 0.625,
+          "value": 0.75
+        }
+      }
+    },
+    "full_decisions": 96,
+    "categories": {
+      "correct": {
+        "count": 64,
+        "loss_bb": 0.0
+      },
+      "combined_only": {
+        "count": 4,
+        "loss_bb": 27.19916999999998
+      },
+      "hand_wrong": {
+        "count": 14,
+        "loss_bb": 286.0197099999999
+      },
+      "price_wrong": {
+        "count": 12,
+        "loss_bb": 113.5154900000002
+      },
+      "both_wrong": {
+        "count": 2,
+        "loss_bb": 27.24527000000002
+      }
+    },
+    "savings_vs_step140": {
+      "mean_bb": 0.0,
+      "interval_95_bb": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "1622101": {
+    "metrics": {
+      "hand": {
+        "correct": 45,
+        "total": 64,
+        "invalid": 0
+      },
+      "price": {
+        "correct": 83,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 20,
+        "pairs": 32,
+        "mean_loss_bb": 0.7450208333333345,
+        "bet_rates": {
+          "good_bluff": 0.78125,
+          "bad_bluff": 0.1875,
+          "value": 1.0
+        }
+      },
+      "combined": {
+        "correct": 74,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 18,
+        "pairs": 32,
+        "mean_loss_bb": 6.155164895833335,
+        "bet_rates": {
+          "good_bluff": 0.96875,
+          "bad_bluff": 0.40625,
+          "value": 0.75
+        }
+      }
+    },
+    "full_decisions": 96,
+    "categories": {
+      "correct": {
+        "count": 74,
+        "loss_bb": 0.0
+      },
+      "hand_wrong": {
+        "count": 6,
+        "loss_bb": 252.76451999999995
+      },
+      "combined_only": {
+        "count": 10,
+        "loss_bb": 299.08486000000005
+      },
+      "price_wrong": {
+        "count": 4,
+        "loss_bb": 11.801180000000073
+      },
+      "both_wrong": {
+        "count": 2,
+        "loss_bb": 27.24527000000002
+      }
+    },
+    "savings_vs_step140": {
+      "mean_bb": -1.4262103124999999,
+      "interval_95_bb": [
+        -5.1472803125,
+        1.6381664583333335
+      ]
+    }
+  },
+  "1622102": {
+    "metrics": {
+      "hand": {
+        "correct": 50,
+        "total": 64,
+        "invalid": 0
+      },
+      "price": {
+        "correct": 81,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 17,
+        "pairs": 32,
+        "mean_loss_bb": 0.8262176041666681,
+        "bet_rates": {
+          "good_bluff": 0.78125,
+          "bad_bluff": 0.25,
+          "value": 1.0
+        }
+      },
+      "combined": {
+        "correct": 71,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 12,
+        "pairs": 32,
+        "mean_loss_bb": 4.192915937500001,
+        "bet_rates": {
+          "good_bluff": 0.96875,
+          "bad_bluff": 0.59375,
+          "value": 0.84375
+        }
+      }
+    },
+    "full_decisions": 96,
+    "categories": {
+      "correct": {
+        "count": 71,
+        "loss_bb": 0.0
+      },
+      "combined_only": {
+        "count": 11,
+        "loss_bb": 88.32458000000005
+      },
+      "hand_wrong": {
+        "count": 5,
+        "loss_bb": 250.07099999999997
+      },
+      "price_wrong": {
+        "count": 9,
+        "loss_bb": 64.12435000000015
+      }
+    },
+    "savings_vs_step140": {
+      "mean_bb": 0.5360386458333334,
+      "interval_95_bb": [
+        -1.5114667708333342,
+        2.5378786458333358
+      ]
+    }
+  },
+  "1622103": {
+    "metrics": {
+      "hand": {
+        "correct": 51,
+        "total": 64,
+        "invalid": 0
+      },
+      "price": {
+        "correct": 82,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 19,
+        "pairs": 32,
+        "mean_loss_bb": 0.7030743750000005,
+        "bet_rates": {
+          "good_bluff": 0.78125,
+          "bad_bluff": 0.21875,
+          "value": 1.0
+        }
+      },
+      "combined": {
+        "correct": 75,
+        "total": 96,
+        "invalid": 0,
+        "pairs_correct": 18,
+        "pairs": 32,
+        "mean_loss_bb": 4.821271145833335,
+        "bet_rates": {
+          "good_bluff": 0.96875,
+          "bad_bluff": 0.40625,
+          "value": 0.78125
+        }
+      }
+    },
+    "full_decisions": 96,
+    "categories": {
+      "correct": {
+        "count": 75,
+        "loss_bb": 0.0
+      },
+      "hand_wrong": {
+        "count": 5,
+        "loss_bb": 250.07099999999997
+      },
+      "price_wrong": {
+        "count": 7,
+        "loss_bb": 37.26831000000006
+      },
+      "combined_only": {
+        "count": 9,
+        "loss_bb": 175.5027200000001
+      }
+    },
+    "savings_vs_step140": {
+      "mean_bb": -0.09231656249999942,
+      "interval_95_bb": [
+        -2.4620312499999994,
+        2.0995550000000023
+      ]
+    }
+  }
+}

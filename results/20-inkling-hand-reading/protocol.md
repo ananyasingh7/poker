@@ -12,3 +12,18 @@ Freeze 32 separate development boards before running inference. Use 64 hands and
 Save the final PEFT weights for each run with Tinker’s external export and verify the local conversion. With this storage choice, an interrupted training run restarts from its parent.
 
 No game seeds or sealed exam are scored. This experiment measures decisions against a specified hand and fold chance. It does not establish play against a human or adaptation during a game.
+
+## Reproduce the experiment
+
+From the repository root, use `experiments/inkling_hand_reading.py` with these commands.
+
+| Command | What it does |
+| --- | --- |
+| `prepare` | Rebuild the frozen examples. Requires the historical input files for the overlap check. |
+| `preflight` | Render and count the training tokens in the local Tinker environment. |
+| `baseline` | Grade the local step-140 adapter on both policies. |
+| `train` | Train three separate free-tier copies from step 140, saving their final adapter weights. |
+| `score` | Download and verify each final adapter, then replay both policies locally. |
+| `rescore` | Recalculate the comparison from the published answer files with standard Python. |
+
+Use `runs/inkling-training-env/bin/python -B` for training and preflight. For example, `python3 -B experiments/inkling_hand_reading.py rescore` uses the saved answers and needs no remote account or model. The local replays use the same four-bit base, adapter scale, output constraints and greedy decoding as Session 003.

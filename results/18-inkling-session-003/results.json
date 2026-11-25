@@ -1,0 +1,161 @@
+{
+  "replicates": {
+    "183001": {
+      "scores": {
+        "hand": {
+          "correct": 42,
+          "total": 64,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 112,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 16,
+          "pairs": 32,
+          "mean_loss_bb": 0.9810444531249993,
+          "bet_rates": {
+            "good_bluff": 0.84375,
+            "bad_bluff": 0.34375,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 96,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 0,
+          "pairs": 32,
+          "mean_loss_bb": 2.5168791406249986,
+          "bet_rates": {
+            "good_bluff": 1.0,
+            "bad_bluff": 1.0,
+            "value": 1.0
+          }
+        }
+      },
+      "winner_loss_bb": 0.0,
+      "parent_winner_loss_bb": 5.780938125,
+      "savings_bb": 2.2371501562500002,
+      "savings_95_bb": [
+        0.6962,
+        4.2385875
+      ]
+    },
+    "183002": {
+      "scores": {
+        "hand": {
+          "correct": 41,
+          "total": 64,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 107,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 11,
+          "pairs": 32,
+          "mean_loss_bb": 1.8277251562499988,
+          "bet_rates": {
+            "good_bluff": 0.96875,
+            "bad_bluff": 0.625,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 95,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 1,
+          "pairs": 32,
+          "mean_loss_bb": 2.9474502343749984,
+          "bet_rates": {
+            "good_bluff": 1.0,
+            "bad_bluff": 0.96875,
+            "value": 0.96875
+          }
+        }
+      },
+      "winner_loss_bb": 1.1351665624999998,
+      "parent_winner_loss_bb": 5.780938125,
+      "savings_bb": 1.8065790625000002,
+      "savings_95_bb": [
+        0.351046875,
+        3.7617414062500005
+      ]
+    },
+    "183003": {
+      "scores": {
+        "hand": {
+          "correct": 43,
+          "total": 64,
+          "invalid": 0
+        },
+        "price": {
+          "correct": 112,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 16,
+          "pairs": 32,
+          "mean_loss_bb": 1.2192868749999994,
+          "bet_rates": {
+            "good_bluff": 0.96875,
+            "bad_bluff": 0.46875,
+            "value": 1.0
+          }
+        },
+        "combined": {
+          "correct": 96,
+          "total": 128,
+          "invalid": 0,
+          "pairs_correct": 0,
+          "pairs": 32,
+          "mean_loss_bb": 2.5168791406249986,
+          "bet_rates": {
+            "good_bluff": 1.0,
+            "bad_bluff": 1.0,
+            "value": 1.0
+          }
+        }
+      },
+      "winner_loss_bb": 0.0,
+      "parent_winner_loss_bb": 5.780938125,
+      "savings_bb": 2.2371501562500002,
+      "savings_95_bb": [
+        0.6962,
+        4.2385875
+      ]
+    }
+  },
+  "representative": 183001,
+  "guardrails": {
+    "lower_winner_loss": true,
+    "positive_paired_savings": true,
+    "hand_reading": true,
+    "bluff_pairs": false,
+    "earlier_bluff_pairs": false,
+    "earlier_loss": true,
+    "historical_good_bluffs": true,
+    "historical_value": true
+  },
+  "earlier_river": {
+    "correct": 63,
+    "total": 96,
+    "invalid": 0,
+    "pairs_correct": 0,
+    "pairs": 32,
+    "mean_loss_bb": 4.196396666666669,
+    "bet_rates": {
+      "good_bluff": 1.0,
+      "bad_bluff": 1.0,
+      "value": 0.96875
+    }
+  },
+  "historical": {
+    "mean_loss_bb": 2.4226111111111104,
+    "good_bluff_bet_rate": 1,
+    "value_bet_rate": 1,
+    "bad_bluff_bet_rate": 0.25
+  },
+  "advance_to_release_evaluation": false
+}

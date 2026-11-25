@@ -1,0 +1,13 @@
+{
+  "correct": 96,
+  "total": 128,
+  "invalid": 0,
+  "pairs_correct": 0,
+  "pairs": 32,
+  "mean_loss_bb": 2.5168791406249986,
+  "bet_rates": {
+    "good_bluff": 1.0,
+    "bad_bluff": 1.0,
+    "value": 1.0
+  }
+}

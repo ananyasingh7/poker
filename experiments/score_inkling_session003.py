@@ -46,34 +46,42 @@ def summarize(parent, candidate):
     }
 
 
-def main():
-    dev = read(OUT / "dev.jsonl.gz")
-    parent = read(OUT / "step140.jsonl.gz")
+def always_bet(rows):
+    # The policy only answers betting questions; score the full-decision format.
+    combined = [dict(row, answer="bet") for row in rows if row["kind"] == "combined"]
+    return score(
+        [dict(row, answer="bet") for row in rows if row["kind"] == "price"] + combined
+    )["combined"]
+
+
+def main(out=OUT, run=RUN, fixed=OUT, compare_always_bet=False, wait=False):
+    dev = read(fixed / "dev.jsonl.gz")
+    parent = read(fixed / "step140.jsonl.gz")
     parent_scores = score(parent)
     reps = {}
     for seed in SEEDS:
-        folder = RUN / str(seed)
-        adapter = export(folder, final_checkpoint(folder, False))
-        candidates = evaluate(str(seed), adapter, dev, RUN / "evaluation", OUT)
+        folder = run / str(seed)
+        adapter = export(folder, final_checkpoint(folder, wait))
+        candidates = evaluate(str(seed), adapter, dev, run / "evaluation", out)
         reps[seed] = summarize(parent, candidates)
     middle = median(rep["scores"]["combined"]["mean_loss_bb"] for rep in reps.values())
     chosen = next(
         s for s in SEEDS if reps[s]["scores"]["combined"]["mean_loss_bb"] == middle
     )
     rep = reps[chosen]
-    adapter = RUN / str(chosen) / "final.gguf"
+    adapter = run / str(chosen) / "final.gguf"
     old = evaluate(
         f"fresh-control-{chosen}",
         adapter,
         read(RESULT / "questions.jsonl.gz"),
-        RUN / "evaluation",
-        OUT,
+        run / "evaluation",
+        out,
     )
     old_scores = score(old)["combined"]
     previous = json.loads((RESULT / "scores.json").read_text())
     controls = read(PREVIOUS / "retention-questions.jsonl.gz")
     predictions = []
-    with local_server(RUN / str(chosen), adapter):
+    with local_server(run / str(chosen), adapter):
         for row in controls:
             system, user = row["messages"]
             answer = decide(
@@ -85,7 +93,7 @@ def main():
                 1,
             )
             predictions.append(dict(group=row["group"], format=row["format"], **answer))
-    save(f"historical-control-{chosen}", predictions, OUT)
+    save(f"historical-control-{chosen}", predictions, out)
     historical = score_controls(controls, predictions)["overall_betting"]
     checks = {
         "lower_winner_loss": rep["winner_loss_bb"] < rep["parent_winner_loss_bb"],
@@ -101,6 +109,15 @@ def main():
         "historical_good_bluffs": historical["good_bluff_bet_rate"] >= 0.95,
         "historical_value": historical["value_bet_rate"] >= 0.95,
     }
+    if compare_always_bet:
+        benchmark = always_bet(dev)
+        for seed in SEEDS:
+            reps[seed]["always_bet_loss_bb"] = benchmark["mean_loss_bb"]
+            reps[seed]["savings_vs_always_bet_bb"] = (
+                benchmark["mean_loss_bb"]
+                - reps[seed]["scores"]["combined"]["mean_loss_bb"]
+            )
+        checks["beats_always_bet"] = rep["savings_vs_always_bet_bb"] > 0
     report = {
         "replicates": reps,
         "representative": chosen,
@@ -109,7 +126,7 @@ def main():
         "historical": historical,
         "advance_to_release_evaluation": all(checks.values()),
     }
-    (OUT / "results.json").write_text(json.dumps(report, indent=2) + "\n")
+    (out / "results.json").write_text(json.dumps(report, indent=2) + "\n")
 
 
 if __name__ == "__main__":

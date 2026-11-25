@@ -13,8 +13,8 @@ from train_inkling_session002 import MAX_LENGTH, MODEL
 FREE_MODEL = MODEL + ":peft:65536:free"
 
 
-def train_seed(seed, recipe):
-    folder = RUN / str(seed)
+def train_seed(seed, recipe, run=RUN, session="003"):
+    folder = run / str(seed)
     source = folder / "train.jsonl"
     if (
         hashlib.sha256(source.read_bytes()).hexdigest()
@@ -39,7 +39,7 @@ def train_seed(seed, recipe):
     start = last["batch"] if last else 0
     metrics = trainer / "metrics.jsonl"
     with tinker.ServiceClient(
-        display_name=f"inkling-session003-free-{seed}"
+        display_name=f"inkling-session{session}-free-{seed}"
     ) as service:
         if last:
             client = service.create_training_client_from_state_with_optimizer(
@@ -99,11 +99,11 @@ def train_seed(seed, recipe):
                     handle.write(json.dumps(checkpoint) + "\n")
 
 
-def train():
-    recipe = json.loads((OUT / "render-check.json").read_text())
-    if not (OUT / "step140.jsonl.gz").is_file():
+def train(out=OUT, run=RUN, baseline_dir=OUT, session="003"):
+    recipe = json.loads((out / "render-check.json").read_text())
+    if not (baseline_dir / "step140.jsonl.gz").is_file():
         raise RuntimeError("Missing baseline")
-    with (RUN / "train.lock").open("a") as lock:
+    with (run / "train.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         for seed in SEEDS:
-            train_seed(seed, recipe)
+            train_seed(seed, recipe, run, session)

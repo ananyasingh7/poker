@@ -1,0 +1,11 @@
+{
+  "train_examples": 1280,
+  "train_sha256": "e2e1515a9249df4f41f3158885403bea5b8f26e0eaac9f7cdf038f19d8414a13",
+  "parent": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000140",
+  "shuffle_seeds": [
+    183001,
+    183002,
+    183003
+  ],
+  "fixed_dev_sha256": "3f2a2c9539b63f890a60a00591ed367d5a912f37eb2d735ccae4e6b226578255"
+}

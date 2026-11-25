@@ -7,6 +7,6 @@
   "batches": 40,
   "positions_per_run": 203326,
   "max_positions": 214,
-  "price_assumption_usd_per_million": 0.75,
-  "estimated_three_runs_usd": 0.4574835
+  "price_assumption_usd_per_million": 0.0,
+  "estimated_three_runs_usd": 0.0
 }

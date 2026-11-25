@@ -25,6 +25,7 @@ def main(
     seeds=SEEDS,
     required_baselines=("original", "step140"),
     session="002",
+    price_per_million=0.75,
 ):
     manifest = json.loads((out / "manifest.json").read_text())
     source = gzip.decompress((out / "train.jsonl.gz").read_bytes())
@@ -57,8 +58,8 @@ def main(
         batches=len(dataset),
         positions_per_run=sum(sizes),
         max_positions=max(sizes),
-        price_assumption_usd_per_million=0.75,
-        estimated_three_runs_usd=sum(sizes) * len(paths) * 0.75 / 1e6,
+        price_assumption_usd_per_million=price_per_million,
+        estimated_three_runs_usd=sum(sizes) * len(paths) * price_per_million / 1e6,
     )
     (out / "render-check.json").write_text(json.dumps(report, indent=2) + "\n")
     print(report, flush=True)

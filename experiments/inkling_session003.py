@@ -169,10 +169,16 @@ if __name__ == "__main__":
         from train_inkling_session002 import main
 
         main(
-            mode == "train",
+            False,
             out=OUT,
             run=RUN,
             seeds=SEEDS,
             required_baselines=("step140",),
             session="003",
+            price_per_million=0.0,
         )
+
+        if mode == "train":
+            from train_inkling_free import train
+
+            train()

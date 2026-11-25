@@ -1,0 +1,33 @@
+{
+  "hand": {
+    "correct": 36,
+    "total": 64,
+    "invalid": 0
+  },
+  "price": {
+    "correct": 104,
+    "total": 128,
+    "invalid": 0,
+    "pairs_correct": 8,
+    "pairs": 32,
+    "mean_loss_bb": 1.841749999999999,
+    "bet_rates": {
+      "good_bluff": 0.84375,
+      "bad_bluff": 0.59375,
+      "value": 1.0
+    }
+  },
+  "combined": {
+    "correct": 93,
+    "total": 128,
+    "invalid": 0,
+    "pairs_correct": 6,
+    "pairs": 32,
+    "mean_loss_bb": 4.754029296874998,
+    "bet_rates": {
+      "good_bluff": 0.9375,
+      "bad_bluff": 0.75,
+      "value": 0.859375
+    }
+  }
+}

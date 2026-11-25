@@ -23,8 +23,8 @@ ARMS = {
 }
 
 
-def save(name, rows):
-    path = RESULT / f"{name}.jsonl.gz"
+def save(name, rows, destination=RESULT):
+    path = destination / f"{name}.jsonl.gz"
     data = "".join(canonical(row) + "\n" for row in rows).encode()
     if path.exists() and gzip.decompress(path.read_bytes()) != data:
         raise ValueError(f"Changed frozen artifact: {path}")
@@ -57,8 +57,8 @@ def questions():
     ]
 
 
-def evaluate(name, adapter, rows):
-    folder = CACHE / name
+def evaluate(name, adapter, rows, cache=CACHE, destination=RESULT):
+    folder = cache / name
     folder.mkdir(parents=True, exist_ok=True)
     journal = folder / "answers.jsonl"
     with adapter.open("rb") as handle:
@@ -96,7 +96,7 @@ def evaluate(name, adapter, rows):
                 log.flush()
                 answers.append(response)
     outputs = [dict(**r, **a) for r, a in zip(rows, answers, strict=True)]
-    save(name, outputs)
+    save(name, outputs, destination)
     return outputs
 
 

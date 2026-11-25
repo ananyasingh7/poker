@@ -1,0 +1,89 @@
+{
+  "204001": {
+    "checkpoint": {
+      "batch": 40,
+      "name": "final",
+      "state_path": "tinker://d01e0b24-e3f4-553c-875c-77f1f0d4534b:train:0/external_weights/final",
+      "model": "thinkingmachines/Inkling-2-Mini:peft:65536:free"
+    },
+    "training_tokens": 145144,
+    "checksums": {
+      "final.gguf": "213425b9715168ed3ec93cbe9ac218c5916b8b7b81c745cb5ac6a021cd43d99f",
+      "conversion-verification.json": "f05c917b56c9920403c67ba3378280a307b62e7426975fbe1a0d59a7a37980a1",
+      "checkpoints.jsonl": "6e43ec8dc898d6abae1efd24dfacfea1eab1816f6b8d7a171eb1fbc1a93ef275",
+      "metrics.jsonl": "19c608a6e2bdff349f5e46c847205821c9e0ef6797486b2d90d38b0d88d407bd",
+      "adapter_config.json": "57d0cf5c97642f8604766f3940adb82fa90441abbb6f622ef770d37dbcf9420c",
+      "adapter_model.safetensors": "7d1ac9be9ca9a7c954af8cb82106a5681ac14bb621a3447c8b34a7774e63ef44"
+    },
+    "conversion": {
+      "checks": 289,
+      "largest_relative_error": 0.0009793563513085246,
+      "worst_matrix": "blk.20.ffn_down_exps/63",
+      "seed": 14001,
+      "experts_per_layer": [
+        0,
+        63,
+        127
+      ],
+      "layers": 24
+    }
+  },
+  "204002": {
+    "checkpoint": {
+      "batch": 40,
+      "name": "final",
+      "state_path": "tinker://5ff30d9e-46c6-54ca-9698-9a4c1a1d67dc:train:0/external_weights/final",
+      "model": "thinkingmachines/Inkling-2-Mini:peft:65536:free"
+    },
+    "training_tokens": 145144,
+    "checksums": {
+      "final.gguf": "4de5ba901402545bc5e6029dc1704ee5f618f73f5412690cbd0ce517b911e865",
+      "conversion-verification.json": "36ed6a82755409d6091dcb331f6840516308c3b0e26185733eccb493595914e3",
+      "checkpoints.jsonl": "96c8a1c6070aa377a9ed75d9a6db5bb9e116f5778ec0c69094ce7df841df01c9",
+      "metrics.jsonl": "6ebf25045912ffb5ace5ec476248f7dcc8c02d5b63c8f800639c38fa473bfba2",
+      "adapter_config.json": "57d0cf5c97642f8604766f3940adb82fa90441abbb6f622ef770d37dbcf9420c",
+      "adapter_model.safetensors": "5e412323434256f16270c9d8ed57293a6fa31f867f1bdc7927f6c53d829c755a"
+    },
+    "conversion": {
+      "checks": 289,
+      "largest_relative_error": 0.0009180426714010537,
+      "worst_matrix": "blk.22.attn_v/None",
+      "seed": 14001,
+      "experts_per_layer": [
+        0,
+        63,
+        127
+      ],
+      "layers": 24
+    }
+  },
+  "204003": {
+    "checkpoint": {
+      "batch": 40,
+      "name": "final",
+      "state_path": "tinker://ec3fe3d4-aa14-5468-ad2c-0ed87ba272e5:train:0/external_weights/final",
+      "model": "thinkingmachines/Inkling-2-Mini:peft:65536:free"
+    },
+    "training_tokens": 145144,
+    "checksums": {
+      "final.gguf": "3f3d81e80d301f4ec8a4f3a438859eb4187b165f501952c8d270b4b9af7f395b",
+      "conversion-verification.json": "4935a6499b84fe8f2fe9b0bc5bd1536456e177b00ba696d79d0abbbaaab8479e",
+      "checkpoints.jsonl": "69e5897d8ba0ccd3df048f292bb24bc242cc40405f4c48fa45e38a64d0ce34d5",
+      "metrics.jsonl": "655fe139f69c9881b00d4c20cb314ddc3de571238734443afe9f320d70acc1f9",
+      "adapter_config.json": "57d0cf5c97642f8604766f3940adb82fa90441abbb6f622ef770d37dbcf9420c",
+      "adapter_model.safetensors": "873626c35153ebfc57c3b873b34f2339aed0b76d880afabddb3101d897e78587"
+    },
+    "conversion": {
+      "checks": 289,
+      "largest_relative_error": 0.001189397182315588,
+      "worst_matrix": "blk.18.ffn_gate_up_exps/63",
+      "seed": 14001,
+      "experts_per_layer": [
+        0,
+        63,
+        127
+      ],
+      "layers": 24
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "step140": {
+    "winning_opportunities": 64,
+    "missed_decisions": 9,
+    "distinct_missed_deals": 8,
+    "miss_counts": {
+      "hand_wrong": 9
+    },
+    "miss_cost_bb": {
+      "hand_wrong": 369.9800399999999
+    },
+    "original_mean_loss_bb": 4.754029296874998,
+    "win_read_override_mean_loss_bb": 4.754029296874999,
+    "newly_costly_bets": 0
+  },
+  "183001": {
+    "winning_opportunities": 64,
+    "missed_decisions": 15,
+    "distinct_missed_deals": 12,
+    "miss_counts": {
+      "combined_only": 3,
+      "hand_wrong": 12
+    },
+    "miss_cost_bb": {
+      "combined_only": 59.18124000000002,
+      "hand_wrong": 611.41114
+    },
+    "original_mean_loss_bb": 6.1373646875,
+    "win_read_override_mean_loss_bb": 5.881265625,
+    "newly_costly_bets": 2
+  },
+  "183002": {
+    "winning_opportunities": 64,
+    "missed_decisions": 17,
+    "distinct_missed_deals": 15,
+    "miss_counts": {
+      "combined_only": 9,
+      "hand_wrong": 8
+    },
+    "miss_cost_bb": {
+      "combined_only": 626.55637,
+      "hand_wrong": 526.42694
+    },
+    "original_mean_loss_bb": 9.869334921875,
+    "win_read_override_mean_loss_bb": 5.410914296875,
+    "newly_costly_bets": 3
+  },
+  "183003": {
+    "winning_opportunities": 64,
+    "missed_decisions": 21,
+    "distinct_missed_deals": 19,
+    "miss_counts": {
+      "hand_wrong": 17,
+      "combined_only": 4
+    },
+    "miss_cost_bb": {
+      "hand_wrong": 936.1363400000001,
+      "combined_only": 363.6304599999999
+    },
+    "original_mean_loss_bb": 10.443465234375,
+    "win_read_override_mean_loss_bb": 7.665333515625001,
+    "newly_costly_bets": 1
+  },
+  "fresh-control-183002": {
+    "winning_opportunities": 32,
+    "missed_decisions": 9,
+    "distinct_missed_deals": 9,
+    "miss_counts": {
+      "hand_wrong": 5,
+      "combined_only": 4
+    },
+    "miss_cost_bb": {
+      "hand_wrong": 273.04308,
+      "combined_only": 226.73882
+    },
+    "original_mean_loss_bb": 6.348096458333334,
+    "win_read_override_mean_loss_bb": 3.9862337500000007,
+    "newly_costly_bets": 0
+  }
+}

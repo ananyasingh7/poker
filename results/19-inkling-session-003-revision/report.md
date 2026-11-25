@@ -35,3 +35,5 @@ On the earlier diagnostic, the representative handled both prices on 14 of 32 pa
 The results apply to repeated development tests of synthetic river decisions. The sealed release challenge and reserved games remain available.
 
 [Protocol](protocol.md) · [Full scores](results.json) · [First Session 003 results](../18-inkling-session-003/report.md)
+
+[Follow-up replay of every missed winning bet](winning-checks.md)

@@ -1,0 +1,12 @@
+{
+  "order_hashes": {
+    "204001": "cfdaf7c0e7226a85073e4bfd3e754fc3115792174627a2742912cbce94176768",
+    "204002": "9672a5062539b1be58a570f611f6ffd777410233f27be66a0660c5ae66f01497",
+    "204003": "563ce4b7dae728aaf6b1471d742dd5a92f2d4c631feffba94c1cf27066cb5f9a"
+  },
+  "batches": 40,
+  "positions_per_run": 145144,
+  "max_positions": 116,
+  "price_assumption_usd_per_million": 0,
+  "estimated_three_runs_usd": 0.0
+}

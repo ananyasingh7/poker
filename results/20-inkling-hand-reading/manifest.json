@@ -1,0 +1,14 @@
+{
+  "parent": "tinker://e70a1d2c-a779-5de0-ad50-db4344636389:train:0/weights/000140",
+  "shuffle_seeds": [
+    204001,
+    204002,
+    204003
+  ],
+  "train_examples": 1280,
+  "train_boards": 640,
+  "dev_boards": 32,
+  "dev_examples": 192,
+  "train_sha256": "e5ece21ab57279c1d32b48ccba0ce112ed63e7f5183dd38c05f110e75ee5c1da",
+  "dev_sha256": "a945ebdf85cfa161904bc6979f7498a03c6c51d207929a4d7395987ce3326dcc"
+}

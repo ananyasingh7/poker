@@ -1,4 +1,4 @@
-"""Train the three frozen Session 003 replicates exclusively on Tinker's free model."""
+"""Train frozen replicates exclusively on Tinker's free model."""
 
 import fcntl
 import hashlib
@@ -13,7 +13,7 @@ from train_inkling_session002 import MAX_LENGTH, MODEL
 FREE_MODEL = MODEL + ":peft:65536:free"
 
 
-def train_seed(seed, recipe, run=RUN, session="003"):
+def train_seed(seed, recipe, run=RUN, session="003", external_final_only=False):
     folder = run / str(seed)
     source = folder / "train.jsonl"
     if (
@@ -86,9 +86,15 @@ def train_seed(seed, recipe, run=RUN, session="003"):
                 handle.write(json.dumps(row) + "\n")
             print(seed, step + 1, "/", len(dataset), flush=True)
             completed = step + 1
-            if completed in (10, 20, 30, len(dataset)):
-                name = "final" if completed == len(dataset) else f"{completed:06d}"
-                state = client.save_state(name).result()
+            final = completed == len(dataset)
+            if final or (not external_final_only and completed in (10, 20, 30)):
+                name = "final" if final else f"{completed:06d}"
+                save = (
+                    client.save_weights_external
+                    if external_final_only
+                    else client.save_state
+                )
+                state = save(name).result()
                 checkpoint = {
                     "batch": completed,
                     "name": name,
@@ -99,11 +105,19 @@ def train_seed(seed, recipe, run=RUN, session="003"):
                     handle.write(json.dumps(checkpoint) + "\n")
 
 
-def train(out=OUT, run=RUN, baseline_dir=OUT, session="003"):
+def train(
+    out=OUT,
+    run=RUN,
+    baseline_dir=OUT,
+    session="003",
+    *,
+    seeds=SEEDS,
+    external_final_only=False,
+):
     recipe = json.loads((out / "render-check.json").read_text())
     if not (baseline_dir / "step140.jsonl.gz").is_file():
         raise RuntimeError("Missing baseline")
     with (run / "train.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        for seed in SEEDS:
-            train_seed(seed, recipe, run, session)
+        for seed in seeds:
+            train_seed(seed, recipe, run, session, external_final_only)

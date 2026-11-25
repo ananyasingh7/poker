@@ -183,8 +183,12 @@ def summarize(first, second):
     return result
 
 
-def replay(name, adapter):
+def replay(name, adapter=None):
     questions = load("dev")
+    if adapter is None:
+        first = load(name)
+        verify(questions, first)
+        return summarize(first, load(name + "-read-then-act"))
     first = evaluate(name, adapter, questions, RUN, OUT)
     second = evaluate(
         name + "-read-then-act", adapter, conditioned_questions(first), RUN, OUT
@@ -227,7 +231,7 @@ def compare(parent, scores):
     return {"by_seed": scores, "representative": representative, "advance": advance}
 
 
-def main(mode):
+def main(mode, wait=False):
     if mode == "prepare":
         prepare()
     elif mode == "baseline":
@@ -236,16 +240,19 @@ def main(mode):
             parent["direct"], parent["read_then_act"]
         )
         report("baseline", parent)
-    elif mode == "score":
+    elif mode in ("score", "rescore"):
         from evaluate_inkling_session002 import export, final_checkpoint
 
-        parent = json.loads((OUT / "baseline.json").read_text())
+        parent = replay("step140")
         scores = {}
         for seed in SEEDS:
             folder = RUN / str(seed)
-            scores[seed] = replay(
-                str(seed), export(folder, final_checkpoint(folder, False))
+            adapter = (
+                export(folder, final_checkpoint(folder, wait))
+                if mode == "score"
+                else None
             )
+            scores[seed] = replay(str(seed), adapter)
         report("results", compare(parent, scores))
     else:
         from train_inkling_session002 import main as render
@@ -269,6 +276,11 @@ def main(mode):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "mode", choices=("prepare", "baseline", "preflight", "train", "score")
+        "mode",
+        choices=("prepare", "baseline", "preflight", "train", "score", "rescore"),
     )
-    main(parser.parse_args().mode)
+    parser.add_argument(
+        "--wait", action="store_true", help="During scoring, wait for each final export"
+    )
+    args = parser.parse_args()
+    main(args.mode, args.wait)

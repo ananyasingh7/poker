@@ -2,7 +2,16 @@ import json
 import unittest
 from collections import defaultdict
 
-from inkling_hand_reading import conditioned_questions, load, summarize
+from inkling_hand_reading import (
+    OUT,
+    REVISION,
+    SESSION003,
+    conditioned_questions,
+    load,
+    summarize,
+)
+from inkling_session003 import REFERENCES
+from inkling_split_audit import views
 from prepare_inkling_tune import hand_wins
 
 
@@ -34,6 +43,36 @@ class HandReading(unittest.TestCase):
         }
         self.assertEqual((len(boards), len(dev)), (32, 192))
         self.assertFalse(boards & pairs.keys())
+
+    def test_boards_and_development_prices_are_fresh(self):
+        train_boards = {
+            tuple(sorted(view["board"])) for view in views(OUT / "train.jsonl.gz")
+        }
+        combined = [
+            json.loads(row["messages"][1]["content"])
+            for row in load("dev")
+            if row["kind"] == "combined"
+        ]
+        dev_boards = {tuple(sorted(view["board"])) for view in combined}
+        rates = {view["estimated_opponent_fold_percent"] for view in combined}
+        self.assertEqual(len(rates), 32)
+        references = (
+            *REFERENCES,
+            SESSION003 / "train.jsonl.gz",
+            SESSION003 / "dev.jsonl.gz",
+            REVISION / "train.jsonl.gz",
+        )
+        all_boards = train_boards | dev_boards
+        for path in references:
+            if not path.is_file() and path.parts[0] == "runs":
+                continue
+            for view in views(path):
+                if "board" in view:
+                    self.assertNotIn(tuple(sorted(view["board"])), all_boards)
+                rate = view.get(
+                    "fold_percent", view.get("estimated_opponent_fold_percent")
+                )
+                self.assertNotIn(rate, rates)
 
     def test_second_call_uses_own_wrong_read_but_score_uses_actual_cards(self):
         first = [
